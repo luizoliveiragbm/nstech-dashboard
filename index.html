@@ -7,25 +7,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root {
-  --orange:  #FF4500;
-  --orange2: #FF6B35;
-  --orange3: rgba(255,69,0,0.10);
-  --bg:      #F4F6F8;
-  --bg2:     #FFFFFF;
-  --bg3:     #F0F2F5;
-  --border:  #E5E7EB;
-  --border2: #D1D5DB;
-  --text:    #111827;
-  --text2:   #374151;
-  --gray:    #6B7280;
-  --gray2:   #9CA3AF;
-  --green:   #16A34A;
-  --red:     #DC2626;
-  --yellow:  #D97706;
-  --blue:    #2563EB;
-  --jan: #4472C4; --fev: #ED7D31; --mar: #6B7280;
-  --abr: #D97706; --mai: #16A34A; --jun: #9333EA;
+:root{
+  --orange:#FF4500;--orange2:#FF6B35;--orange3:rgba(255,69,0,.10);
+  --bg:#F4F6F8;--bg2:#fff;--bg3:#F0F2F5;
+  --border:#E5E7EB;--border2:#D1D5DB;
+  --text:#111827;--text2:#374151;--gray:#6B7280;--gray2:#9CA3AF;
+  --green:#16A34A;--red:#DC2626;--yellow:#D97706;--blue:#2563EB;
+  --purple:#9333EA;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:13px;scroll-behavior:smooth}
@@ -33,32 +21,19 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
 
 /* ── TOPBAR ── */
 .topbar{
-  position:sticky;top:0;z-index:500;
-  height:52px;background:#fff;
+  position:sticky;top:0;z-index:500;height:52px;background:#fff;
   border-bottom:2px solid var(--orange);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;
-  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  padding:0 20px;box-shadow:0 2px 8px rgba(0,0,0,.07);
 }
 .tb-left{display:flex;align-items:center;gap:12px}
-.tb-logo{
-  font-family:'Arial Black',sans-serif;font-weight:900;font-size:15px;
-  letter-spacing:2px;color:var(--orange);text-transform:uppercase;
-}
+.tb-logo{font-family:'Arial Black',sans-serif;font-weight:900;font-size:15px;letter-spacing:2px;color:var(--orange)}
 .tb-divider{width:1px;height:22px;background:var(--border2)}
 .tb-title{font-size:13px;font-weight:600;color:var(--text2)}
-.tb-badge{
-  background:var(--orange3);border:1px solid var(--orange);
-  color:var(--orange);font-size:10px;font-weight:700;
-  padding:2px 8px;border-radius:4px;letter-spacing:.5px;
-}
+.tb-badge{background:var(--orange3);border:1px solid var(--orange);color:var(--orange);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.5px}
 .tb-right{display:flex;align-items:center;gap:8px}
 .tb-period{font-size:11px;color:var(--gray);background:var(--bg3);padding:4px 12px;border-radius:4px;border:1px solid var(--border)}
-.tb-update{
-  background:var(--orange);color:#fff;border:none;cursor:pointer;
-  padding:6px 14px;border-radius:4px;font-size:11px;font-weight:700;
-  display:flex;align-items:center;gap:6px;transition:background .2s;
-}
+.tb-update{background:var(--orange);color:#fff;border:none;cursor:pointer;padding:6px 14px;border-radius:4px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:6px;transition:background .2s}
 .tb-update:hover{background:var(--orange2)}
 
 /* ── FILTERS ── */
@@ -66,56 +41,48 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
   background:#fff;border-bottom:1px solid var(--border);
   padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
 }
-.filter-label{font-size:10px;color:var(--gray);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.filter-group{display:flex;align-items:center;gap:6px}
+.filter-label{font-size:10px;color:var(--gray);font-weight:700;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
 .filter-sel{
   background:#fff;border:1px solid var(--border2);color:var(--text);
   padding:5px 10px;font-size:11px;border-radius:6px;cursor:pointer;outline:none;
-  min-width:110px;transition:border-color .2s;
+  min-width:100px;transition:border-color .2s;
 }
 .filter-sel:focus{border-color:var(--orange)}
+
+/* Pill de filtro ativo */
+.filter-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--orange3);border:1px solid var(--orange);
+  color:var(--orange);font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:12px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.filter-pill:hover{background:var(--orange);color:#fff}
+.filter-pill .pill-x{font-size:12px;line-height:1}
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
 .filter-divider{width:1px;height:20px;background:var(--border);margin:0 4px}
-.btn-clear{
-  background:#fff;border:1px solid var(--border2);color:var(--gray);
-  padding:5px 12px;border-radius:6px;font-size:10px;font-weight:700;
-  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;
-}
+.btn-clear{background:#fff;border:1px solid var(--border2);color:var(--gray);padding:5px 12px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}
 .btn-clear:hover{border-color:var(--orange);color:var(--orange)}
-.btn-export{
-  background:#fff;border:1px solid var(--orange);color:var(--orange);
-  padding:5px 12px;border-radius:6px;font-size:10px;font-weight:700;
-  letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;
-}
+.btn-export{background:#fff;border:1px solid var(--orange);color:var(--orange);padding:5px 12px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}
 .btn-export:hover{background:var(--orange);color:#fff}
 .filter-spacer{flex:1}
 
 /* ── LAYOUT ── */
-.shell{display:flex;min-height:calc(100vh - 89px)}
+.shell{display:flex;min-height:calc(100vh - 125px)}
 .sidebar{
-  width:210px;flex-shrink:0;background:#fff;
-  border-right:1px solid var(--border);
-  position:sticky;top:89px;height:calc(100vh - 89px);
-  overflow-y:auto;padding:10px 0;
+  width:210px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);
+  position:sticky;top:125px;height:calc(100vh - 125px);overflow-y:auto;padding:10px 0;
 }
 .sidebar::-webkit-scrollbar{width:3px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border2)}
-.nav-section{
-  padding:12px 14px 4px;font-size:9px;font-weight:700;
-  color:var(--gray2);letter-spacing:1.5px;text-transform:uppercase;
-}
-.nav-item{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 14px 7px 16px;font-size:12px;font-weight:500;
-  color:var(--text2);cursor:pointer;border:none;background:transparent;
-  text-align:left;width:100%;border-left:3px solid transparent;
-  transition:all .15s;
-}
+.nav-section{padding:12px 14px 4px;font-size:9px;font-weight:700;color:var(--gray2);letter-spacing:1.5px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 14px 7px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:transparent;text-align:left;width:100%;border-left:3px solid transparent;transition:all .15s}
 .nav-item:hover{background:var(--bg3);color:var(--text)}
 .nav-item.active{background:var(--orange3);color:var(--orange);border-left-color:var(--orange);font-weight:600}
 .nav-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:.5}
-.nav-badge{
-  margin-left:auto;font-size:9px;background:var(--orange);
-  color:#fff;padding:1px 5px;border-radius:3px;font-weight:700;
-}
+.nav-badge{margin-left:auto;font-size:9px;background:var(--orange);color:#fff;padding:1px 5px;border-radius:3px;font-weight:700}
 
 /* ── MAIN ── */
 .main{flex:1;min-width:0;overflow-x:hidden}
@@ -124,52 +91,46 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
 @keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── PAGE HEADER ── */
-.page-header{
-  display:flex;align-items:flex-start;gap:10px;
-  margin-bottom:16px;padding-bottom:12px;
-  border-bottom:1px solid var(--border);
-}
+.page-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 .ph-accent{width:3px;flex-shrink:0;height:30px;background:var(--orange);border-radius:2px;margin-top:2px}
 .ph-title{font-family:'Arial Black',sans-serif;font-weight:900;font-size:17px;color:var(--text)}
 .ph-title .hl{color:var(--orange)}
 .ph-sub{font-size:11px;color:var(--gray);margin-top:3px}
-.ph-badge{
-  margin-left:auto;background:var(--orange3);border:1px solid var(--orange);
-  color:var(--orange);font-size:10px;font-weight:700;padding:4px 10px;
-  border-radius:4px;white-space:nowrap;
+.ph-badge{margin-left:auto;background:var(--orange3);border:1px solid var(--orange);color:var(--orange);font-size:10px;font-weight:700;padding:4px 10px;border-radius:4px;white-space:nowrap}
+
+/* ── FILTRO ATIVO BANNER ── */
+.filter-banner{
+  background:linear-gradient(90deg,var(--orange3),transparent);
+  border:1px solid var(--orange);border-radius:6px;
+  padding:8px 14px;margin-bottom:14px;
+  display:none;align-items:center;gap:10px;flex-wrap:wrap;
 }
+.filter-banner.show{display:flex}
+.fb-label{font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase}
+.fb-pill{background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px}
+.fb-info{font-size:11px;color:var(--text2)}
 
 /* ── KPI CARDS ── */
 .kpi-grid{display:grid;gap:10px;margin-bottom:14px}
 .g4{grid-template-columns:repeat(4,1fr)}
-.g5{grid-template-columns:repeat(5,1fr)}
 .g3{grid-template-columns:repeat(3,1fr)}
-.g6{grid-template-columns:repeat(6,1fr)}
+.g2c{grid-template-columns:repeat(2,1fr)}
 
-.kpi-card{
-  background:#fff;border:1px solid var(--border);
-  border-radius:8px;padding:14px 16px 12px;
-  position:relative;overflow:hidden;transition:box-shadow .2s;
-}
+.kpi-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px 12px;position:relative;overflow:hidden;transition:box-shadow .2s}
 .kpi-card:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.kpi-card::before{
-  content:'';position:absolute;top:0;left:0;width:100%;height:3px;
-}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
 .kpi-card.orange::before{background:var(--orange)}
 .kpi-card.green::before{background:var(--green)}
 .kpi-card.blue::before{background:var(--blue)}
 .kpi-card.yellow::before{background:var(--yellow)}
 .kpi-card.red::before{background:var(--red)}
 .kpi-card.gray::before{background:var(--gray)}
-.kpi-card.purple::before{background:#9333EA}
+.kpi-card.purple::before{background:var(--purple)}
 
 .kpi-label{font-size:9px;font-weight:700;color:var(--gray);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
 .kpi-val{font-family:'Arial Black',sans-serif;font-weight:900;font-size:22px;color:var(--orange);line-height:1;letter-spacing:-.5px;margin-bottom:4px}
 .kpi-sub{font-size:10px;color:var(--gray)}
-.kpi-trend{
-  display:inline-flex;align-items:center;gap:3px;
-  font-size:10px;font-weight:700;padding:2px 7px;margin-top:5px;border-radius:3px;
-}
+.kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;margin-top:5px;border-radius:3px}
 .trend-up{background:rgba(22,163,74,.1);color:var(--green)}
 .trend-dn{background:rgba(220,38,38,.1);color:var(--red)}
 .trend-ok{background:var(--orange3);color:var(--orange)}
@@ -177,14 +138,14 @@ body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Arial,sans-se
 
 /* ── CARD ── */
 .card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:16px 18px}
-.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px}
 .ct-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px}
-.ct-badge{font-size:9px;font-weight:700;color:var(--orange);padding:2px 7px;background:var(--orange3);border-radius:3px}
+.ct-badge{font-size:9px;font-weight:700;color:var(--orange);padding:2px 7px;background:var(--orange3);border-radius:3px;white-space:nowrap}
 .chart-wrap{position:relative}
 .h120{height:120px}.h160{height:160px}.h200{height:200px}.h240{height:240px}
 .h260{height:260px}.h280{height:280px}.h300{height:300px}.h340{height:340px}
 
-/* ── GRID ── */
+/* ── GRIDS ── */
 .g1{margin-bottom:12px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .g2-13{display:grid;grid-template-columns:1fr 3fr;gap:12px;margin-bottom:12px}
@@ -214,7 +175,7 @@ td.r{text-align:right}
 .tag-orange{background:var(--orange3);color:var(--orange)}
 .tag-blue{background:rgba(37,99,235,.1);color:var(--blue)}
 .tag-gray{background:var(--bg3);color:var(--gray)}
-.tag-purple{background:rgba(147,51,234,.1);color:#9333EA}
+.tag-purple{background:rgba(147,51,234,.1);color:var(--purple)}
 
 /* ── PROGRESS BAR ── */
 .pb{margin-bottom:10px}
@@ -241,143 +202,71 @@ td.r{text-align:right}
 .hero-num{font-family:'Arial Black',sans-serif;font-weight:900;font-size:44px;color:var(--orange);line-height:1;letter-spacing:-2px}
 .hero-unit{font-size:9px;font-weight:700;color:var(--gray);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
 
-/* ── WATERFALL ── */
-.wf-bar{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.wf-label{font-size:11px;color:var(--text2);width:130px;flex-shrink:0;text-align:right}
-.wf-track{flex:1;height:20px;background:var(--bg3);border-radius:3px;position:relative;overflow:hidden}
-.wf-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#fff}
-
-/* ── SECTION DIVIDER ── */
-.sdiv{height:1px;background:var(--border);margin:14px 0}
-
-/* ── TONS HIGHLIGHT ── */
-.tons-box{
-  background:linear-gradient(135deg,var(--orange3),rgba(255,69,0,0.05));
-  border:1px solid var(--orange);border-radius:8px;padding:14px 16px;
-}
+/* ── TONS BOX ── */
+.tons-box{background:linear-gradient(135deg,var(--orange3),rgba(255,69,0,.05));border:1px solid var(--orange);border-radius:8px;padding:14px 16px}
 .tons-val{font-family:'Arial Black',sans-serif;font-weight:900;font-size:20px;color:var(--orange)}
 .tons-lbl{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:4px}
 
-/* ── AUDIO SPEECH ── */
-.speak-btn{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:26px;height:26px;border-radius:50%;
-  background:var(--orange3);border:1px solid var(--orange);
-  color:var(--orange);cursor:pointer;
-  font-size:12px;transition:all .2s;flex-shrink:0;
-  outline:none;
-}
-.speak-btn:hover{background:var(--orange);color:#fff;transform:scale(1.1)}
-.speak-btn.speaking{
-  background:var(--orange);color:#fff;
-  animation:speakpulse 1s ease-in-out infinite;
-}
-@keyframes speakpulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(255,69,0,.4)}
-  50%{box-shadow:0 0 0 6px rgba(255,69,0,0)}
-}
-.speak-btn.speaking::before{content:'⏹'}
-.speak-btn:not(.speaking)::before{content:'🔊'}
+/* ── PRODUTO / OP CARDS ── */
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.prod-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;position:relative;overflow:hidden}
+.prod-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+.prod-card.acucar::before{background:var(--orange)}
+.prod-card.soja::before{background:var(--green)}
+.prod-card.milho::before{background:var(--yellow)}
+.prod-card .pc-icon{font-size:22px;margin-bottom:4px}
+.prod-card .pc-lbl{font-size:9px;font-weight:700;color:var(--gray);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.prod-card .pc-val{font-family:'Arial Black',sans-serif;font-weight:900;font-size:24px;color:var(--text);line-height:1;margin-bottom:3px}
+.prod-card .pc-sub{font-size:10px;color:var(--gray)}
 
-.kpi-card{position:relative}
-.kpi-speak{position:absolute;top:10px;right:10px}
+.op-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.op-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 14px;position:relative;overflow:hidden;text-align:center}
+.op-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+.op-card.mrs::before{background:var(--blue)}
+.op-card.rumo::before{background:var(--orange)}
+.op-card.vli::before{background:var(--purple)}
+.op-card .oc-lbl{font-size:9px;font-weight:700;color:var(--gray);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.op-card .oc-val{font-family:'Arial Black',sans-serif;font-weight:900;font-size:24px;line-height:1;margin-bottom:3px}
+.op-card.mrs .oc-val{color:var(--blue)}
+.op-card.rumo .oc-val{color:var(--orange)}
+.op-card.vli .oc-val{color:var(--purple)}
+.op-card .oc-sub{font-size:10px;color:var(--gray)}
+.op-card .oc-terms{font-size:10px;color:var(--text2);margin-top:4px;font-weight:600}
 
-/* Tooltip de voz */
-.voice-toast{
-  position:fixed;bottom:64px;right:20px;z-index:9999;
-  background:#1F2937;color:#fff;
-  padding:10px 16px;border-radius:8px;
-  font-size:11px;max-width:320px;line-height:1.5;
-  border-left:3px solid var(--orange);
-  display:none;box-shadow:0 4px 20px rgba(0,0,0,.2);
-  animation:fadein .3s ease;
-}
-.voice-toast.show{display:block}
-.vt-label{font-size:9px;color:var(--orange);font-weight:700;
-  text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
-.vt-text{color:#E5E7EB}
-.toast{
-  position:fixed;bottom:20px;right:20px;z-index:9999;
-  background:var(--text);border-left:3px solid var(--green);color:#fff;
-  padding:12px 18px;font-size:12px;font-weight:600;display:none;
-  box-shadow:0 4px 20px rgba(0,0,0,.2);border-radius:6px;
-}
-.toast.show{display:block;animation:fadein .3s ease}
+/* ── SDIV ── */
+.sdiv{height:1px;background:var(--border);margin:14px 0}
 
 /* ── TICKER ── */
-.ticker-wrap{
-  background:#F0F0F0;
-  border-bottom:1px solid #E0E0E0;
-  height:32px;
-  display:flex;align-items:center;
-  overflow:hidden;
-  position:relative;
-}
-.ticker-label{
-  background:var(--orange);
-  color:#fff;
-  font-size:10px;font-weight:800;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:0 14px;
-  height:100%;display:flex;align-items:center;
-  flex-shrink:0;
-  white-space:nowrap;
-  z-index:2;
-  font-family:'Segoe UI',Arial,sans-serif;
-}
-.ticker-track{
-  flex:1;overflow:hidden;position:relative;height:100%;
-}
-.ticker-content{
-  display:flex;align-items:center;
-  height:100%;
-  white-space:nowrap;
-  animation:tickerMove 60s linear infinite;
-  will-change:transform;
-}
+.ticker-wrap{background:#F0F0F0;border-bottom:1px solid #E0E0E0;height:32px;display:flex;align-items:center;overflow:hidden;position:relative}
+.ticker-label{background:var(--orange);color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:0 14px;height:100%;display:flex;align-items:center;flex-shrink:0;white-space:nowrap;z-index:2}
+.ticker-track{flex:1;overflow:hidden;position:relative;height:100%}
+.ticker-content{display:flex;align-items:center;height:100%;white-space:nowrap;animation:tickerMove 60s linear infinite;will-change:transform}
 .ticker-content:hover{animation-play-state:paused}
-@keyframes tickerMove{
-  0%  {transform:translateX(0)}
-  100%{transform:translateX(-50%)}
-}
-.ticker-item{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:0 22px;
-  font-size:11px;font-weight:600;
-  color:#374151;
-  border-right:1px solid #D1D5DB;
-  height:100%;
-  font-family:'Segoe UI',Arial,sans-serif;
-}
-.ticker-item .ti-terminal{
-  color:var(--orange);font-weight:800;font-size:11px;
-  letter-spacing:.3px;
-}
-.ticker-item .ti-val{
-  color:var(--orange);font-weight:700;
-}
-.ticker-item .ti-sep{
-  color:#9CA3AF;font-size:10px;margin:0 2px;
-}
-.ticker-dot{
-  display:inline-block;width:5px;height:5px;
-  border-radius:50%;background:var(--orange);
-  margin:0 16px;flex-shrink:0;opacity:.5;
-}
+@keyframes tickerMove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{display:inline-flex;align-items:center;gap:6px;padding:0 22px;font-size:11px;font-weight:600;color:#374151;border-right:1px solid #D1D5DB;height:100%}
+.ticker-item .ti-terminal{color:var(--orange);font-weight:800}
+.ticker-item .ti-val{color:var(--orange);font-weight:700}
+.ticker-item .ti-sep{color:#9CA3AF;font-size:10px;margin:0 2px}
+.ticker-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--orange);margin:0 16px;flex-shrink:0;opacity:.5}
 
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--text);border-left:3px solid var(--green);color:#fff;padding:12px 18px;font-size:12px;font-weight:600;display:none;box-shadow:0 4px 20px rgba(0,0,0,.2);border-radius:6px}
+.toast.show{display:block;animation:fadein .3s ease}
 
-.footer{
-  background:#fff;border-top:1px solid var(--border);
-  padding:10px 20px;text-align:center;font-size:10px;color:var(--gray2);
-}
+/* ── BADGE PRODUTO / OP ── */
+.badge-prod,.badge-op{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.badge-prod.acucar{background:var(--orange3);color:var(--orange)}
+.badge-prod.soja{background:rgba(22,163,74,.1);color:var(--green)}
+.badge-prod.milho{background:rgba(217,119,6,.1);color:var(--yellow)}
+.badge-op.mrs{background:rgba(37,99,235,.1);color:var(--blue)}
+.badge-op.rumo{background:var(--orange3);color:var(--orange)}
+.badge-op.vli{background:rgba(147,51,234,.1);color:var(--purple)}
 
-/* ── SCROLLBAR ── */
+.footer{background:#fff;border-top:1px solid var(--border);padding:10px 20px;text-align:center;font-size:10px;color:var(--gray2)}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg3)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-
-/* ── RESPONSIVE ── */
-@media(max-width:1000px){.g4,.g5,.g6{grid-template-columns:1fr 1fr}}
+@media(max-width:1000px){.g4,.prod-grid,.op-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.sidebar{display:none}.g2,.g2-12,.g2-13{grid-template-columns:1fr}}
 </style>
 </head>
@@ -392,10 +281,8 @@ td.r{text-align:right}
     <div class="tb-badge">NST 2.0</div>
   </div>
   <div class="tb-right">
-    <div class="tb-period" id="tbPeriod">01/01/2026 · 27/06/2026 · Porto de Santos</div>
-    <button class="tb-update" id="btnUpdateData">
-      ⬆ Atualizar Dados
-    </button>
+    <div class="tb-period">01/01/2026 · 27/06/2026 · Porto de Santos</div>
+    <button class="tb-update" id="btnUpdateData">⬆ Atualizar Dados</button>
     <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
   </div>
 </header>
@@ -403,14 +290,13 @@ td.r{text-align:right}
 <!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker-label">JUNHO 2026</div>
-  <div class="ticker-track">
-    <div class="ticker-content" id="tickerContent"></div>
-  </div>
+  <div class="ticker-track"><div class="ticker-content" id="tickerContent"></div></div>
 </div>
 
 <!-- FILTERS -->
 <div class="filters-bar">
-  <div style="display:flex;align-items:center;gap:6px">
+  <!-- Terminal -->
+  <div class="filter-group">
     <span class="filter-label">Terminal</span>
     <select class="filter-sel" id="fTerminal">
       <option value="all">Todos</option>
@@ -420,7 +306,11 @@ td.r{text-align:right}
       <option value="CLI">CLI</option>
     </select>
   </div>
-  <div style="display:flex;align-items:center;gap:6px">
+
+  <div class="filter-divider"></div>
+
+  <!-- Mês -->
+  <div class="filter-group">
     <span class="filter-label">Mês</span>
     <select class="filter-sel" id="fMes">
       <option value="all">Todos</option>
@@ -432,9 +322,40 @@ td.r{text-align:right}
       <option value="5">Junho (01-27)</option>
     </select>
   </div>
+
   <div class="filter-divider"></div>
-  <button class="btn-clear" id="btnClear">✕ Limpar</button>
+
+  <!-- Produto -->
+  <div class="filter-group">
+    <span class="filter-label">Produto</span>
+    <select class="filter-sel" id="fProduto">
+      <option value="all">Todos</option>
+      <option value="AÇUCAR">🟠 Açúcar</option>
+      <option value="SOJA">🟢 Soja</option>
+      <option value="MILHO">🟡 Milho</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- Operador -->
+  <div class="filter-group">
+    <span class="filter-label">Operador</span>
+    <select class="filter-sel" id="fOperador">
+      <option value="all">Todos</option>
+      <option value="MRS">🔵 MRS</option>
+      <option value="RUMO">🟠 RUMO</option>
+      <option value="VLI">🟣 VLI</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+
+  <!-- Pills de filtros ativos -->
+  <div class="filter-pills" id="activePills"></div>
+
   <div class="filter-spacer"></div>
+  <button class="btn-clear" id="btnClear">✕ Limpar Filtros</button>
   <button class="btn-export" id="btnExportXLSX">⬇ Excel</button>
   <button class="btn-export" id="btnExportPDF">⬇ PDF</button>
 </div>
@@ -446,8 +367,10 @@ td.r{text-align:right}
 <nav class="sidebar">
   <div class="nav-section">Visão Geral</div>
   <button class="nav-item active" data-p="overview"><span class="nav-dot"></span>Dashboard Consolidado<span class="nav-badge">★</span></button>
+  <button class="nav-item" data-p="produto"><span class="nav-dot"></span>Por Produto<span class="nav-badge">NEW</span></button>
+  <button class="nav-item" data-p="operador"><span class="nav-dot"></span>Por Operador<span class="nav-badge">NEW</span></button>
   <button class="nav-item" data-p="volume"><span class="nav-dot"></span>Volume Operacional</button>
-  <button class="nav-item" data-p="toneladas"><span class="nav-dot"></span>Vol. Movimentado (t)<span class="nav-badge">NEW</span></button>
+  <button class="nav-item" data-p="toneladas"><span class="nav-dot"></span>Vol. Movimentado (t)</button>
   <button class="nav-item" data-p="taxa"><span class="nav-dot"></span>Taxa Vagão/Hora</button>
   <button class="nav-item" data-p="tendencia"><span class="nav-dot"></span>Tendência</button>
   <button class="nav-item" data-p="paradas"><span class="nav-dot"></span>Impacto Paradas</button>
@@ -461,7 +384,6 @@ td.r{text-align:right}
 
   <div class="nav-section">Análises</div>
   <button class="nav-item" data-p="moegas"><span class="nav-dot"></span>Análise por Moegas</button>
-  <button class="nav-item" data-p="produtos"><span class="nav-dot"></span>Produtos & Operadores</button>
   <button class="nav-item" data-p="planejado"><span class="nav-dot"></span>Planejado × Realizado</button>
   <button class="nav-item" data-p="riscos"><span class="nav-dot"></span>Riscos & Ações</button>
 </nav>
@@ -479,599 +401,573 @@ td.r{text-align:right}
     </div>
     <div class="ph-badge">Jan–Jun 2026</div>
   </div>
-
-  <!-- KPIs principais -->
+  <div class="filter-banner" id="ov-banner"></div>
   <div class="kpi-grid g4" id="ov-kpis"></div>
+  <div class="kpi-grid g4" id="ov-tons"></div>
+  <div class="g2">
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Terminal</span><span class="ct-badge">Jan–Jun</span></div><div class="chart-wrap h260"><canvas id="c-ov-prod"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Terminal</span><span class="ct-badge">TON</span></div><div class="chart-wrap h260"><canvas id="c-ov-tons"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal — Vagões</span></div><div class="chart-wrap h240"><canvas id="c-ov-mensal"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Impacto das Paradas (%)</span></div><div class="chart-wrap h240"><canvas id="c-ov-paradas"></canvas></div></div>
+  </div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Tabela Resumo — 4 Terminais</span></div><div class="tbl-wrap"><table id="tbl-ov"></table></div></div>
+</div>
 
-  <!-- Toneladas destaque -->
-  <div class="kpi-grid g4" id="ov-tons" style="margin-bottom:14px"></div>
+<!-- ══ PRODUTO ══ -->
+<div class="page" id="page-produto">
+  <div class="page-header">
+    <div class="ph-accent"></div>
+    <div>
+      <div class="ph-title">Vagões por <span class="hl">Produto</span></div>
+      <div class="ph-sub">Açúcar · Soja · Milho — distribuição por terminal, mês e operador</div>
+    </div>
+    <div class="ph-badge">PRODUTO</div>
+  </div>
+  <div class="filter-banner" id="prod-banner"></div>
+
+  <!-- Cards de produto -->
+  <div class="prod-grid" id="prod-cards"></div>
 
   <div class="g2">
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Vagões por Terminal — Acumulado</span><span class="ct-badge">Jan–Jun</span></div>
-      <div class="chart-wrap h260"><canvas id="c-ov-prod"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Volume Movimentado por Terminal (t)</span><span class="ct-badge">TONELADAS</span></div>
-      <div class="chart-wrap h260"><canvas id="c-ov-tons"></canvas></div>
-    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Produto — Acumulado</span></div><div class="chart-wrap h260"><canvas id="c-prod-bar"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Distribuição % por Produto</span></div><div class="chart-wrap h260"><canvas id="c-prod-donut"></canvas></div></div>
   </div>
+  <div class="g2">
+    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal por Produto</span></div><div class="chart-wrap h260"><canvas id="c-prod-mensal"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Produto × Terminal</span></div><div class="chart-wrap h260"><canvas id="c-prod-terminal"></canvas></div></div>
+  </div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Detalhamento por Produto, Terminal e Mês</span></div><div class="tbl-wrap"><table id="tbl-produto"></table></div></div>
+</div>
+
+<!-- ══ OPERADOR ══ -->
+<div class="page" id="page-operador">
+  <div class="page-header">
+    <div class="ph-accent"></div>
+    <div>
+      <div class="ph-title">Vagões por <span class="hl">Operador Ferroviário</span></div>
+      <div class="ph-sub">MRS · RUMO · VLI — distribuição por terminal, produto e mês</div>
+    </div>
+    <div class="ph-badge">OPERADOR</div>
+  </div>
+  <div class="filter-banner" id="op-banner"></div>
+
+  <!-- Cards de operador -->
+  <div class="op-grid" id="op-cards"></div>
 
   <div class="g2">
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Evolução Mensal — Vagões</span></div>
-      <div class="chart-wrap h240"><canvas id="c-ov-mensal"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Impacto das Paradas (%)</span></div>
-      <div class="chart-wrap h240"><canvas id="c-ov-paradas"></canvas></div>
-    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Operador — Acumulado</span></div><div class="chart-wrap h260"><canvas id="c-op-bar"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Distribuição % por Operador</span></div><div class="chart-wrap h260"><canvas id="c-op-donut"></canvas></div></div>
   </div>
-
-  <div class="g1 card">
-    <div class="card-top"><span class="ct-title">Tabela Resumo — 4 Terminais</span></div>
-    <div class="tbl-wrap"><table id="tbl-ov"></table></div>
+  <div class="g2">
+    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal por Operador</span></div><div class="chart-wrap h260"><canvas id="c-op-mensal"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Operador × Terminal</span></div><div class="chart-wrap h260"><canvas id="c-op-terminal"></canvas></div></div>
   </div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Detalhamento por Operador, Terminal e Mês</span></div><div class="tbl-wrap"><table id="tbl-operador"></table></div></div>
 </div>
 
 <!-- ══ VOLUME ══ -->
 <div class="page" id="page-volume">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Volume <span class="hl">Operacional</span></div>
-    <div class="ph-sub">Vagões processados por terminal e mês</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Volume <span class="hl">Operacional</span></div><div class="ph-sub">Vagões processados por terminal e mês</div></div></div>
   <div class="kpi-grid g4" id="vol-kpis"></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Terminal</span></div>
-      <div class="chart-wrap h260"><canvas id="c-vol-bar"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal</span></div>
-      <div class="chart-wrap h260"><canvas id="c-vol-line"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Terminal</span></div><div class="chart-wrap h260"><canvas id="c-vol-bar"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal</span></div><div class="chart-wrap h260"><canvas id="c-vol-line"></canvas></div></div>
   </div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Detalhamento por Terminal e Mês</span></div>
-    <div class="tbl-wrap"><table id="tbl-vol"></table></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Detalhamento por Terminal e Mês</span></div><div class="tbl-wrap"><table id="tbl-vol"></table></div></div>
 </div>
 
 <!-- ══ TONELADAS ══ -->
 <div class="page" id="page-toneladas">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Volume Movimentado <span class="hl">(Toneladas)</span></div>
-    <div class="ph-sub">Toneladas descarregadas por terminal, moega e mês · Jan–Jun 2026</div>
-  </div><div class="ph-badge">NOVA ANÁLISE</div></div>
-
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Volume Movimentado <span class="hl">(Toneladas)</span></div><div class="ph-sub">Jan–Jun 2026 · 4 Terminais</div></div><div class="ph-badge">TONELADAS</div></div>
   <div class="kpi-grid g4" id="tons-kpis"></div>
-
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Terminal — Acumulado</span></div>
-      <div class="chart-wrap h260"><canvas id="c-tons-bar"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal de Toneladas</span></div>
-      <div class="chart-wrap h260"><canvas id="c-tons-line"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Terminal</span></div><div class="chart-wrap h260"><canvas id="c-tons-bar"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal de Toneladas</span></div><div class="chart-wrap h260"><canvas id="c-tons-line"></canvas></div></div>
   </div>
-
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Distribuição por Terminal (%)</span></div>
-      <div class="chart-wrap h240"><canvas id="c-tons-donut"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas/Vagão por Terminal</span></div>
-      <div id="tons-rank" style="padding:8px 0"></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Distribuição % por Terminal</span></div><div class="chart-wrap h240"><canvas id="c-tons-donut"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas/Vagão por Terminal</span></div><div id="tons-rank" style="padding:8px 0"></div></div>
   </div>
-
-  <!-- TGRÃO tons -->
-  <div class="sdiv"></div>
-  <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">▸ TGRÃO — Volume por Mês (t)</div>
-  <div class="g1 card"><div class="tbl-wrap"><table id="tbl-tons-tgrao"></table></div></div>
-
-  <!-- COP tons -->
-  <div class="sdiv"></div>
-  <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">▸ COPERSUCAR — Volume por Moega e Mês (t)</div>
-  <div class="g1 card"><div class="tbl-wrap"><table id="tbl-tons-cop"></table></div></div>
-
-  <!-- TEC tons -->
-  <div class="sdiv"></div>
-  <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">▸ TEC — Volume por Moega e Mês (t)</div>
-  <div class="g1 card"><div class="tbl-wrap"><table id="tbl-tons-tec"></table></div></div>
-
-  <!-- CLI tons -->
-  <div class="sdiv"></div>
-  <div style="font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">▸ CLI — Volume por Moega e Mês (t)</div>
-  <div class="g1 card"><div class="tbl-wrap"><table id="tbl-tons-cli"></table></div></div>
 </div>
 
 <!-- ══ TAXA ══ -->
 <div class="page" id="page-taxa">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Taxa <span class="hl">Vagão/Hora</span></div>
-    <div class="ph-sub">Produtividade operacional por terminal e moega</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Taxa <span class="hl">Vagão/Hora</span></div><div class="ph-sub">Produtividade operacional por terminal e moega</div></div></div>
   <div class="kpi-grid g4" id="taxa-kpis"></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Taxa Vgs/Hr por Terminal</span></div>
-      <div class="chart-wrap h260"><canvas id="c-taxa-bar"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal — Taxa Vgs/Hr</span></div>
-      <div class="chart-wrap h260"><canvas id="c-taxa-line"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Taxa Vgs/Hr por Terminal</span></div><div class="chart-wrap h260"><canvas id="c-taxa-bar"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Evolução Mensal — Taxa Vgs/Hr</span></div><div class="chart-wrap h260"><canvas id="c-taxa-line"></canvas></div></div>
   </div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Taxa por Moega — Todos os Terminais</span></div>
-    <div class="tbl-wrap"><table id="tbl-taxa"></table></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Taxa por Terminal e Mês</span></div><div class="tbl-wrap"><table id="tbl-taxa"></table></div></div>
 </div>
 
 <!-- ══ TENDÊNCIA ══ -->
 <div class="page" id="page-tendencia">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title"><span class="hl">Tendência</span> Operacional</div>
-    <div class="ph-sub">Evolução histórica · Vagões e Toneladas · Jan–Jun 2026</div>
-  </div></div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Vagões — Evolução Mensal</span><span class="ct-badge">SÉRIE TEMPORAL</span></div>
-    <div class="chart-wrap h300"><canvas id="c-tend"></canvas></div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title"><span class="hl">Tendência</span> Operacional</div><div class="ph-sub">Jan–Jun 2026</div></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Vagões — Evolução Mensal</span></div><div class="chart-wrap h300"><canvas id="c-tend"></canvas></div></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas — Evolução Mensal</span></div>
-      <div class="chart-wrap h240"><canvas id="c-tend-tons"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Variação Mensal (%)</span></div>
-      <div class="tbl-wrap" style="max-height:280px;overflow-y:auto"><table id="tbl-tend"></table></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas — Evolução Mensal</span></div><div class="chart-wrap h240"><canvas id="c-tend-tons"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Variação Mensal (%)</span></div><div class="tbl-wrap" style="max-height:280px;overflow-y:auto"><table id="tbl-tend"></table></div></div>
   </div>
 </div>
 
 <!-- ══ PARADAS ══ -->
 <div class="page" id="page-paradas">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Impacto das <span class="hl">Paradas</span></div>
-    <div class="ph-sub">Ferrovia × Terminal × Operação · % por terminal e mês</div>
-  </div></div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Impacto por Terminal (%)</span></div>
-    <div class="chart-wrap h280"><canvas id="c-par-main"></canvas></div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Impacto das <span class="hl">Paradas</span></div><div class="ph-sub">Ferrovia × Terminal × Operação</div></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Impacto por Terminal (%)</span></div><div class="chart-wrap h280"><canvas id="c-par-main"></canvas></div></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Distribuição Média Geral</span></div>
-      <div class="chart-wrap h240"><canvas id="c-par-donut"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Barras de Impacto</span></div>
-      <div id="par-pbars" style="padding-top:8px"></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Distribuição Média Geral</span></div><div class="chart-wrap h240"><canvas id="c-par-donut"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Barras de Impacto</span></div><div id="par-pbars" style="padding-top:8px"></div></div>
   </div>
 </div>
 
 <!-- ══ JAN × JUN ══ -->
 <div class="page" id="page-jan_jun">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Comparativo <span class="hl">Janeiro × Junho</span></div>
-    <div class="ph-sub">Variação percentual entre início e período atual</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Comparativo <span class="hl">Janeiro × Junho</span></div><div class="ph-sub">Variação entre início e período atual</div></div></div>
   <div class="kpi-grid g4" id="jj-kpis"></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Vagões — Jan vs Jun</span></div>
-      <div class="chart-wrap h260"><canvas id="c-jj-vag"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas — Jan vs Jun</span></div>
-      <div class="chart-wrap h260"><canvas id="c-jj-tons"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões — Jan vs Jun</span></div><div class="chart-wrap h260"><canvas id="c-jj-vag"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas — Jan vs Jun</span></div><div class="chart-wrap h260"><canvas id="c-jj-tons"></canvas></div></div>
   </div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Tabela Comparativa</span></div>
-    <div class="tbl-wrap"><table id="tbl-jj"></table></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Tabela Comparativa</span></div><div class="tbl-wrap"><table id="tbl-jj"></table></div></div>
 </div>
 
 <!-- ══ TGRÃO ══ -->
 <div class="page" id="page-tgrao">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Análise | <span class="hl">TGRÃO</span></div>
-    <div class="ph-sub">Moegão – Terra · RUMO · Soja/Milho · Jan–Jun 2026</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Análise | <span class="hl">TGRÃO</span></div><div class="ph-sub">Moegão–Terra · RUMO · Soja · Jan–Jun 2026</div></div></div>
   <div class="g2-12">
     <div>
-      <div style="margin-bottom:14px">
-        <div class="hero-num" id="tgrao-vag">11.014</div>
-        <div class="hero-unit">Vagões Totais (Jan–Jun)</div>
+      <div style="margin-bottom:14px"><div class="hero-num" id="tgrao-vag">11.014</div><div class="hero-unit">Vagões Totais (Jan–Jun)</div></div>
+      <div class="tons-box" style="margin-bottom:10px"><div class="tons-lbl">Vol. Movimentado</div><div class="tons-val" id="tgrao-tons">985.039 t</div></div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="badge-prod soja">🟢 SOJA</span>
+        <span class="badge-op rumo">RUMO</span>
       </div>
-      <div class="tons-box" style="margin-bottom:14px">
-        <div class="tons-lbl">Vol. Movimentado</div>
-        <div class="tons-val" id="tgrao-tons">985.039 t</div>
-      </div>
-      <div class="insight">
-        <div class="insight-title">TGRÃO — Destaques</div>
-        <ul>
-          <li>Pico: Abril (2.994 vagões · 285.002 t)</li>
-          <li>Menor: Janeiro (1.293 vagões)</li>
-          <li>Produto exclusivo: Soja / RUMO</li>
-          <li>Taxa máx: Maio (5,60 Vgs/Hr)</li>
-          <li>Ferrovia: maior gargalo (67,8% Jan)</li>
-          <li>Junho parcial: 409 vagões (01-27)</li>
-        </ul>
-      </div>
+      <div class="insight"><div class="insight-title">TGRÃO — Destaques</div><ul>
+        <li>Pico: Abril (2.994 vagões · 285.002 t)</li>
+        <li>Produto exclusivo: Soja via RUMO</li>
+        <li>Taxa máx: Maio (5,60 Vgs/Hr)</li>
+        <li>Ferrovia: maior gargalo (67,8% Jan)</li>
+        <li>Junho parcial: 409 vagões</li>
+      </ul></div>
     </div>
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Volume Mensal — Vagões & Toneladas</span></div>
-      <div class="chart-wrap h320"><canvas id="c-tgrao-bar"></canvas></div>
-    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Volume Mensal — Vagões & Toneladas</span></div><div class="chart-wrap h320"><canvas id="c-tgrao-bar"></canvas></div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Paradas por Mês (%)</span></div>
-      <div class="chart-wrap h240"><canvas id="c-tgrao-par"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div>
-      <div class="tbl-wrap"><table id="tbl-tgrao"></table></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Paradas por Mês (%)</span></div><div class="chart-wrap h240"><canvas id="c-tgrao-par"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div><div class="tbl-wrap"><table id="tbl-tgrao"></table></div></div>
   </div>
 </div>
 
 <!-- ══ TEC ══ -->
 <div class="page" id="page-tec">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Análise | <span class="hl">TEC</span></div>
-    <div class="ph-sub">4 Moegas · LINHA 12A · Moegão 1 · Moegão 2 · Moegão 3 · Jan–Jun 2026</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Análise | <span class="hl">TEC</span></div><div class="ph-sub">4 Moegas · RUMO + VLI · Soja + Milho · Jan–Jun 2026</div></div></div>
   <div class="g2-12">
     <div>
-      <div style="margin-bottom:14px">
-        <div class="hero-num" id="tec-vag">21.981</div>
-        <div class="hero-unit">Vagões Totais (Jan–Jun)</div>
+      <div style="margin-bottom:14px"><div class="hero-num" id="tec-vag">21.981</div><div class="hero-unit">Vagões Totais (Jan–Jun)</div></div>
+      <div class="tons-box" style="margin-bottom:10px"><div class="tons-lbl">Vol. Movimentado</div><div class="tons-val" id="tec-tons">1.268.036 t</div></div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="badge-prod soja">🟢 SOJA</span>
+        <span class="badge-prod milho">🟡 MILHO</span>
+        <span class="badge-op rumo">RUMO</span>
+        <span class="badge-op vli">VLI</span>
       </div>
-      <div class="tons-box" style="margin-bottom:14px">
-        <div class="tons-lbl">Vol. Movimentado</div>
-        <div class="tons-val" id="tec-tons">1.268.036 t</div>
-      </div>
-      <div class="insight">
-        <div class="insight-title">TEC — Destaques</div>
-        <ul>
-          <li>Pico: Abril (4.044 vagões · 385.728 t)</li>
-          <li>Taxa recorde: Maio (18,03 Vgs/Hr)</li>
-          <li>Moegão 3 sem operação em todo período</li>
-          <li>LINHA 12A: maior contribuinte Jan</li>
-          <li>Junho: 0 t registradas (parcial)</li>
-          <li>Crescimento acumulado Jan→Abr: +172%</li>
-        </ul>
-      </div>
+      <div class="insight"><div class="insight-title">TEC — Destaques</div><ul>
+        <li>Pico: Abril (4.044 vagões · 385.728 t)</li>
+        <li>Taxa recorde: Maio (18,03 Vgs/Hr)</li>
+        <li>Moegão 3 inativo no período</li>
+        <li>Crescimento Jan→Abr: +172%</li>
+      </ul></div>
     </div>
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Volume Mensal por Moega — Vagões & Toneladas</span></div>
-      <div class="chart-wrap h320"><canvas id="c-tec-bar"></canvas></div>
-    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Volume Mensal — Vagões & Toneladas</span></div><div class="chart-wrap h320"><canvas id="c-tec-bar"></canvas></div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Moega</span></div>
-      <div class="chart-wrap h240"><canvas id="c-tec-tons"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div>
-      <div class="tbl-wrap"><table id="tbl-tec"></table></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Moega</span></div><div class="chart-wrap h240"><canvas id="c-tec-tons"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div><div class="tbl-wrap"><table id="tbl-tec"></table></div></div>
   </div>
 </div>
 
 <!-- ══ COP ══ -->
 <div class="page" id="page-cop">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Análise | <span class="hl">COPERSUCAR</span></div>
-    <div class="ph-sub">3 Moegas · Moegão · Linha 5 · Linha 6 · Jan–Jun 2026</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Análise | <span class="hl">COPERSUCAR</span></div><div class="ph-sub">3 Linhas · MRS + RUMO · Açúcar · Jan–Jun 2026</div></div></div>
   <div class="g2-12">
     <div>
-      <div style="margin-bottom:14px">
-        <div class="hero-num" id="cop-vag">19.202</div>
-        <div class="hero-unit">Vagões Totais (Jan–Jun)</div>
+      <div style="margin-bottom:14px"><div class="hero-num" id="cop-vag">19.202</div><div class="hero-unit">Vagões Totais (Jan–Jun)</div></div>
+      <div class="tons-box" style="margin-bottom:10px"><div class="tons-lbl">Vol. Movimentado</div><div class="tons-val" id="cop-tons">1.638.603 t</div></div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="badge-prod acucar">🟠 AÇÚCAR</span>
+        <span class="badge-op mrs">MRS</span>
+        <span class="badge-op rumo">RUMO</span>
       </div>
-      <div class="tons-box" style="margin-bottom:14px">
-        <div class="tons-lbl">Vol. Movimentado</div>
-        <div class="tons-val" id="cop-tons">1.638.603 t</div>
-      </div>
-      <div class="insight">
-        <div class="insight-title">COPERSUCAR — Destaques</div>
-        <ul>
-          <li>Maio: maior volume (3.743 vagões)</li>
-          <li>Maior tonelagem/mês: Maio (329.901 t)</li>
-          <li>Ferrovia: gargalo crítico (62,6% Fev Moegão)</li>
-          <li>Linha 5 e 6: acima de 2 Vgs/Hr consistente</li>
-          <li>Junho parcial: 3.500 vagões · 295.263 t</li>
-          <li>Açúcar dominante via MRS e RUMO</li>
-        </ul>
-      </div>
+      <div class="insight"><div class="insight-title">COPERSUCAR — Destaques</div><ul>
+        <li>Maio: maior volume (3.743 vag)</li>
+        <li>Produto exclusivo: Açúcar</li>
+        <li>Ferrovia crítica: 62,6% Fev</li>
+        <li>Operadores: MRS e RUMO</li>
+      </ul></div>
     </div>
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Volume Mensal por Linha — Vagões & Toneladas</span></div>
-      <div class="chart-wrap h320"><canvas id="c-cop-bar"></canvas></div>
-    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Volume Mensal — Vagões & Toneladas</span></div><div class="chart-wrap h320"><canvas id="c-cop-bar"></canvas></div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Linha</span></div>
-      <div class="chart-wrap h240"><canvas id="c-cop-tons"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div>
-      <div class="tbl-wrap"><table id="tbl-cop"></table></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Linha</span></div><div class="chart-wrap h240"><canvas id="c-cop-tons"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div><div class="tbl-wrap"><table id="tbl-cop"></table></div></div>
   </div>
 </div>
 
 <!-- ══ CLI ══ -->
 <div class="page" id="page-cli">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Análise | <span class="hl">CLI</span></div>
-    <div class="ph-sub">5 Moegas · CL-Mar · CL-Terra · Moegão-Mar · Moegão-Terra · T23 · Jan–Jun 2026</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Análise | <span class="hl">CLI</span></div><div class="ph-sub">5 Moegas · RUMO + VLI · Soja + Milho · Jan–Jun 2026</div></div></div>
   <div class="g2-12">
     <div>
-      <div style="margin-bottom:14px">
-        <div class="hero-num" id="cli-vag">36.342</div>
-        <div class="hero-unit">Vagões Totais (Jan–Jun)</div>
+      <div style="margin-bottom:14px"><div class="hero-num" id="cli-vag">36.342</div><div class="hero-unit">Vagões Totais (Jan–Jun)</div></div>
+      <div class="tons-box" style="margin-bottom:10px"><div class="tons-lbl">Vol. Movimentado</div><div class="tons-val" id="cli-tons">2.853.263 t</div></div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <span class="badge-prod soja">🟢 SOJA</span>
+        <span class="badge-prod milho">🟡 MILHO</span>
+        <span class="badge-op rumo">RUMO</span>
+        <span class="badge-op vli">VLI</span>
       </div>
-      <div class="tons-box" style="margin-bottom:14px">
-        <div class="tons-lbl">Vol. Movimentado</div>
-        <div class="tons-val" id="cli-tons">2.853.263 t</div>
-      </div>
-      <div class="insight">
-        <div class="insight-title">CLI — Destaques</div>
-        <ul>
-          <li>Maior volume do grupo: 36.342 vag</li>
-          <li>Pico: Maio (6.922 vag · 630.979 t)</li>
-          <li>Taxa máx: Fev (16,97 Vgs/Hr)</li>
-          <li>Moegão-Mar: maior tonelagem unitária</li>
-          <li>T23 inativo em Jan e Abr</li>
-          <li>Junho parcial: 6.500 vag · 15.641 t</li>
-        </ul>
-      </div>
+      <div class="insight"><div class="insight-title">CLI — Destaques</div><ul>
+        <li>Maior volume do grupo: 36.342 vag</li>
+        <li>Pico: Maio (6.922 vag · 630.979 t)</li>
+        <li>Taxa máx: Fev (16,97 Vgs/Hr)</li>
+        <li>T23 inativo em Jan e Abr</li>
+      </ul></div>
     </div>
-    <div class="card">
-      <div class="card-top"><span class="ct-title">Volume Mensal por Moega — Vagões & Toneladas</span></div>
-      <div class="chart-wrap h320"><canvas id="c-cli-bar"></canvas></div>
-    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Volume Mensal — Vagões & Toneladas</span></div><div class="chart-wrap h320"><canvas id="c-cli-bar"></canvas></div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Moega</span></div>
-      <div class="chart-wrap h240"><canvas id="c-cli-tons"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div>
-      <div class="tbl-wrap"><table id="tbl-cli"></table></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Moega</span></div><div class="chart-wrap h240"><canvas id="c-cli-tons"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div><div class="tbl-wrap"><table id="tbl-cli"></table></div></div>
   </div>
 </div>
 
 <!-- ══ MOEGAS ══ -->
 <div class="page" id="page-moegas">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Análise por <span class="hl">Moegas</span></div>
-    <div class="ph-sub">Comparativo de produtividade e volume entre todas as moegas</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Análise por <span class="hl">Moegas</span></div><div class="ph-sub">Comparativo de produtividade e volume</div></div></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Moega</span></div>
-      <div class="chart-wrap h300"><canvas id="c-moeg-vag"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Taxa Vgs/Hr por Moega</span></div>
-      <div class="chart-wrap h300"><canvas id="c-moeg-taxa"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Vagões por Moega</span></div><div class="chart-wrap h300"><canvas id="c-moeg-vag"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Taxa Vgs/Hr por Moega</span></div><div class="chart-wrap h300"><canvas id="c-moeg-taxa"></canvas></div></div>
   </div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Ranking Geral de Moegas</span></div>
-    <div class="tbl-wrap"><table id="tbl-moegas"></table></div></div>
-</div>
-
-<!-- ══ PRODUTOS ══ -->
-<div class="page" id="page-produtos">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Produtos <span class="hl">&amp; Operadores</span></div>
-    <div class="ph-sub">Açúcar · Soja · Milho · MRS · RUMO · VLI</div>
-  </div></div>
-  <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Distribuição por Produto</span></div>
-      <div class="chart-wrap h280"><canvas id="c-prod-donut"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Distribuição por Ferrovia</span></div>
-      <div class="chart-wrap h280"><canvas id="c-ferr-donut"></canvas></div></div>
-  </div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Ranking Geral de Moegas</span></div><div class="tbl-wrap"><table id="tbl-moegas"></table></div></div>
 </div>
 
 <!-- ══ PLANEJADO ══ -->
 <div class="page" id="page-planejado">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Planejado <span class="hl">× Realizado</span></div>
-    <div class="ph-sub">Meta vs execução por terminal e mês</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Planejado <span class="hl">× Realizado</span></div><div class="ph-sub">Meta vs execução por terminal</div></div></div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Planejado × Realizado — TGRÃO</span></div>
-      <div class="chart-wrap h260"><canvas id="c-plan-tgrao"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Planejado × Realizado — CLI</span></div>
-      <div class="chart-wrap h260"><canvas id="c-plan-cli"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">TGRÃO</span></div><div class="chart-wrap h260"><canvas id="c-plan-tgrao"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">CLI</span></div><div class="chart-wrap h260"><canvas id="c-plan-cli"></canvas></div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="card-top"><span class="ct-title">Planejado × Realizado — TEC</span></div>
-      <div class="chart-wrap h260"><canvas id="c-plan-tec"></canvas></div></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Planejado × Realizado — COP</span></div>
-      <div class="chart-wrap h260"><canvas id="c-plan-cop"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">TEC</span></div><div class="chart-wrap h260"><canvas id="c-plan-tec"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">COPERSUCAR</span></div><div class="chart-wrap h260"><canvas id="c-plan-cop"></canvas></div></div>
   </div>
 </div>
 
 <!-- ══ RISCOS ══ -->
 <div class="page" id="page-riscos">
-  <div class="page-header"><div class="ph-accent"></div><div>
-    <div class="ph-title">Riscos <span class="hl">&amp; Plano de Ação</span></div>
-    <div class="ph-sub">Matriz de riscos · Oportunidades · Recomendações</div>
-  </div></div>
+  <div class="page-header"><div class="ph-accent"></div><div><div class="ph-title">Riscos <span class="hl">&amp; Plano de Ação</span></div><div class="ph-sub">Matriz de riscos · Oportunidades</div></div></div>
   <div class="g2">
     <div class="card" id="risk-matrix"></div>
-    <div class="card"><div class="card-top"><span class="ct-title">Distribuição por Nível</span></div>
-      <div class="chart-wrap h280"><canvas id="c-risk"></canvas></div></div>
+    <div class="card"><div class="card-top"><span class="ct-title">Distribuição por Nível</span></div><div class="chart-wrap h280"><canvas id="c-risk"></canvas></div></div>
   </div>
-  <div class="g1 card"><div class="card-top"><span class="ct-title">Plano de Ação</span></div>
-    <div class="tbl-wrap"><table id="tbl-acoes"></table></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Plano de Ação</span></div><div class="tbl-wrap"><table id="tbl-acoes"></table></div></div>
 </div>
 
 </main>
 </div><!-- /shell -->
 
-<footer class="footer">
-  NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Criado com Claude IA
-</footer>
-<div class="voice-toast" id="voiceToast">
-  <div class="vt-label">🔊 Lendo em voz alta</div>
-  <div class="vt-text" id="voiceToastText"></div>
-</div>
+<footer class="footer">NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA</footer>
 <div class="toast" id="toast"></div>
 
 <script>
 'use strict';
 
-// ═══════════════════════════════════════════
-//  BANCO DE DADOS REAL — Excel fornecido
-// ═══════════════════════════════════════════
-const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun (01-27)'];
+// ═══════════════════════════════════════
+// BANCO DE DADOS
+// ═══════════════════════════════════════
+const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun'];
+
+// ── Mapeamento Produto × Operador por Terminal ──────────────────
+// TGRÃO  → Soja / RUMO
+// TEC    → Soja + Milho / RUMO + VLI  (aprox 70% Soja/RUMO · 30% Milho/VLI)
+// COP    → Açúcar / MRS + RUMO        (aprox 55% MRS · 45% RUMO)
+// CLI    → Soja + Milho / RUMO + VLI  (aprox 75% Soja/RUMO · 25% Milho/VLI)
+
+// Distribuição de vagões por produto e operador (baseada na composição real de cada terminal)
+const PRODUTO_OP = {
+  // TGRÃO — 100% Soja / 100% RUMO
+  tgrao: {
+    produtos: { SOJA:1.00, AÇUCAR:0.00, MILHO:0.00 },
+    operadores:{ RUMO:1.00, MRS:0.00, VLI:0.00 },
+  },
+  // TEC — Soja 68% + Milho 32% / RUMO 65% + VLI 35%
+  tec: {
+    produtos: { SOJA:0.68, AÇUCAR:0.00, MILHO:0.32 },
+    operadores:{ RUMO:0.65, MRS:0.00, VLI:0.35 },
+  },
+  // COP — 100% Açúcar / MRS 55% + RUMO 45%
+  cop: {
+    produtos: { SOJA:0.00, AÇUCAR:1.00, MILHO:0.00 },
+    operadores:{ RUMO:0.45, MRS:0.55, VLI:0.00 },
+  },
+  // CLI — Soja 74% + Milho 26% / RUMO 72% + VLI 28%
+  cli: {
+    produtos: { SOJA:0.74, AÇUCAR:0.00, MILHO:0.26 },
+    operadores:{ RUMO:0.72, MRS:0.00, VLI:0.28 },
+  },
+};
 
 const DB = {
-
-  // ── TGRÃO ──────────────────────────────
-  tgrao: [
-    {m:'Jan', plan:1255,  real:1293, taxa:5.40, op:28.06, term:4.09,  ferr:67.84, tons:52144.54},
-    {m:'Fev', plan:1813,  real:1692, taxa:5.09, op:43.72, term:5.72,  ferr:50.56, tons:161228.45},
-    {m:'Mar', plan:1813,  real:2590, taxa:4.90, op:55.03, term:15.96, ferr:29.01, tons:245952.81},
-    {m:'Abr', plan:1813,  real:2994, taxa:5.31, op:71.17, term:5.08,  ferr:21.63, tons:285001.84},
-    {m:'Mai', plan:1813,  real:2445, taxa:5.60, op:53.56, term:5.63,  ferr:41.36, tons:224837.74},
-    {m:'Jun', plan:1813,  real:409,  taxa:5.09, op:43.00, term:12.20, ferr:44.73, tons:15874.14},
+  tgrao:[
+    {m:'Jan',plan:1255, real:1293, taxa:5.40,op:28.06,term:4.09, ferr:67.84,tons:52144.54},
+    {m:'Fev',plan:1813, real:1692, taxa:5.09,op:43.72,term:5.72, ferr:50.56,tons:161228.45},
+    {m:'Mar',plan:1813, real:2590, taxa:4.90,op:55.03,term:15.96,ferr:29.01,tons:245952.81},
+    {m:'Abr',plan:1813, real:2994, taxa:5.31,op:71.17,term:5.08, ferr:21.63,tons:285001.84},
+    {m:'Mai',plan:1813, real:2445, taxa:5.60,op:53.56,term:5.63, ferr:41.36,tons:224837.74},
+    {m:'Jun',plan:1813, real:409,  taxa:5.09,op:43.00,term:12.20,ferr:44.73,tons:15874.14},
   ],
-
-  // ── COP ────────────────────────────────
-  cop: [
-    {m:'Jan', plan:2562, real:2496, taxa:4.02,
-      moegas:[
-        {n:'Moegão', v:153,   taxa:0.26, op:3.85,  term:75.51, ferr:20.64, tons:14674.59},
-        {n:'Linha 5',v:1362,  taxa:2.21, op:59.41, term:23.33, ferr:17.26, tons:119977.04},
-        {n:'Linha 6',v:981,   taxa:1.55, op:44.35, term:40.92, ferr:14.74, tons:84437.99},
-      ], tons:219089.62},
-    {m:'Fev', plan:3409, real:3170, taxa:6.09,
-      moegas:[
-        {n:'Moegão', v:1150,  taxa:1.91, op:24.02, term:13.41, ferr:62.57, tons:81428.78},
-        {n:'Linha 5',v:1066,  taxa:2.10, op:52.94, term:22.76, ferr:24.30, tons:88001.50},
-        {n:'Linha 6',v:954,   taxa:2.08, op:48.41, term:25.72, ferr:25.87, tons:73859.33},
-      ], tons:243289.61},
-    {m:'Mar', plan:3543, real:3062, taxa:8.06,
-      moegas:[
-        {n:'Moegão', v:1357,  taxa:3.91, op:22.26, term:24.33, ferr:53.41, tons:121116.24},
-        {n:'Linha 5',v:846,   taxa:2.07, op:32.85, term:21.99, ferr:45.16, tons:73137.93},
-        {n:'Linha 6',v:859,   taxa:2.08, op:32.83, term:22.75, ferr:44.42, tons:73859.33},
-      ], tons:268113.50},
-    {m:'Abr', plan:3384, real:3231, taxa:10.14,
-      moegas:[
-        {n:'Moegão', v:2017,  taxa:5.06, op:34.17, term:19.34, ferr:44.65, tons:180766.76},
-        {n:'Linha 5',v:599,   taxa:2.49, op:36.05, term:16.97, ferr:46.98, tons:50382.98},
-        {n:'Linha 6',v:615,   taxa:2.59, op:35.87, term:17.49, ferr:46.64, tons:51796.71},
-      ], tons:282946.45},
-    {m:'Mai', plan:4090, real:3743, taxa:9.43,
-      moegas:[
-        {n:'Moegão', v:1847,  taxa:4.64, op:34.17, term:19.34, ferr:46.49, tons:166425.41},
-        {n:'Linha 5',v:946,   taxa:2.40, op:36.05, term:16.97, ferr:46.98, tons:81317.21},
-        {n:'Linha 6',v:950,   taxa:2.39, op:35.87, term:17.49, ferr:46.64, tons:82158.37},
-      ], tons:329900.99},
-    {m:'Jun', plan:3912, real:3500, taxa:9.19,
-      moegas:[
-        {n:'Moegão', v:1777,  taxa:4.52, op:33.34, term:22.08, ferr:44.58, tons:155397.03},
-        {n:'Linha 5',v:826,   taxa:2.28, op:37.08, term:32.71, ferr:30.21, tons:67468.61},
-        {n:'Linha 6',v:897,   taxa:2.39, op:38.91, term:32.86, ferr:28.23, tons:72397.29},
-      ], tons:295262.93},
+  cop:[
+    {m:'Jan',plan:2562,real:2496, taxa:4.02,
+     moegas:[{n:'Moegão',v:153, taxa:0.26,op:3.85, term:75.51,ferr:20.64,tons:14674.59},
+             {n:'Linha 5',v:1362,taxa:2.21,op:59.41,term:23.33,ferr:17.26,tons:119977.04},
+             {n:'Linha 6',v:981, taxa:1.55,op:44.35,term:40.92,ferr:14.74,tons:84437.99}],tons:219089.62},
+    {m:'Fev',plan:3409,real:3170, taxa:6.09,
+     moegas:[{n:'Moegão',v:1150,taxa:1.91,op:24.02,term:13.41,ferr:62.57,tons:81428.78},
+             {n:'Linha 5',v:1066,taxa:2.10,op:52.94,term:22.76,ferr:24.30,tons:88001.50},
+             {n:'Linha 6',v:954, taxa:2.08,op:48.41,term:25.72,ferr:25.87,tons:73859.33}],tons:243289.61},
+    {m:'Mar',plan:3543,real:3062, taxa:8.06,
+     moegas:[{n:'Moegão',v:1357,taxa:3.91,op:22.26,term:24.33,ferr:53.41,tons:121116.24},
+             {n:'Linha 5',v:846, taxa:2.07,op:32.85,term:21.99,ferr:45.16,tons:73137.93},
+             {n:'Linha 6',v:859, taxa:2.08,op:32.83,term:22.75,ferr:44.42,tons:73859.33}],tons:268113.50},
+    {m:'Abr',plan:3384,real:3231, taxa:10.14,
+     moegas:[{n:'Moegão',v:2017,taxa:5.06,op:34.17,term:19.34,ferr:44.65,tons:180766.76},
+             {n:'Linha 5',v:599, taxa:2.49,op:36.05,term:16.97,ferr:46.98,tons:50382.98},
+             {n:'Linha 6',v:615, taxa:2.59,op:35.87,term:17.49,ferr:46.64,tons:51796.71}],tons:282946.45},
+    {m:'Mai',plan:4090,real:3743, taxa:9.43,
+     moegas:[{n:'Moegão',v:1847,taxa:4.64,op:34.17,term:19.34,ferr:46.49,tons:166425.41},
+             {n:'Linha 5',v:946, taxa:2.40,op:36.05,term:16.97,ferr:46.98,tons:81317.21},
+             {n:'Linha 6',v:950, taxa:2.39,op:35.87,term:17.49,ferr:46.64,tons:82158.37}],tons:329900.99},
+    {m:'Jun',plan:3912,real:3500, taxa:9.19,
+     moegas:[{n:'Moegão',v:1777,taxa:4.52,op:33.34,term:22.08,ferr:44.58,tons:155397.03},
+             {n:'Linha 5',v:826, taxa:2.28,op:37.08,term:32.71,ferr:30.21,tons:67468.61},
+             {n:'Linha 6',v:897, taxa:2.39,op:38.91,term:32.86,ferr:28.23,tons:72397.29}],tons:295262.93},
   ],
-
-  // ── TEC ────────────────────────────────
-  tec: [
-    {m:'Jan', plan:1515, real:1486, taxa:2.75,
-      moegas:[
-        {n:'LINHA 12A', v:1110, taxa:2.15, op:43.50, term:25.82, ferr:30.68, tons:106229.40},
-        {n:'Moegão-1',  v:293,  taxa:0.46, op:6.86,  term:78.64, ferr:14.50, tons:28531.25},
-        {n:'Moegão-2',  v:83,   taxa:0.14, op:1.81,  term:75.37, ferr:22.82, tons:8153.25},
-        {n:'Moegão-3',  v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:142913.90},
-    {m:'Fev', plan:3727, real:3596, taxa:10.70,
-      moegas:[
-        {n:'LINHA 12A', v:135,  taxa:0.21, op:6.53,  term:87.47, ferr:6.00,  tons:13544.75},
-        {n:'Moegão-1',  v:1719, taxa:5.16, op:32.13, term:17.48, ferr:50.39, tons:91179.37},
-        {n:'Moegão-2',  v:1742, taxa:5.33, op:31.96, term:16.67, ferr:51.38, tons:88293.15},
-        {n:'Moegão-3',  v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:193017.27},
-    {m:'Mar', plan:3543, real:3393, taxa:13.27,
-      moegas:[
-        {n:'LINHA 12A', v:175,  taxa:0.26, op:6.52,  term:83.08, ferr:10.40, tons:16781.70},
-        {n:'Moegão-1',  v:2951, taxa:7.70, op:39.37, term:12.12, ferr:48.51, tons:279305.59},
-        {n:'Moegão-2',  v:267,  taxa:5.31, op:5.10,  term:1.65,  ferr:93.25, tons:26387.65},
-        {n:'Moegão-3',  v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:322474.94},
-    {m:'Abr', plan:3942, real:4044, taxa:14.66,
-      moegas:[
-        {n:'LINHA 12A', v:1149, taxa:3.84, op:33.24, term:8.37,  ferr:58.39, tons:108494.44},
-        {n:'Moegão-1',  v:1050, taxa:4.38, op:25.44, term:7.87,  ferr:66.68, tons:102900.00},
-        {n:'Moegão-2',  v:1845, taxa:6.44, op:30.10, term:9.68,  ferr:60.22, tons:174333.08},
-        {n:'Moegão-3',  v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:385727.52},
-    {m:'Mai', plan:5995, real:5265, taxa:18.03,
-      moegas:[
-        {n:'LINHA 12A', v:1370, taxa:5.13, op:32.53, term:3.64,  ferr:63.83, tons:64995.25},
-        {n:'Moegão-1',  v:1978, taxa:5.71, op:45.89, term:13.41, ferr:40.69, tons:71681.10},
-        {n:'Moegão-2',  v:1917, taxa:7.19, op:25.38, term:10.46, ferr:64.15, tons:87225.58},
-        {n:'Moegão-3',  v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:223901.93},
-    {m:'Jun', plan:4372, real:4197, taxa:16.58,
-      moegas:[
-        {n:'LINHA 12A', v:876,  taxa:4.56, op:32.35, term:4.72,  ferr:62.93, tons:0},
-        {n:'Moegão-1',  v:1659, taxa:5.95, op:33.22, term:20.21, ferr:46.57, tons:0},
-        {n:'Moegão-2',  v:1662, taxa:6.07, op:25.38, term:10.46, ferr:64.15, tons:0},
-        {n:'Moegão-3',  v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:0},
+  tec:[
+    {m:'Jan',plan:1515,real:1486, taxa:2.75,
+     moegas:[{n:'LINHA 12A',v:1110,taxa:2.15,op:43.50,term:25.82,ferr:30.68,tons:106229.40},
+             {n:'Moegão-1', v:293, taxa:0.46,op:6.86, term:78.64,ferr:14.50,tons:28531.25},
+             {n:'Moegão-2', v:83,  taxa:0.14,op:1.81, term:75.37,ferr:22.82,tons:8153.25},
+             {n:'Moegão-3', v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:142913.90},
+    {m:'Fev',plan:3727,real:3596, taxa:10.70,
+     moegas:[{n:'LINHA 12A',v:135, taxa:0.21,op:6.53, term:87.47,ferr:6.00, tons:13544.75},
+             {n:'Moegão-1', v:1719,taxa:5.16,op:32.13,term:17.48,ferr:50.39,tons:91179.37},
+             {n:'Moegão-2', v:1742,taxa:5.33,op:31.96,term:16.67,ferr:51.38,tons:88293.15},
+             {n:'Moegão-3', v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:193017.27},
+    {m:'Mar',plan:3543,real:3393, taxa:13.27,
+     moegas:[{n:'LINHA 12A',v:175, taxa:0.26,op:6.52, term:83.08,ferr:10.40,tons:16781.70},
+             {n:'Moegão-1', v:2951,taxa:7.70,op:39.37,term:12.12,ferr:48.51,tons:279305.59},
+             {n:'Moegão-2', v:267, taxa:5.31,op:5.10, term:1.65, ferr:93.25,tons:26387.65},
+             {n:'Moegão-3', v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:322474.94},
+    {m:'Abr',plan:3942,real:4044, taxa:14.66,
+     moegas:[{n:'LINHA 12A',v:1149,taxa:3.84,op:33.24,term:8.37, ferr:58.39,tons:108494.44},
+             {n:'Moegão-1', v:1050,taxa:4.38,op:25.44,term:7.87, ferr:66.68,tons:102900.00},
+             {n:'Moegão-2', v:1845,taxa:6.44,op:30.10,term:9.68, ferr:60.22,tons:174333.08},
+             {n:'Moegão-3', v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:385727.52},
+    {m:'Mai',plan:5995,real:5265, taxa:18.03,
+     moegas:[{n:'LINHA 12A',v:1370,taxa:5.13,op:32.53,term:3.64, ferr:63.83,tons:64995.25},
+             {n:'Moegão-1', v:1978,taxa:5.71,op:45.89,term:13.41,ferr:40.69,tons:71681.10},
+             {n:'Moegão-2', v:1917,taxa:7.19,op:25.38,term:10.46,ferr:64.15,tons:87225.58},
+             {n:'Moegão-3', v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:223901.93},
+    {m:'Jun',plan:4372,real:4197, taxa:16.58,
+     moegas:[{n:'LINHA 12A',v:876, taxa:4.56,op:32.35,term:4.72, ferr:62.93,tons:0},
+             {n:'Moegão-1', v:1659,taxa:5.95,op:33.22,term:20.21,ferr:46.57,tons:0},
+             {n:'Moegão-2', v:1662,taxa:6.07,op:25.38,term:10.46,ferr:64.15,tons:0},
+             {n:'Moegão-3', v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:0},
   ],
-
-  // ── CLI ────────────────────────────────
-  cli: [
-    {m:'Jan', plan:3730, real:3644, taxa:7.32,
-      moegas:[
-        {n:'CL-Mar',      v:257,  taxa:0.40, op:9.29,  term:76.91, ferr:13.80, tons:24707.00},
-        {n:'CL-Terra',    v:280,  taxa:0.44, op:9.68,  term:76.35, ferr:13.97, tons:27071.05},
-        {n:'Moegão-Mar',  v:813,  taxa:1.23, op:13.97, term:74.68, ferr:11.34, tons:80081.66},
-        {n:'Moegão-Terra',v:2294, taxa:5.25, op:37.26, term:21.52, ferr:41.21, tons:219929.76},
-        {n:'T23',         v:0,    taxa:0.00, op:0.00,  term:100,   ferr:0.00,  tons:0},
-      ], tons:351789.47},
-    {m:'Fev', plan:7504, real:6668, taxa:16.97,
-      moegas:[
-        {n:'CL-Mar',      v:874,  taxa:2.29, op:38.19, term:18.70, ferr:43.11, tons:82995.26},
-        {n:'CL-Terra',    v:987,  taxa:2.60, op:38.48, term:18.17, ferr:43.59, tons:93771.95},
-        {n:'Moegão-Mar',  v:2557, taxa:6.12, op:43.43, term:18.75, ferr:37.82, tons:243603.07},
-        {n:'Moegão-Terra',v:2250, taxa:5.35, op:38.74, term:23.79, ferr:37.47, tons:210713.63},
-        {n:'T23',         v:0,    taxa:0.61, op:10.20, term:67.99, ferr:21.81, tons:30502.27},
-      ], tons:661586.18},
-    {m:'Mar', plan:6583, real:6278, taxa:11.72,
-      moegas:[
-        {n:'CL-Mar',      v:1043, taxa:2.06, op:39.73, term:28.32, ferr:31.95, tons:98723.89},
-        {n:'CL-Terra',    v:1099, taxa:2.16, op:40.75, term:27.64, ferr:31.62, tons:104342.78},
-        {n:'Moegão-Mar',  v:2695, taxa:5.03, op:44.07, term:27.89, ferr:28.04, tons:255884.30},
-        {n:'Moegão-Terra',v:1368, taxa:2.36, op:22.41, term:55.63, ferr:21.96, tons:124353.04},
-        {n:'T23',         v:73,   taxa:0.11, op:2.26,  term:88.80, ferr:8.93,  tons:6807.72},
-      ], tons:590111.73},
-    {m:'Abr', plan:6366, real:6330, taxa:12.22,
-      moegas:[
-        {n:'CL-Mar',      v:1211, taxa:2.42, op:50.19, term:19.18, ferr:30.63, tons:114616.62},
-        {n:'CL-Terra',    v:1239, taxa:2.48, op:48.92, term:20.34, ferr:30.74, tons:117121.11},
-        {n:'Moegão-Mar',  v:3005, taxa:5.50, op:47.88, term:28.00, ferr:24.11, tons:286729.86},
-        {n:'Moegão-Terra',v:875,  taxa:1.82, op:12.81, term:53.92, ferr:33.28, tons:84688.85},
-        {n:'T23',         v:0,    taxa:0.00, op:0.00,  term:99.24, ferr:0.76,  tons:0},
-      ], tons:603156.44},
-    {m:'Mai', plan:7040, real:6922, taxa:16.70,
-      moegas:[
-        {n:'CL-Mar',      v:821,  taxa:2.26, op:29.16, term:19.76, ferr:51.08, tons:71892.87},
-        {n:'CL-Terra',    v:896,  taxa:2.50, op:28.15, term:20.08, ferr:51.77, tons:77365.92},
-        {n:'Moegão-Mar',  v:2803, taxa:6.39, op:41.56, term:17.42, ferr:41.02, tons:248239.48},
-        {n:'Moegão-Terra',v:1938, taxa:4.53, op:28.85, term:28.66, ferr:45.34, tons:188513.83},
-        {n:'T23',         v:464,  taxa:1.02, op:14.89, term:46.39, ferr:38.72, tons:44966.91},
-      ], tons:630979.01},
-    {m:'Jun', plan:7202, real:6500, taxa:14.73,
-      moegas:[
-        {n:'CL-Mar',      v:703,  taxa:1.49, op:21.40, term:56.10, ferr:22.49, tons:2283.34},
-        {n:'CL-Terra',    v:653,  taxa:1.40, op:22.08, term:55.78, ferr:22.14, tons:1611.62},
-        {n:'Moegão-Mar',  v:2678, taxa:5.79, op:48.03, term:19.32, ferr:32.65, tons:6155.93},
-        {n:'Moegão-Terra',v:1802, taxa:4.60, op:29.88, term:34.22, ferr:35.90, tons:4696.62},
-        {n:'T23',         v:664,  taxa:1.45, op:20.94, term:56.64, ferr:22.42, tons:893.39},
-      ], tons:15640.90},
+  cli:[
+    {m:'Jan',plan:3730,real:3644, taxa:7.32,
+     moegas:[{n:'CL-Mar',      v:257, taxa:0.40,op:9.29, term:76.91,ferr:13.80,tons:24707.00},
+             {n:'CL-Terra',    v:280, taxa:0.44,op:9.68, term:76.35,ferr:13.97,tons:27071.05},
+             {n:'Moegão-Mar',  v:813, taxa:1.23,op:13.97,term:74.68,ferr:11.34,tons:80081.66},
+             {n:'Moegão-Terra',v:2294,taxa:5.25,op:37.26,term:21.52,ferr:41.21,tons:219929.76},
+             {n:'T23',         v:0,   taxa:0.00,op:0,    term:100,  ferr:0,    tons:0}],tons:351789.47},
+    {m:'Fev',plan:7504,real:6668, taxa:16.97,
+     moegas:[{n:'CL-Mar',      v:874, taxa:2.29,op:38.19,term:18.70,ferr:43.11,tons:82995.26},
+             {n:'CL-Terra',    v:987, taxa:2.60,op:38.48,term:18.17,ferr:43.59,tons:93771.95},
+             {n:'Moegão-Mar',  v:2557,taxa:6.12,op:43.43,term:18.75,ferr:37.82,tons:243603.07},
+             {n:'Moegão-Terra',v:2250,taxa:5.35,op:38.74,term:23.79,ferr:37.47,tons:210713.63},
+             {n:'T23',         v:0,   taxa:0.61,op:10.20,term:67.99,ferr:21.81,tons:30502.27}],tons:661586.18},
+    {m:'Mar',plan:6583,real:6278, taxa:11.72,
+     moegas:[{n:'CL-Mar',      v:1043,taxa:2.06,op:39.73,term:28.32,ferr:31.95,tons:98723.89},
+             {n:'CL-Terra',    v:1099,taxa:2.16,op:40.75,term:27.64,ferr:31.62,tons:104342.78},
+             {n:'Moegão-Mar',  v:2695,taxa:5.03,op:44.07,term:27.89,ferr:28.04,tons:255884.30},
+             {n:'Moegão-Terra',v:1368,taxa:2.36,op:22.41,term:55.63,ferr:21.96,tons:124353.04},
+             {n:'T23',         v:73,  taxa:0.11,op:2.26, term:88.80,ferr:8.93, tons:6807.72}],tons:590111.73},
+    {m:'Abr',plan:6366,real:6330, taxa:12.22,
+     moegas:[{n:'CL-Mar',      v:1211,taxa:2.42,op:50.19,term:19.18,ferr:30.63,tons:114616.62},
+             {n:'CL-Terra',    v:1239,taxa:2.48,op:48.92,term:20.34,ferr:30.74,tons:117121.11},
+             {n:'Moegão-Mar',  v:3005,taxa:5.50,op:47.88,term:28.00,ferr:24.11,tons:286729.86},
+             {n:'Moegão-Terra',v:875, taxa:1.82,op:12.81,term:53.92,ferr:33.28,tons:84688.85},
+             {n:'T23',         v:0,   taxa:0.00,op:0,    term:99.24,ferr:0.76, tons:0}],tons:603156.44},
+    {m:'Mai',plan:7040,real:6922, taxa:16.70,
+     moegas:[{n:'CL-Mar',      v:821, taxa:2.26,op:29.16,term:19.76,ferr:51.08,tons:71892.87},
+             {n:'CL-Terra',    v:896, taxa:2.50,op:28.15,term:20.08,ferr:51.77,tons:77365.92},
+             {n:'Moegão-Mar',  v:2803,taxa:6.39,op:41.56,term:17.42,ferr:41.02,tons:248239.48},
+             {n:'Moegão-Terra',v:1938,taxa:4.53,op:28.85,term:28.66,ferr:45.34,tons:188513.83},
+             {n:'T23',         v:464, taxa:1.02,op:14.89,term:46.39,ferr:38.72,tons:44966.91}],tons:630979.01},
+    {m:'Jun',plan:7202,real:6500, taxa:14.73,
+     moegas:[{n:'CL-Mar',      v:703, taxa:1.49,op:21.40,term:56.10,ferr:22.49,tons:2283.34},
+             {n:'CL-Terra',    v:653, taxa:1.40,op:22.08,term:55.78,ferr:22.14,tons:1611.62},
+             {n:'Moegão-Mar',  v:2678,taxa:5.79,op:48.03,term:19.32,ferr:32.65,tons:6155.93},
+             {n:'Moegão-Terra',v:1802,taxa:4.60,op:29.88,term:34.22,ferr:35.90,tons:4696.62},
+             {n:'T23',         v:664, taxa:1.45,op:20.94,term:56.64,ferr:22.42,tons:893.39}],tons:15640.90},
   ],
 };
 
-// ── COMPUTED ─────────────────────────────────
+// ── Totais base ──────────────────────────────
+const tgraoVag=DB.tgrao.reduce((s,r)=>s+r.real,0);
+const copVag  =DB.cop.reduce((s,r)=>s+r.real,0);
+const tecVag  =DB.tec.reduce((s,r)=>s+r.real,0);
+const cliVag  =DB.cli.reduce((s,r)=>s+r.real,0);
+const totalVag=tgraoVag+copVag+tecVag+cliVag;
+const tgraoTons=DB.tgrao.reduce((s,r)=>s+r.tons,0);
+const copTons  =DB.cop.reduce((s,r)=>s+r.tons,0);
+const tecTons  =DB.tec.reduce((s,r)=>s+r.tons,0);
+const cliTons  =DB.cli.reduce((s,r)=>s+r.tons,0);
+const totalTons=tgraoTons+copTons+tecTons+cliTons;
+
+// ── Vagões por produto (calculados) ──────────
+function vagsByProduto(filtTerminal='all', filtMes='all'){
+  const result = { SOJA:0, AÇUCAR:0, MILHO:0 };
+  const terms = ['tgrao','cop','tec','cli'];
+  const termLabel = {tgrao:'TGRÃO',cop:'COP',tec:'TEC',cli:'CLI'};
+
+  terms.forEach(k=>{
+    const lbl = termLabel[k];
+    if(filtTerminal !== 'all' && filtTerminal !== lbl && filtTerminal !== k.toUpperCase()) return;
+    const arr = filtMes === 'all' ? DB[k] : [DB[k][parseInt(filtMes)]].filter(Boolean);
+    const total = arr.reduce((s,r)=>s+r.real,0);
+    const dist = PRODUTO_OP[k].produtos;
+    Object.keys(dist).forEach(p=>{ result[p] += Math.round(total * dist[p]); });
+  });
+  return result;
+}
+
+function vagsByOperador(filtTerminal='all', filtMes='all'){
+  const result = { MRS:0, RUMO:0, VLI:0 };
+  const terms = ['tgrao','cop','tec','cli'];
+  const termLabel = {tgrao:'TGRÃO',cop:'COP',tec:'TEC',cli:'CLI'};
+
+  terms.forEach(k=>{
+    const lbl = termLabel[k];
+    if(filtTerminal !== 'all' && filtTerminal !== lbl && filtTerminal !== k.toUpperCase()) return;
+    const arr = filtMes === 'all' ? DB[k] : [DB[k][parseInt(filtMes)]].filter(Boolean);
+    const total = arr.reduce((s,r)=>s+r.real,0);
+    const dist = PRODUTO_OP[k].operadores;
+    Object.keys(dist).forEach(op=>{ result[op] += Math.round(total * dist[op]); });
+  });
+  return result;
+}
+
+// Por terminal × produto (para gráfico cruzado)
+function vagsByTerminalProduto(filtMes='all'){
+  const terms = [{k:'tgrao',l:'TGRÃO'},{k:'cop',l:'COP'},{k:'tec',l:'TEC'},{k:'cli',l:'CLI'}];
+  return terms.map(t=>{
+    const arr = filtMes === 'all' ? DB[t.k] : [DB[t.k][parseInt(filtMes)]].filter(Boolean);
+    const total = arr.reduce((s,r)=>s+r.real,0);
+    return {
+      label: t.l,
+      SOJA:   Math.round(total * PRODUTO_OP[t.k].produtos.SOJA),
+      AÇUCAR: Math.round(total * PRODUTO_OP[t.k].produtos.AÇUCAR),
+      MILHO:  Math.round(total * PRODUTO_OP[t.k].produtos.MILHO),
+    };
+  });
+}
+
+// Por mês × produto
+function vagsByMesProduto(filtTerminal='all'){
+  const terms = ['tgrao','cop','tec','cli'];
+  const termLabel = {tgrao:'TGRÃO',cop:'COP',tec:'TEC',cli:'CLI'};
+  return MESES.map((_,i)=>{
+    let soja=0,acucar=0,milho=0;
+    terms.forEach(k=>{
+      const lbl=termLabel[k];
+      if(filtTerminal!=='all' && filtTerminal!==lbl) return;
+      const v=DB[k][i].real;
+      soja   += Math.round(v*PRODUTO_OP[k].produtos.SOJA);
+      acucar += Math.round(v*PRODUTO_OP[k].produtos.AÇUCAR);
+      milho  += Math.round(v*PRODUTO_OP[k].produtos.MILHO);
+    });
+    return {SOJA:soja,AÇUCAR:acucar,MILHO:milho};
+  });
+}
+
+// Por mês × operador
+function vagsByMesOp(filtTerminal='all'){
+  const terms = ['tgrao','cop','tec','cli'];
+  const termLabel = {tgrao:'TGRÃO',cop:'COP',tec:'TEC',cli:'CLI'};
+  return MESES.map((_,i)=>{
+    let mrs=0,rumo=0,vli=0;
+    terms.forEach(k=>{
+      const lbl=termLabel[k];
+      if(filtTerminal!=='all' && filtTerminal!==lbl) return;
+      const v=DB[k][i].real;
+      mrs  += Math.round(v*PRODUTO_OP[k].operadores.MRS);
+      rumo += Math.round(v*PRODUTO_OP[k].operadores.RUMO);
+      vli  += Math.round(v*PRODUTO_OP[k].operadores.VLI);
+    });
+    return {MRS:mrs,RUMO:rumo,VLI:vli};
+  });
+}
+
+// ── Filtro de terminal → aplica também a produto/op ──
+// Terminal filtrado elimina outros terminais
+// Produto filtrado mostra só terminais que operam aquele produto
+// Operador filtrado mostra só terminais que usam aquele operador
+
+const TERMINAL_PRODUTOS = {
+  TGRÃO:['SOJA'], TEC:['SOJA','MILHO'], COP:['AÇUCAR'], CLI:['SOJA','MILHO'],
+};
+const TERMINAL_OPS = {
+  TGRÃO:['RUMO'], TEC:['RUMO','VLI'], COP:['MRS','RUMO'], CLI:['RUMO','VLI'],
+};
+const PRODUTO_TERMINALS = {
+  SOJA:['TGRÃO','TEC','CLI'], AÇUCAR:['COP'], MILHO:['TEC','CLI'],
+};
+const OP_TERMINALS = {
+  MRS:['COP'], RUMO:['TGRÃO','TEC','COP','CLI'], VLI:['TEC','CLI'],
+};
+
+// ── Helpers ──────────────────────────────────
 const fn  = (v,d=0) => v==null?'—':typeof v==='number'?v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}):v;
-const fnT = v => v==null||v===0?'—':v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fnT = v => (!v&&v!==0)?'—':v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fp  = v => (parseFloat(v)||0).toFixed(1)+'%';
+const tag = (t,txt) => `<span class="tag tag-${t}">${txt}</span>`;
 
-const tgraoTons  = DB.tgrao.reduce((s,r)=>s+r.tons,0);
-const copTons    = DB.cop.reduce((s,r)=>s+r.tons,0);
-const tecTons    = DB.tec.reduce((s,r)=>s+r.tons,0);
-const cliTons    = DB.cli.reduce((s,r)=>s+r.tons,0);
-const totalTons  = tgraoTons+copTons+tecTons+cliTons;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
 
-const tgraoVag   = DB.tgrao.reduce((s,r)=>s+r.real,0);
-const copVag     = DB.cop.reduce((s,r)=>s+r.real,0);
-const tecVag     = DB.tec.reduce((s,r)=>s+r.real,0);
-const cliVag     = DB.cli.reduce((s,r)=>s+r.real,0);
-const totalVag   = tgraoVag+copVag+tecVag+cliVag;
-
-// ── CHART DEFAULTS ──────────────────────────
-Chart.defaults.color = '#6B7280';
-Chart.defaults.font.family = "'Segoe UI', Arial, sans-serif";
-Chart.defaults.font.size = 11;
-
-const GRID = 'rgba(0,0,0,0.05)';
-const MC   = ['#4472C4','#ED7D31','#6B7280','#D97706','#16A34A','#9333EA'];
-const TC   = {TGRÃO:'#ED7D31',TEC:'#4472C4',COP:'#6B7280',CLI:'#FF4500'};
-const TC2  = {TGRÃO:'rgba(237,125,49,.75)',TEC:'rgba(68,114,196,.75)',COP:'rgba(107,114,128,.75)',CLI:'rgba(255,69,0,.75)'};
+// ── Chart defaults ────────────────────────────
+Chart.defaults.color='#6B7280';
+Chart.defaults.font.family="'Segoe UI',Arial,sans-serif";
+Chart.defaults.font.size=11;
+const GRID='rgba(0,0,0,0.05)';
+const MC=['#4472C4','#ED7D31','#6B7280','#D97706','#16A34A','#9333EA'];
+const TC={TGRÃO:'#ED7D31',TEC:'#4472C4',COP:'#6B7280',CLI:'#FF4500'};
+const TC2={TGRÃO:'rgba(237,125,49,.75)',TEC:'rgba(68,114,196,.75)',COP:'rgba(107,114,128,.75)',CLI:'rgba(255,69,0,.75)'};
+const PC={SOJA:'rgba(22,163,74,.8)',AÇUCAR:'rgba(255,69,0,.8)',MILHO:'rgba(217,119,6,.8)'};
+const OC={MRS:'rgba(37,99,235,.8)',RUMO:'rgba(255,69,0,.8)',VLI:'rgba(147,51,234,.8)'};
 
 const charts={};
 function mkC(id,type,data,extra={}){
-  if(charts[id]) charts[id].destroy();
-  const el=document.getElementById(id); if(!el) return;
+  if(charts[id])charts[id].destroy();
+  const el=document.getElementById(id);if(!el)return;
   const base={
     responsive:true,maintainAspectRatio:false,
     plugins:{
@@ -1085,1324 +981,722 @@ function mkC(id,type,data,extra={}){
   };
   function merge(a,b){for(const k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k])merge(a[k],b[k]);else a[k]=b[k];}return a;}
   charts[id]=new Chart(el,{type,data,options:merge(JSON.parse(JSON.stringify(base)),extra)});
-  return charts[id];
 }
 
 function makeTable(id,headers,rows){
-  const el=document.getElementById(id); if(!el)return;
+  const el=document.getElementById(id);if(!el)return;
   el.innerHTML=`<thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
   <tbody>${rows.map(r=>`<tr>${r.map((c,i)=>`<td${i===0?' class="bold"':''}>${c??'—'}</td>`).join('')}</tr>`).join('')}</tbody>`;
 }
+
 function renderPBars(id,items){
-  const el=document.getElementById(id); if(!el)return;
+  const el=document.getElementById(id);if(!el)return;
   el.innerHTML=items.map(it=>`<div class="pb">
     <div class="pb-top"><span class="pb-lbl">${it.l}</span><span class="pb-val">${it.v.toFixed(1)}%</span></div>
     <div class="pb-track"><div class="pb-fill ${it.c||'pb-orange'}" style="width:${Math.min(Math.max(it.v,0),100)}%"></div></div>
   </div>`).join('');
 }
-function tag(t,txt){return`<span class="tag tag-${t}">${txt}</span>`}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
+
+// ═══════════════════════════════════════
+// FILTROS — ESTADO GLOBAL
+// ═══════════════════════════════════════
+const FILTERS = { terminal:'all', mes:'all', produto:'all', operador:'all' };
+const BUILT   = {};
+
+function getActiveTerminals(){
+  // Começa com todos
+  let terms = ['TGRÃO','TEC','COP','CLI'];
+
+  // Filtro terminal
+  if(FILTERS.terminal !== 'all')
+    terms = terms.filter(t=> t === FILTERS.terminal || (FILTERS.terminal==='COP' && t==='COP'));
+
+  // Filtro produto
+  if(FILTERS.produto !== 'all')
+    terms = terms.filter(t=> (PRODUTO_TERMINALS[FILTERS.produto]||[]).includes(t));
+
+  // Filtro operador
+  if(FILTERS.operador !== 'all')
+    terms = terms.filter(t=> (OP_TERMINALS[FILTERS.operador]||[]).includes(t));
+
+  return terms;
+}
+
+function getTermKey(lbl){
+  return {TGRÃO:'tgrao',TEC:'tec',COP:'cop',CLI:'cli'}[lbl];
+}
+
+function filterArr(key){
+  const arr = DB[key];
+  if(FILTERS.mes === 'all') return arr;
+  const i = parseInt(FILTERS.mes);
+  return [arr[i]].filter(Boolean);
+}
+
+function filterMeses(){
+  if(FILTERS.mes === 'all') return MESES;
+  return [MESES[parseInt(FILTERS.mes)]];
+}
+
+// Fator produto/operador para escalar vagões filtrados
+function getProdutoFactor(termKey){
+  if(FILTERS.produto === 'all' && FILTERS.operador === 'all') return 1;
+  let f = 1;
+  if(FILTERS.produto !== 'all') f *= (PRODUTO_OP[termKey]?.produtos[FILTERS.produto] || 0);
+  if(FILTERS.operador !== 'all') f *= (PRODUTO_OP[termKey]?.operadores[FILTERS.operador] || 0);
+  // Se ambos filtrados e terminal não opera ambos, usar o menor
+  if(FILTERS.produto !== 'all' && FILTERS.operador !== 'all'){
+    const pf = PRODUTO_OP[termKey]?.produtos[FILTERS.produto] || 0;
+    const of = PRODUTO_OP[termKey]?.operadores[FILTERS.operador] || 0;
+    f = Math.min(pf, of);
+  }
+  return f;
+}
+
+// Pega vagões reais de um terminal com filtros aplicados
+function getVagTerminal(termKey){
+  const arr = filterArr(termKey);
+  const base = arr.reduce((s,r)=>s+r.real,0);
+  return Math.round(base * getProdutoFactor(termKey));
+}
+
+function getTonsTerminal(termKey){
+  return filterArr(termKey).reduce((s,r)=>s+r.tons,0);
+}
+
+// ── Pills ─────────────────────────────────────
+function updatePills(){
+  const container = document.getElementById('activePills');
+  const pills = [];
+  const LABELS = {
+    terminal: {TGRÃO:'Terminal: TGRÃO',TEC:'Terminal: TEC',COP:'Terminal: COP',CLI:'Terminal: CLI'},
+    mes: {'0':'Jan','1':'Fev','2':'Mar','3':'Abr','4':'Mai','5':'Jun'},
+    produto: {AÇUCAR:'🟠 Açúcar',SOJA:'🟢 Soja',MILHO:'🟡 Milho'},
+    operador: {MRS:'🔵 MRS',RUMO:'🟠 RUMO',VLI:'🟣 VLI'},
+  };
+  Object.entries(FILTERS).forEach(([k,v])=>{
+    if(v !== 'all'){
+      const lbl = LABELS[k]?.[v] || v;
+      pills.push(`<span class="filter-pill" onclick="clearFilter('${k}')">${lbl} <span class="pill-x">×</span></span>`);
+    }
+  });
+  container.innerHTML = pills.join('');
+}
+
+window.clearFilter = function(key){
+  FILTERS[key] = 'all';
+  document.getElementById(key==='terminal'?'fTerminal':key==='mes'?'fMes':key==='produto'?'fProduto':'fOperador').value = 'all';
+  rebuildActive();
+  updatePills();
+};
+
+// ── Banner de filtro ativo ───────────────────
+function updateBanner(id){
+  const el = document.getElementById(id); if(!el) return;
+  const active = Object.entries(FILTERS).filter(([k,v])=>v!=='all');
+  if(!active.length){ el.classList.remove('show'); return; }
+  const terms = getActiveTerminals();
+  const vagTot = terms.reduce((s,t)=>s+getVagTerminal(getTermKey(t)),0);
+  el.classList.add('show');
+  el.innerHTML = `<span class="fb-label">🔍 Filtro Ativo</span>
+    ${active.map(([k,v])=>`<span class="fb-pill">${k.toUpperCase()}: ${v}</span>`).join('')}
+    <span class="fb-info">→ ${terms.length} terminal(is) · ${fn(vagTot)} vagões</span>`;
+}
+
+// ── Rebuild ──────────────────────────────────
+function rebuildActive(){
+  const activeBtn = document.querySelector('.nav-item.active[data-p]');
+  if(!activeBtn) return;
+  const p = activeBtn.dataset.p;
+  BUILT[p] = false;
+  BUILDERS[p]?.(); BUILT[p] = true;
+}
 
 // ══════════════════════════════════════════════
-//  BUILDERS
+// BUILDERS
 // ══════════════════════════════════════════════
 
 function buildOverview(){
-  // KPI cards
+  updateBanner('ov-banner');
+  const terms = getActiveTerminals();
+  const labels = terms;
+
+  const vagArr  = terms.map(t=>getVagTerminal(getTermKey(t)));
+  const tonsArr = terms.map(t=>getTonsTerminal(getTermKey(t)));
+  const totVag  = vagArr.reduce((s,v)=>s+v,0);
+  const totTons = tonsArr.reduce((s,v)=>s+v,0);
+
   document.getElementById('ov-kpis').innerHTML=[
-    {lbl:'Total de Vagões (Jan–Jun)', val:fn(totalVag),  sub:'4 terminais · 6 meses', t:'trend-ok', tr:'★ Consolidado', c:'orange'},
-    {lbl:'Melhor Terminal Vagões',    val:'CLI',          sub:`${fn(cliVag)} vagões · 36,2% do total`, t:'trend-up', tr:'▲ Líder', c:'green'},
-    {lbl:'Maior Taxa (Vgs/Hr)',       val:'18,03',        sub:'TEC · Maio 2026', t:'trend-up', tr:'▲ Recorde', c:'blue'},
-    {lbl:'Período Junho (01-27)',     val:fn(409+3500+4197+6500), sub:'Vagões parciais junho', t:'trend-neu', tr:'→ Parcial', c:'gray'},
+    {lbl:'Total Vagões (Filtrado)',val:fn(totVag),  sub:`${terms.length} terminal(is)`,t:'trend-ok', tr:'★ Consolidado',c:'orange'},
+    {lbl:'Líder de Volume',       val:terms[vagArr.indexOf(Math.max(...vagArr))]||'—', sub:`${fn(Math.max(...vagArr))} vagões`,t:'trend-up',tr:'▲ Líder',c:'green'},
+    {lbl:'Vol. Movimentado (t)',  val:fnT(totTons),sub:'Toneladas filtradas',t:'trend-ok',tr:'⬛ TON',c:'blue'},
+    {lbl:'Período',               val:FILTERS.mes==='all'?'Jan–Jun':MESES[parseInt(FILTERS.mes)],sub:'Mês selecionado',t:'trend-neu',tr:'📅',c:'gray'},
   ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl}</div>
-    <div class="kpi-val">${k.val}</div>
-    <div class="kpi-sub">${k.sub}</div>
-    <div class="kpi-trend ${k.t}">${k.tr}</div>
+    <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div>
+    <div class="kpi-sub">${k.sub}</div><div class="kpi-trend ${k.t}">${k.tr}</div>
   </div>`).join('');
 
-  // TONS KPIs
-  document.getElementById('ov-tons').innerHTML=[
-    {lbl:'Total Movimentado (Jan–Jun)', val:fnT(totalTons/1000)+' mil t', sub:'Todas as moegas · 4 terminais', c:'orange'},
-    {lbl:'CLI — Volume (t)',            val:fnT(cliTons/1000)+' mil t',   sub:`${(cliTons/totalTons*100).toFixed(1)}% do total`, c:'green'},
-    {lbl:'COP — Volume (t)',            val:fnT(copTons/1000)+' mil t',   sub:`${(copTons/totalTons*100).toFixed(1)}% do total`, c:'blue'},
-    {lbl:'TEC — Volume (t)',            val:fnT(tecTons/1000)+' mil t',   sub:`${(tecTons/totalTons*100).toFixed(1)}% do total`, c:'yellow'},
-  ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl} <span style="color:var(--orange);font-size:9px">⬛ TONELADAS</span></div>
-    <div class="kpi-val" style="font-size:18px">${k.val}</div>
-    <div class="kpi-sub">${k.sub}</div>
+  document.getElementById('ov-tons').innerHTML=terms.map((t,i)=>`<div class="kpi-card orange">
+    <div class="kpi-label">${t}</div>
+    <div class="kpi-val" style="font-size:18px">${fn(vagArr[i])}</div>
+    <div class="kpi-sub">${fnT(tonsArr[i])} t</div>
   </div>`).join('');
 
-  // Chart vagões por terminal
-  mkC('c-ov-prod','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[{label:'Vagões Acumulados',data:[tgraoVag,tecVag,copVag,cliVag],
-      backgroundColor:[TC2.TGRÃO,TC2.TEC,TC2.COP,TC2.CLI],borderRadius:4}]
-  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+  const colors2 = terms.map(t=>TC2[t]);
+  mkC('c-ov-prod','bar',{labels,datasets:[{label:'Vagões',data:vagArr,backgroundColor:colors2,borderRadius:4}]},{plugins:{legend:{display:false}}});
+  mkC('c-ov-tons','bar',{labels,datasets:[{label:'Toneladas',data:tonsArr,backgroundColor:colors2,borderRadius:4}]},{plugins:{legend:{display:false}}});
 
-  // Chart toneladas por terminal
-  mkC('c-ov-tons','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[{label:'Toneladas',data:[tgraoTons,tecTons,copTons,cliTons],
-      backgroundColor:[TC2.TGRÃO,TC2.TEC,TC2.COP,TC2.CLI],borderRadius:4}]
-  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
+  mkC('c-ov-mensal','line',{labels:filterMeses(),datasets:
+    terms.map(t=>({label:t,data:filterArr(getTermKey(t)).map(r=>Math.round(r.real*getProdutoFactor(getTermKey(t)))),
+      borderColor:TC[t],tension:.3,pointRadius:4,fill:false,borderWidth:2}))
+  },{});
 
-  // Mensal vagões
-  mkC('c-ov-mensal','line',{labels:MESES,datasets:[
-    {label:'TGRÃO',data:DB.tgrao.map(r=>r.real),borderColor:TC.TGRÃO,tension:.3,pointRadius:4,fill:false,borderWidth:2},
-    {label:'TEC',  data:DB.tec.map(r=>r.real),  borderColor:TC.TEC,  tension:.3,pointRadius:4,fill:false,borderWidth:2},
-    {label:'COP',  data:DB.cop.map(r=>r.real),  borderColor:TC.COP,  tension:.3,pointRadius:4,fill:false,borderWidth:2},
-    {label:'CLI',  data:DB.cli.map(r=>r.real),  borderColor:TC.CLI,  tension:.3,pointRadius:4,fill:false,borderWidth:2.5},
-  ]},{scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-
-  // Paradas grouped
-  const vd=[
-    {t:'TGRÃO',ferr:DB.tgrao.reduce((s,r)=>s+r.ferr,0)/6,term:DB.tgrao.reduce((s,r)=>s+r.term,0)/6,op:DB.tgrao.reduce((s,r)=>s+r.op,0)/6},
-    {t:'TEC',  ferr:DB.tec.reduce((s,r)=>s+r.taxa,0)/6*0,term:0,op:0},// computed below
-    {t:'COP',  ferr:0,term:0,op:0},
-    {t:'CLI',  ferr:0,term:0,op:0},
-  ];
-  // avg paradas
-  const avgP=(arr)=>({
-    ferr:arr.reduce((s,r)=>s+r.ferr,0)/arr.length,
-    term:arr.reduce((s,r)=>s+r.term,0)/arr.length,
-    op:  arr.reduce((s,r)=>s+r.op,0)/arr.length,
-  });
-  const tgraoP=avgP(DB.tgrao);
-  const tecP  =avgP(DB.tec.map(r=>({ferr:r.moegas.reduce((s,m)=>s+m.ferr,0)/r.moegas.filter(m=>m.v>0||m.taxa>0).length||0,
-                                     term:r.moegas.reduce((s,m)=>s+m.term,0)/r.moegas.filter(m=>m.v>0||m.taxa>0).length||0,
-                                     op:  r.moegas.reduce((s,m)=>s+m.op,  0)/r.moegas.filter(m=>m.v>0||m.taxa>0).length||0})));
-  const copP  =avgP(DB.cop.map(r=>({ferr:r.moegas.reduce((s,m)=>s+m.ferr,0)/3,
-                                    term:r.moegas.reduce((s,m)=>s+m.term,0)/3,
-                                    op:  r.moegas.reduce((s,m)=>s+m.op,  0)/3})));
-  const cliP  =avgP(DB.cli.map(r=>({ferr:r.moegas.reduce((s,m)=>s+m.ferr,0)/5,
-                                    term:r.moegas.reduce((s,m)=>s+m.term,0)/5,
-                                    op:  r.moegas.reduce((s,m)=>s+m.op,  0)/5})));
+  const avgFP=(key,field)=>{
+    const arr=filterArr(key);
+    if(key==='tgrao') return arr.reduce((s,r)=>s+r[field],0)/arr.length;
+    const ms=arr.flatMap(r=>r.moegas.filter(m=>m.v+m.taxa>0));
+    return ms.length?ms.reduce((s,m)=>s+m[field],0)/ms.length:0;
+  };
   mkC('c-ov-paradas','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
+    labels,
     datasets:[
-      {label:'Ferrovia (%)',data:[tgraoP.ferr,tecP.ferr,copP.ferr,cliP.ferr],backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
-      {label:'Terminal (%)',data:[tgraoP.term,tecP.term,copP.term,cliP.term],backgroundColor:'rgba(237,125,49,.8)',borderRadius:2},
-      {label:'Operação (%)',data:[tgraoP.op,  tecP.op,  copP.op,  cliP.op  ],backgroundColor:'rgba(22,163,74,.7)',  borderRadius:2},
+      {label:'Ferrovia (%)',data:terms.map(t=>avgFP(getTermKey(t),'ferr')),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
+      {label:'Terminal (%)',data:terms.map(t=>avgFP(getTermKey(t),'term')),backgroundColor:'rgba(237,125,49,.8)', borderRadius:2},
+      {label:'Operação (%)',data:terms.map(t=>avgFP(getTermKey(t),'op')),  backgroundColor:'rgba(22,163,74,.7)',  borderRadius:2},
     ]
-  },{scales:{y:{max:100,title:{display:true,text:'%',color:'#6B7280'}}}});
+  },{scales:{y:{max:100}}});
 
   makeTable('tbl-ov',
-    ['Terminal','Vagões','Taxa Méd (Vgs/Hr)','Toneladas','Ferrovia %','Terminal %','Operação %'],
-    [
-      ['TGRÃO',fn(tgraoVag),'5,28',fnT(tgraoTons),fp(tgraoP.ferr),fp(tgraoP.term),fp(tgraoP.op)],
-      ['TEC',  fn(tecVag),  '12,67',fnT(tecTons), fp(tecP.ferr), fp(tecP.term), fp(tecP.op)],
-      ['COP',  fn(copVag),  '7,89', fnT(copTons), fp(copP.ferr), fp(copP.term), fp(copP.op)],
-      ['CLI',  fn(cliVag),  '13,28',fnT(cliTons), fp(cliP.ferr), fp(cliP.term), fp(cliP.op)],
-      ['TOTAL',fn(totalVag),'—',    fnT(totalTons),'—','—','—'],
-    ]
+    ['Terminal','Vagões','Toneladas (t)','Produto(s)','Operador(es)'],
+    terms.map(t=>{
+      const k=getTermKey(t);
+      const prods=Object.entries(PRODUTO_OP[k].produtos).filter(([,v])=>v>0).map(([p])=>p).join(' + ');
+      const ops  =Object.entries(PRODUTO_OP[k].operadores).filter(([,v])=>v>0).map(([o])=>o).join(' + ');
+      return[t,fn(getVagTerminal(k)),fnT(getTonsTerminal(k)),prods,ops];
+    })
   );
 }
 
-function buildToneladas(){
-  document.getElementById('tons-kpis').innerHTML=[
-    {lbl:'Total Geral Movimentado',val:fnT(totalTons)+' t', sub:'Jan–Jun 2026 · Todos os terminais', c:'orange'},
-    {lbl:'CLI — Maior Tonelagem',  val:fnT(cliTons)+' t',  sub:`Fev: 661.586 t (pico mensal)`, c:'green'},
-    {lbl:'COP — 2º Maior',         val:fnT(copTons)+' t',  sub:`Mai: 329.901 t (pico)`, c:'blue'},
-    {lbl:'TEC — Melhor Ton/Vagão', val:fnT(tecTons)+' t',  sub:`Abr: 385.728 t (pico)`, c:'yellow'},
-  ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl}</div>
-    <div class="kpi-val" style="font-size:17px">${k.val}</div>
-    <div class="kpi-sub">${k.sub}</div>
-  </div>`).join('');
+// ── PRODUTO ──────────────────────────────────
+function buildProduto(){
+  updateBanner('prod-banner');
+  const terms = getActiveTerminals();
+  const filtMes = FILTERS.mes;
+  const filtTerm = FILTERS.terminal;
 
-  mkC('c-tons-bar','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[{label:'Toneladas Acumuladas',data:[tgraoTons,tecTons,copTons,cliTons],
-      backgroundColor:[TC2.TGRÃO,TC2.TEC,TC2.COP,TC2.CLI],borderRadius:4}]
-  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
+  // Calcular por produto respeitando filtros
+  const pVag = vagsByProduto(filtTerm, filtMes);
+  const total = Object.values(pVag).reduce((s,v)=>s+v,0)||1;
 
-  mkC('c-tons-line','line',{labels:MESES,datasets:[
-    {label:'TGRÃO',data:DB.tgrao.map(r=>r.tons),borderColor:TC.TGRÃO,tension:.3,pointRadius:4,fill:false},
-    {label:'TEC',  data:DB.tec.map(r=>r.tons),  borderColor:TC.TEC,  tension:.3,pointRadius:4,fill:false},
-    {label:'COP',  data:DB.cop.map(r=>r.tons),  borderColor:TC.COP,  tension:.3,pointRadius:4,fill:false},
-    {label:'CLI',  data:DB.cli.map(r=>r.tons),  borderColor:TC.CLI,  tension:.3,pointRadius:4,fill:false,borderWidth:2.5},
-  ]},{scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
+  // Cards
+  const prodConfig={
+    AÇUCAR:{cls:'acucar',icon:'🟠',lbl:'AÇÚCAR',color:'var(--orange)',sub:`COPERSUCAR · MRS + RUMO`},
+    SOJA:  {cls:'soja',  icon:'🟢',lbl:'SOJA',  color:'var(--green)', sub:`TGRÃO + TEC + CLI · RUMO + VLI`},
+    MILHO: {cls:'milho', icon:'🟡',lbl:'MILHO', color:'var(--yellow)',sub:`TEC + CLI · RUMO + VLI`},
+  };
+  document.getElementById('prod-cards').innerHTML=Object.entries(pVag).map(([p,v])=>{
+    const cfg=prodConfig[p];
+    const pct=(v/total*100).toFixed(1);
+    return`<div class="prod-card ${cfg.cls}">
+      <div class="pc-icon">${cfg.icon}</div>
+      <div class="pc-lbl">${cfg.lbl}</div>
+      <div class="pc-val" style="color:${cfg.color}">${fn(v)}</div>
+      <div class="pc-sub">vagões · ${pct}% do total</div>
+      <div class="pc-sub" style="margin-top:4px">${cfg.sub}</div>
+    </div>`;
+  }).join('');
 
-  mkC('c-tons-donut','doughnut',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[{data:[tgraoTons,tecTons,copTons,cliTons],
-      backgroundColor:[TC2.TGRÃO,TC2.TEC,TC2.COP,TC2.CLI],borderColor:'#fff',borderWidth:3}]
+  // Gráfico barras
+  mkC('c-prod-bar','bar',{
+    labels:['AÇÚCAR','SOJA','MILHO'],
+    datasets:[{label:'Vagões por Produto',data:[pVag.AÇUCAR,pVag.SOJA,pVag.MILHO],
+      backgroundColor:[PC.AÇUCAR,PC.SOJA,PC.MILHO],borderRadius:4}]
+  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+
+  // Donut
+  mkC('c-prod-donut','doughnut',{
+    labels:['Açúcar','Soja','Milho'],
+    datasets:[{data:[pVag.AÇUCAR,pVag.SOJA,pVag.MILHO],
+      backgroundColor:[PC.AÇUCAR,PC.SOJA,PC.MILHO],borderColor:'#fff',borderWidth:3}]
   },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
 
-  // Ton/Vagão
-  const tv=[
-    {l:'CLI',   v:cliTons/cliVag,     c:'#FF4500'},
-    {l:'COP',   v:copTons/copVag,     c:'#6B7280'},
-    {l:'TEC',   v:tecTons/tecVag,     c:'#4472C4'},
-    {l:'TGRÃO', v:tgraoTons/tgraoVag, c:'#ED7D31'},
-  ].sort((a,b)=>b.v-a.v);
+  // Mensal por produto
+  const mensal = vagsByMesProduto(filtTerm);
+  const mLabels = filtMes==='all' ? MESES : [MESES[parseInt(filtMes)]];
+  const mData   = filtMes==='all' ? mensal : [mensal[parseInt(filtMes)]];
+  mkC('c-prod-mensal','bar',{labels:mLabels,datasets:[
+    {label:'Açúcar',data:mData.map(r=>r.AÇUCAR),backgroundColor:PC.AÇUCAR,borderRadius:3},
+    {label:'Soja',  data:mData.map(r=>r.SOJA),  backgroundColor:PC.SOJA,  borderRadius:3},
+    {label:'Milho', data:mData.map(r=>r.MILHO), backgroundColor:PC.MILHO, borderRadius:3},
+  ]},{scales:{x:{stacked:false},y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+
+  // Terminal × produto
+  const tpData = vagsByTerminalProduto(filtMes).filter(d=>terms.includes(d.label));
+  mkC('c-prod-terminal','bar',{
+    labels:tpData.map(d=>d.label),
+    datasets:[
+      {label:'Açúcar',data:tpData.map(d=>d.AÇUCAR),backgroundColor:PC.AÇUCAR,borderRadius:3},
+      {label:'Soja',  data:tpData.map(d=>d.SOJA),  backgroundColor:PC.SOJA,  borderRadius:3},
+      {label:'Milho', data:tpData.map(d=>d.MILHO), backgroundColor:PC.MILHO, borderRadius:3},
+    ]
+  },{scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+
+  // Tabela detalhada
+  const rows=[];
+  tpData.forEach(d=>{
+    const k=getTermKey(d.label);
+    filterArr(k).forEach(r=>{
+      const prods=PRODUTO_OP[k].produtos;
+      Object.entries(prods).forEach(([p,f])=>{
+        if(f>0){
+          const v=Math.round(r.real*f);
+          const ops=Object.entries(PRODUTO_OP[k].operadores).filter(([,ov])=>ov>0).map(([o])=>o).join(' / ');
+          rows.push([d.label,r.m,p,fn(v),(v/r.real*100).toFixed(1)+'%',ops]);
+        }
+      });
+    });
+  });
+  makeTable('tbl-produto',['Terminal','Mês','Produto','Vagões','% do Terminal','Operador(es)'],rows);
+}
+
+// ── OPERADOR ─────────────────────────────────
+function buildOperador(){
+  updateBanner('op-banner');
+  const terms = getActiveTerminals();
+  const filtMes = FILTERS.mes;
+  const filtTerm = FILTERS.terminal;
+
+  const opVag = vagsByOperador(filtTerm, filtMes);
+  const total = Object.values(opVag).reduce((s,v)=>s+v,0)||1;
+
+  // Cards
+  const opConfig={
+    MRS: {cls:'mrs', lbl:'MRS',  color:'var(--blue)',  terms:'COPERSUCAR', prods:'Açúcar'},
+    RUMO:{cls:'rumo',lbl:'RUMO', color:'var(--orange)',terms:'TGRÃO · TEC · COP · CLI', prods:'Soja + Açúcar + Milho'},
+    VLI: {cls:'vli', lbl:'VLI',  color:'var(--purple)',terms:'TEC · CLI', prods:'Soja + Milho'},
+  };
+  document.getElementById('op-cards').innerHTML=Object.entries(opVag).map(([op,v])=>{
+    const cfg=opConfig[op];
+    const pct=(v/total*100).toFixed(1);
+    return`<div class="op-card ${cfg.cls}">
+      <div class="oc-lbl">OPERADOR FERROVIÁRIO</div>
+      <div class="oc-val">${fn(v)}</div>
+      <div class="oc-sub">vagões · <strong>${pct}%</strong> do total</div>
+      <div class="oc-terms" style="color:${cfg.color};margin-top:6px;font-size:20px;font-weight:900;font-family:'Arial Black',sans-serif">${cfg.lbl}</div>
+      <div class="oc-sub" style="margin-top:4px">Terminais: ${cfg.terms}</div>
+      <div class="oc-sub">Produtos: ${cfg.prods}</div>
+    </div>`;
+  }).join('');
+
+  // Gráfico barras
+  mkC('c-op-bar','bar',{
+    labels:['MRS','RUMO','VLI'],
+    datasets:[{label:'Vagões por Operador',data:[opVag.MRS,opVag.RUMO,opVag.VLI],
+      backgroundColor:[OC.MRS,OC.RUMO,OC.VLI],borderRadius:4}]
+  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+
+  // Donut
+  mkC('c-op-donut','doughnut',{
+    labels:['MRS','RUMO','VLI'],
+    datasets:[{data:[opVag.MRS,opVag.RUMO,opVag.VLI],
+      backgroundColor:[OC.MRS,OC.RUMO,OC.VLI],borderColor:'#fff',borderWidth:3}]
+  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
+
+  // Mensal
+  const mensal = vagsByMesOp(filtTerm);
+  const mLabels = filtMes==='all' ? MESES : [MESES[parseInt(filtMes)]];
+  const mData   = filtMes==='all' ? mensal : [mensal[parseInt(filtMes)]];
+  mkC('c-op-mensal','bar',{labels:mLabels,datasets:[
+    {label:'MRS', data:mData.map(r=>r.MRS), backgroundColor:OC.MRS, borderRadius:3},
+    {label:'RUMO',data:mData.map(r=>r.RUMO),backgroundColor:OC.RUMO,borderRadius:3},
+    {label:'VLI', data:mData.map(r=>r.VLI), backgroundColor:OC.VLI, borderRadius:3},
+  ]},{scales:{x:{stacked:false},y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+
+  // Terminal × operador
+  const tpData = terms.map(t=>{
+    const k=getTermKey(t);
+    const arr=filterArr(k);
+    const tot=arr.reduce((s,r)=>s+r.real,0);
+    return{
+      label:t,
+      MRS: Math.round(tot*PRODUTO_OP[k].operadores.MRS),
+      RUMO:Math.round(tot*PRODUTO_OP[k].operadores.RUMO),
+      VLI: Math.round(tot*PRODUTO_OP[k].operadores.VLI),
+    };
+  });
+  mkC('c-op-terminal','bar',{
+    labels:tpData.map(d=>d.label),
+    datasets:[
+      {label:'MRS', data:tpData.map(d=>d.MRS), backgroundColor:OC.MRS, borderRadius:3},
+      {label:'RUMO',data:tpData.map(d=>d.RUMO),backgroundColor:OC.RUMO,borderRadius:3},
+      {label:'VLI', data:tpData.map(d=>d.VLI), backgroundColor:OC.VLI, borderRadius:3},
+    ]
+  },{scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Vagões',color:'#6B7280'}}}});
+
+  // Tabela
+  const rows=[];
+  tpData.forEach(d=>{
+    const k=getTermKey(d.label);
+    filterArr(k).forEach(r=>{
+      const ops=PRODUTO_OP[k].operadores;
+      Object.entries(ops).forEach(([op,f])=>{
+        if(f>0){
+          const v=Math.round(r.real*f);
+          const prods=Object.entries(PRODUTO_OP[k].produtos).filter(([,pv])=>pv>0).map(([p])=>p).join(' / ');
+          rows.push([d.label,r.m,op,fn(v),(v/r.real*100).toFixed(1)+'%',prods]);
+        }
+      });
+    });
+  });
+  makeTable('tbl-operador',['Terminal','Mês','Operador','Vagões','% do Terminal','Produto(s)'],rows);
+}
+
+// ── VOLUME ───────────────────────────────────
+function buildVolume(){
+  const terms = getActiveTerminals();
+  document.getElementById('vol-kpis').innerHTML=terms.map(t=>`<div class="kpi-card orange">
+    <div class="kpi-label">${t}</div>
+    <div class="kpi-val">${fn(getVagTerminal(getTermKey(t)))}</div>
+    <div class="kpi-sub">${fnT(getTonsTerminal(getTermKey(t)))} t</div>
+  </div>`).join('');
+  const colors2=terms.map(t=>TC2[t]);
+  mkC('c-vol-bar','bar',{labels:terms,datasets:[{label:'Vagões',data:terms.map(t=>getVagTerminal(getTermKey(t))),backgroundColor:colors2,borderRadius:4}]},{plugins:{legend:{display:false}}});
+  mkC('c-vol-line','line',{labels:filterMeses(),datasets:terms.map(t=>({label:t,data:filterArr(getTermKey(t)).map(r=>r.real),borderColor:TC[t],tension:.3,pointRadius:4,fill:false}))},{});
+  makeTable('tbl-vol',['Terminal',...filterMeses(),'Total'],
+    terms.map(t=>{const arr=filterArr(getTermKey(t));return[t,...arr.map(r=>fn(r.real)),fn(arr.reduce((s,r)=>s+r.real,0))];})
+  );
+}
+
+// ── TONELADAS ────────────────────────────────
+function buildToneladas(){
+  const terms = getActiveTerminals();
+  document.getElementById('tons-kpis').innerHTML=terms.map(t=>{
+    const v=getVagTerminal(getTermKey(t)),tn=getTonsTerminal(getTermKey(t));
+    return`<div class="kpi-card orange">
+      <div class="kpi-label">${t} — Toneladas</div>
+      <div class="kpi-val" style="font-size:17px">${fnT(tn)} t</div>
+      <div class="kpi-sub">${fn(v)} vagões</div>
+    </div>`;
+  }).join('');
+  const tonsArr=terms.map(t=>getTonsTerminal(getTermKey(t)));
+  const colors2=terms.map(t=>TC2[t]);
+  mkC('c-tons-bar','bar',{labels:terms,datasets:[{label:'Toneladas',data:tonsArr,backgroundColor:colors2,borderRadius:4}]},{plugins:{legend:{display:false}}});
+  mkC('c-tons-line','line',{labels:filterMeses(),datasets:terms.map(t=>({label:t,data:filterArr(getTermKey(t)).map(r=>r.tons),borderColor:TC[t],tension:.3,pointRadius:4,fill:false}))},{});
+  const totTons=tonsArr.reduce((s,v)=>s+v,0)||1;
+  mkC('c-tons-donut','doughnut',{labels:terms,datasets:[{data:tonsArr,backgroundColor:colors2,borderColor:'#fff',borderWidth:3}]},{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
+  const tv=terms.map(t=>({l:t,v:getTonsTerminal(getTermKey(t))/(getVagTerminal(getTermKey(t))||1),c:TC[t]})).sort((a,b)=>b.v-a.v);
   document.getElementById('tons-rank').innerHTML=tv.map(r=>`<div class="pb">
     <div class="pb-top"><span class="pb-lbl">${r.l}</span><span class="pb-val">${fnT(r.v)} t/vagão</span></div>
-    <div class="pb-track"><div class="pb-fill" style="width:${(r.v/tv[0].v*100).toFixed(0)}%;background:${r.c}"></div></div>
+    <div class="pb-track"><div class="pb-fill" style="width:${tv[0].v?Math.round(r.v/tv[0].v*100):0}%;background:${r.c}"></div></div>
   </div>`).join('');
-
-  // Tabelas por terminal
-  makeTable('tbl-tons-tgrao',
-    ['Mês','Vagões','Toneladas (t)','Taxa (Vgs/Hr)','t/Vagão'],
-    DB.tgrao.map(r=>[r.m,fn(r.real),fnT(r.tons),fn(r.taxa,2),fnT(r.tons/r.real)])
-  );
-  makeTable('tbl-tons-cop',
-    ['Mês','Moega','Vagões','Toneladas (t)','Taxa (Vgs/Hr)'],
-    DB.cop.flatMap(r=>r.moegas.map(m=>[r.m,m.n,fn(m.v),fnT(m.tons),fn(m.taxa,2)]))
-  );
-  makeTable('tbl-tons-tec',
-    ['Mês','Moega','Vagões','Toneladas (t)','Taxa (Vgs/Hr)'],
-    DB.tec.flatMap(r=>r.moegas.map(m=>[r.m,m.n,fn(m.v),fnT(m.tons),fn(m.taxa,2)]))
-  );
-  makeTable('tbl-tons-cli',
-    ['Mês','Moega','Vagões','Toneladas (t)','Taxa (Vgs/Hr)'],
-    DB.cli.flatMap(r=>r.moegas.map(m=>[r.m,m.n,fn(m.v),fnT(m.tons),fn(m.taxa,2)]))
-  );
 }
 
-function buildVolume(){
-  document.getElementById('vol-kpis').innerHTML=[
-    {lbl:'TGRÃO — Vagões',val:fn(tgraoVag),sub:'Moegão-Terra',c:'orange'},
-    {lbl:'TEC — Vagões',  val:fn(tecVag),  sub:'4 Moegas',   c:'blue'},
-    {lbl:'COP — Vagões',  val:fn(copVag),  sub:'3 Linhas',   c:'gray'},
-    {lbl:'CLI — Vagões',  val:fn(cliVag),  sub:'5 Moegas',   c:'green'},
-  ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div>
-  </div>`).join('');
-  mkC('c-vol-bar','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[{label:'Vagões',data:[tgraoVag,tecVag,copVag,cliVag],backgroundColor:[TC2.TGRÃO,TC2.TEC,TC2.COP,TC2.CLI],borderRadius:4}]
-  },{plugins:{legend:{display:false}}});
-  mkC('c-vol-line','line',{labels:MESES,datasets:[
-    {label:'TGRÃO',data:DB.tgrao.map(r=>r.real),borderColor:TC.TGRÃO,tension:.3,pointRadius:4,fill:false},
-    {label:'TEC',  data:DB.tec.map(r=>r.real),  borderColor:TC.TEC,  tension:.3,pointRadius:4,fill:false},
-    {label:'COP',  data:DB.cop.map(r=>r.real),  borderColor:TC.COP,  tension:.3,pointRadius:4,fill:false},
-    {label:'CLI',  data:DB.cli.map(r=>r.real),  borderColor:TC.CLI,  tension:.3,pointRadius:4,fill:false,borderWidth:2.5},
-  ]},{});
-  makeTable('tbl-vol',
-    ['Terminal','Jan','Fev','Mar','Abr','Mai','Jun (01-27)','Total'],
-    [
-      ['TGRÃO',...DB.tgrao.map(r=>fn(r.real)),fn(tgraoVag)],
-      ['TEC',  ...DB.tec.map(r=>fn(r.real)),  fn(tecVag)],
-      ['COP',  ...DB.cop.map(r=>fn(r.real)),  fn(copVag)],
-      ['CLI',  ...DB.cli.map(r=>fn(r.real)),  fn(cliVag)],
-    ]
-  );
-}
-
+// ── TAXA ─────────────────────────────────────
 function buildTaxa(){
-  const avgTaxa=arr=>arr.reduce((s,r)=>s+r.taxa,0)/arr.length;
+  const terms = getActiveTerminals();
+  const avgTaxa=t=>{const a=filterArr(getTermKey(t));return a.reduce((s,r)=>s+r.taxa,0)/a.length;};
   document.getElementById('taxa-kpis').innerHTML=[
-    {lbl:'Melhor Taxa Registrada',val:'18,03',sub:'TEC · Maio 2026',c:'orange'},
-    {lbl:'CLI — Maior Acumulado',val:fn(avgTaxa(DB.cli),2),sub:'Média Jan–Jun',c:'green'},
-    {lbl:'TEC — Crescimento',val:'+556%',sub:'Jan (2,75) → Mai (18,03)',c:'blue'},
-    {lbl:'TGRÃO — Mais Estável',val:'5,28',sub:'Menor oscilação',c:'yellow'},
-  ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div>
-  </div>`).join('');
-  mkC('c-taxa-bar','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[{label:'Taxa Média (Vgs/Hr)',data:[avgTaxa(DB.tgrao),avgTaxa(DB.tec),avgTaxa(DB.cop),avgTaxa(DB.cli)],
-      backgroundColor:[TC2.TGRÃO,TC2.TEC,TC2.COP,TC2.CLI],borderRadius:4}]
-  },{plugins:{legend:{display:false}}});
-  mkC('c-taxa-line','line',{labels:MESES,datasets:[
-    {label:'TGRÃO',data:DB.tgrao.map(r=>r.taxa),borderColor:TC.TGRÃO,tension:.3,pointRadius:4,fill:false},
-    {label:'TEC',  data:DB.tec.map(r=>r.taxa),  borderColor:TC.TEC,  tension:.3,pointRadius:4,fill:false},
-    {label:'COP',  data:DB.cop.map(r=>r.taxa),  borderColor:TC.COP,  tension:.3,pointRadius:4,fill:false},
-    {label:'CLI',  data:DB.cli.map(r=>r.taxa),  borderColor:TC.CLI,  tension:.3,pointRadius:4,fill:false,borderWidth:2.5},
-  ]},{scales:{y:{title:{display:true,text:'Vgs/Hr',color:'#6B7280'}}}});
-  makeTable('tbl-taxa',
-    ['Terminal','Mês','Taxa (Vgs/Hr)','Vagões','Toneladas (t)'],
-    [
-      ...DB.tgrao.map(r=>['TGRÃO',r.m,fn(r.taxa,2),fn(r.real),fnT(r.tons)]),
-      ...DB.tec.map(r=>['TEC',r.m,fn(r.taxa,2),fn(r.real),fnT(r.tons)]),
-      ...DB.cop.map(r=>['COP',r.m,fn(r.taxa,2),fn(r.real),fnT(r.tons)]),
-      ...DB.cli.map(r=>['CLI',r.m,fn(r.taxa,2),fn(r.real),fnT(r.tons)]),
-    ]
+    {lbl:'Melhor Taxa',val:fn(Math.max(...terms.map(avgTaxa)),2)+' Vgs/Hr',sub:'Terminal mais produtivo',c:'orange'},
+    {lbl:'Menor Taxa', val:fn(Math.min(...terms.map(avgTaxa)),2)+' Vgs/Hr',sub:'Terminal menos produtivo',c:'blue'},
+    {lbl:'Média Geral',val:fn(terms.reduce((s,t)=>s+avgTaxa(t),0)/terms.length,2)+' Vgs/Hr',sub:'Média filtrada',c:'green'},
+    {lbl:'Período',    val:FILTERS.mes==='all'?'Jan–Jun':MESES[parseInt(FILTERS.mes)],sub:'Mês ativo',c:'gray'},
+  ].map(k=>`<div class="kpi-card ${k.c}"><div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
+  mkC('c-taxa-bar','bar',{labels:terms,datasets:[{label:'Taxa Média (Vgs/Hr)',data:terms.map(avgTaxa),backgroundColor:terms.map(t=>TC2[t]),borderRadius:4}]},{plugins:{legend:{display:false}}});
+  mkC('c-taxa-line','line',{labels:filterMeses(),datasets:terms.map(t=>({label:t,data:filterArr(getTermKey(t)).map(r=>r.taxa),borderColor:TC[t],tension:.3,pointRadius:4,fill:false}))},{scales:{y:{title:{display:true,text:'Vgs/Hr',color:'#6B7280'}}}});
+  makeTable('tbl-taxa',['Terminal','Mês','Taxa (Vgs/Hr)','Vagões','Toneladas (t)'],
+    terms.flatMap(t=>filterArr(getTermKey(t)).map(r=>[t,r.m,fn(r.taxa,2),fn(r.real),fnT(r.tons)]))
   );
 }
 
+// ── TENDÊNCIA ────────────────────────────────
 function buildTendencia(){
-  mkC('c-tend','line',{labels:MESES,datasets:[
-    {label:'TGRÃO',data:DB.tgrao.map(r=>r.real),borderColor:TC.TGRÃO,tension:.3,pointRadius:5,fill:false,borderWidth:2},
-    {label:'TEC',  data:DB.tec.map(r=>r.real),  borderColor:TC.TEC,  tension:.3,pointRadius:5,fill:false,borderWidth:2},
-    {label:'COP',  data:DB.cop.map(r=>r.real),  borderColor:TC.COP,  tension:.3,pointRadius:5,fill:false,borderWidth:2},
-    {label:'CLI',  data:DB.cli.map(r=>r.real),  borderColor:TC.CLI,  tension:.3,pointRadius:5,fill:false,borderWidth:3},
-  ]},{plugins:{legend:{position:'bottom'}},scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-  mkC('c-tend-tons','line',{labels:MESES,datasets:[
-    {label:'TGRÃO',data:DB.tgrao.map(r=>r.tons),borderColor:TC.TGRÃO,tension:.3,pointRadius:4,fill:false},
-    {label:'TEC',  data:DB.tec.map(r=>r.tons),  borderColor:TC.TEC,  tension:.3,pointRadius:4,fill:false},
-    {label:'COP',  data:DB.cop.map(r=>r.tons),  borderColor:TC.COP,  tension:.3,pointRadius:4,fill:false},
-    {label:'CLI',  data:DB.cli.map(r=>r.tons),  borderColor:TC.CLI,  tension:.3,pointRadius:4,fill:false,borderWidth:2.5},
-  ]},{scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  const vars=MESES.map((_,i)=>i===0?null:((DB.cli[i].real-DB.cli[i-1].real)/DB.cli[i-1].real*100).toFixed(1));
+  const terms = getActiveTerminals();
+  mkC('c-tend','line',{labels:filterMeses(),datasets:terms.map(t=>({label:t,data:filterArr(getTermKey(t)).map(r=>r.real),borderColor:TC[t],tension:.3,pointRadius:5,fill:false,borderWidth:2}))},{plugins:{legend:{position:'bottom'}}});
+  mkC('c-tend-tons','line',{labels:filterMeses(),datasets:terms.map(t=>({label:t,data:filterArr(getTermKey(t)).map(r=>r.tons),borderColor:TC[t],tension:.3,pointRadius:4,fill:false}))},{scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
   makeTable('tbl-tend',['Terminal','Período','Vagões','Variação','Toneladas'],
-    [...DB.tgrao.map((r,i)=>['TGRÃO',r.m,fn(r.real),i===0?'—':(((r.real-DB.tgrao[i-1].real)/DB.tgrao[i-1].real)*100).toFixed(1)+'%',fnT(r.tons)]),
-     ...DB.cli.map((r,i)=>['CLI',r.m,fn(r.real),i===0?'—':(((r.real-DB.cli[i-1].real)/DB.cli[i-1].real)*100).toFixed(1)+'%',fnT(r.tons)])]
+    terms.flatMap(t=>filterArr(getTermKey(t)).map((r,i,arr)=>[t,r.m,fn(r.real),i===0?'—':(((r.real-arr[i-1].real)/arr[i-1].real)*100).toFixed(1)+'%',fnT(r.tons)]))
   );
 }
 
+// ── PARADAS ──────────────────────────────────
 function buildParadas(){
-  const avgFerr=(arr,key='ferr')=>arr.reduce((s,r)=>s+r[key],0)/arr.length;
-  const copFerr=DB.cop.reduce((s,r)=>s+r.moegas.reduce((ss,m)=>ss+m.ferr,0)/3,0)/6;
-  const copTerm=DB.cop.reduce((s,r)=>s+r.moegas.reduce((ss,m)=>ss+m.term,0)/3,0)/6;
-  const copOp=  DB.cop.reduce((s,r)=>s+r.moegas.reduce((ss,m)=>ss+m.op,  0)/3,0)/6;
-  const tecFerr=DB.tec.reduce((s,r)=>s+r.moegas.filter(m=>m.v+m.taxa>0).reduce((ss,m)=>ss+m.ferr,0)/(r.moegas.filter(m=>m.v+m.taxa>0).length||1),0)/6;
-  const tecTerm=DB.tec.reduce((s,r)=>s+r.moegas.filter(m=>m.v+m.taxa>0).reduce((ss,m)=>ss+m.term,0)/(r.moegas.filter(m=>m.v+m.taxa>0).length||1),0)/6;
-  const tecOp=  DB.tec.reduce((s,r)=>s+r.moegas.filter(m=>m.v+m.taxa>0).reduce((ss,m)=>ss+m.op,  0)/(r.moegas.filter(m=>m.v+m.taxa>0).length||1),0)/6;
-  const cliFerr=DB.cli.reduce((s,r)=>s+r.moegas.reduce((ss,m)=>ss+m.ferr,0)/5,0)/6;
-  const cliTerm=DB.cli.reduce((s,r)=>s+r.moegas.reduce((ss,m)=>ss+m.term,0)/5,0)/6;
-  const cliOp=  DB.cli.reduce((s,r)=>s+r.moegas.reduce((ss,m)=>ss+m.op,  0)/5,0)/6;
-  mkC('c-par-main','bar',{
-    labels:['TGRÃO','TEC','COP','CLI'],
-    datasets:[
-      {label:'Ferrovia (%)',data:[avgFerr(DB.tgrao,'ferr'),tecFerr,copFerr,cliFerr],backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
-      {label:'Terminal (%)',data:[avgFerr(DB.tgrao,'term'),tecTerm,copTerm,cliTerm],backgroundColor:'rgba(237,125,49,.8)',borderRadius:2},
-      {label:'Operação (%)',data:[avgFerr(DB.tgrao,'op'),  tecOp,  copOp,  cliOp  ],backgroundColor:'rgba(22,163,74,.7)',  borderRadius:2},
-    ]
-  },{scales:{y:{max:100,title:{display:true,text:'%',color:'#6B7280'}}}});
-  const gF=(avgFerr(DB.tgrao,'ferr')+tecFerr+copFerr+cliFerr)/4;
-  const gT=(avgFerr(DB.tgrao,'term')+tecTerm+copTerm+cliTerm)/4;
-  const gO=(avgFerr(DB.tgrao,'op')+tecOp+copOp+cliOp)/4;
-  mkC('c-par-donut','doughnut',{
-    labels:['Ferrovia','Terminal','Operação'],
-    datasets:[{data:[gF.toFixed(1),gT.toFixed(1),gO.toFixed(1)],
-      backgroundColor:['rgba(68,114,196,.85)','rgba(237,125,49,.85)','rgba(22,163,74,.75)'],borderColor:'#fff',borderWidth:3}]
-  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
-  renderPBars('par-pbars',[
-    {l:'TGRÃO · Ferrovia', v:avgFerr(DB.tgrao,'ferr'),c:'pb-blue'},
-    {l:'TGRÃO · Terminal', v:avgFerr(DB.tgrao,'term'),c:'pb-yellow'},
-    {l:'TEC · Ferrovia',   v:tecFerr,c:'pb-blue'},
-    {l:'TEC · Terminal',   v:tecTerm,c:'pb-yellow'},
-    {l:'COP · Ferrovia',   v:copFerr,c:'pb-blue'},
-    {l:'COP · Terminal',   v:copTerm,c:'pb-yellow'},
-    {l:'CLI · Ferrovia',   v:cliFerr,c:'pb-blue'},
-    {l:'CLI · Terminal',   v:cliTerm,c:'pb-yellow'},
-  ]);
+  const terms = getActiveTerminals();
+  const avgFP=(key,field)=>{
+    const arr=filterArr(key);
+    if(key==='tgrao') return arr.reduce((s,r)=>s+r[field],0)/arr.length;
+    const ms=arr.flatMap(r=>r.moegas.filter(m=>m.v+m.taxa>0));
+    return ms.length?ms.reduce((s,m)=>s+m[field],0)/ms.length:0;
+  };
+  mkC('c-par-main','bar',{labels:terms,datasets:[
+    {label:'Ferrovia (%)',data:terms.map(t=>avgFP(getTermKey(t),'ferr')),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
+    {label:'Terminal (%)',data:terms.map(t=>avgFP(getTermKey(t),'term')),backgroundColor:'rgba(237,125,49,.8)', borderRadius:2},
+    {label:'Operação (%)',data:terms.map(t=>avgFP(getTermKey(t),'op')),  backgroundColor:'rgba(22,163,74,.7)',  borderRadius:2},
+  ]},{scales:{y:{max:100}}});
+  const gF=terms.reduce((s,t)=>s+avgFP(getTermKey(t),'ferr'),0)/terms.length;
+  const gT=terms.reduce((s,t)=>s+avgFP(getTermKey(t),'term'),0)/terms.length;
+  const gO=terms.reduce((s,t)=>s+avgFP(getTermKey(t),'op'),  0)/terms.length;
+  mkC('c-par-donut','doughnut',{labels:['Ferrovia','Terminal','Operação'],datasets:[{data:[gF.toFixed(1),gT.toFixed(1),gO.toFixed(1)],backgroundColor:['rgba(68,114,196,.85)','rgba(237,125,49,.85)','rgba(22,163,74,.75)'],borderColor:'#fff',borderWidth:3}]},{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
+  renderPBars('par-pbars',terms.flatMap(t=>[
+    {l:`${t} · Ferrovia`,v:avgFP(getTermKey(t),'ferr'),c:'pb-blue'},
+    {l:`${t} · Terminal`,v:avgFP(getTermKey(t),'term'),c:'pb-yellow'},
+    {l:`${t} · Operação`,v:avgFP(getTermKey(t),'op'),  c:'pb-green'},
+  ]));
 }
 
+// ── JAN × JUN ────────────────────────────────
 function buildJanJun(){
+  const terms=['TGRÃO','TEC','COP','CLI'];
   const jv={TGRÃO:DB.tgrao[0].real,TEC:DB.tec[0].real,COP:DB.cop[0].real,CLI:DB.cli[0].real};
   const jnv={TGRÃO:DB.tgrao[5].real,TEC:DB.tec[5].real,COP:DB.cop[5].real,CLI:DB.cli[5].real};
   const jt={TGRÃO:DB.tgrao[0].tons,TEC:DB.tec[0].tons,COP:DB.cop[0].tons,CLI:DB.cli[0].tons};
   const jnt={TGRÃO:DB.tgrao[5].tons,TEC:DB.tec[5].tons,COP:DB.cop[5].tons,CLI:DB.cli[5].tons};
-  const terms=['TGRÃO','TEC','COP','CLI'];
-  document.getElementById('jj-kpis').innerHTML=terms.map(t=>{
-    const dv=jnv[t]-jv[t];const pv=(dv/jv[t]*100).toFixed(1);
-    return`<div class="kpi-card orange">
-      <div class="kpi-label">${t}</div>
-      <div class="kpi-val" style="font-size:18px">${dv>0?'▲':'▼'} ${fn(Math.abs(dv))}</div>
-      <div class="kpi-sub">Jan: ${fn(jv[t])} → Jun: ${fn(jnv[t])}</div>
-      <div class="kpi-trend ${dv>0?'trend-up':'trend-dn'}">${dv>0?'+':''}${pv}%</div>
-    </div>`;
-  }).join('');
-  mkC('c-jj-vag','bar',{
-    labels:terms,
-    datasets:[
-      {label:'Janeiro',data:terms.map(t=>jv[t]),  backgroundColor:'rgba(68,114,196,.75)',borderRadius:4},
-      {label:'Junho',  data:terms.map(t=>jnv[t]), backgroundColor:'rgba(255,69,0,.75)',  borderRadius:4},
-    ]
-  },{scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-  mkC('c-jj-tons','bar',{
-    labels:terms,
-    datasets:[
-      {label:'Janeiro (t)',data:terms.map(t=>jt[t]),  backgroundColor:'rgba(68,114,196,.75)',borderRadius:4},
-      {label:'Junho (t)',  data:terms.map(t=>jnt[t]), backgroundColor:'rgba(255,69,0,.75)',  borderRadius:4},
-    ]
-  },{scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  makeTable('tbl-jj',
-    ['Terminal','Jan (Vag)','Jun (Vag)','Δ Vag','Δ %','Jan (t)','Jun (t)','Δ Ton'],
-    terms.map(t=>{const dv=jnv[t]-jv[t];const dt=jnt[t]-jt[t];return[
-      t,fn(jv[t]),fn(jnv[t]),(dv>0?'+':'')+fn(dv),((dv/jv[t])*100).toFixed(1)+'%',
-      fnT(jt[t]),fnT(jnt[t]),(dt>0?'+':'')+fnT(dt)
-    ];})
+  document.getElementById('jj-kpis').innerHTML=terms.map(t=>{const dv=jnv[t]-jv[t];return`<div class="kpi-card orange">
+    <div class="kpi-label">${t}</div>
+    <div class="kpi-val" style="font-size:18px">${dv>0?'▲':'▼'} ${fn(Math.abs(dv))}</div>
+    <div class="kpi-sub">Jan: ${fn(jv[t])} → Jun: ${fn(jnv[t])}</div>
+    <div class="kpi-trend ${dv>0?'trend-up':'trend-dn'}">${dv>0?'+':''}${(dv/jv[t]*100).toFixed(1)}%</div>
+  </div>`;}).join('');
+  mkC('c-jj-vag','bar',{labels:terms,datasets:[{label:'Janeiro',data:terms.map(t=>jv[t]),backgroundColor:'rgba(68,114,196,.75)',borderRadius:4},{label:'Junho',data:terms.map(t=>jnv[t]),backgroundColor:'rgba(255,69,0,.75)',borderRadius:4}]},{});
+  mkC('c-jj-tons','bar',{labels:terms,datasets:[{label:'Janeiro (t)',data:terms.map(t=>jt[t]),backgroundColor:'rgba(68,114,196,.75)',borderRadius:4},{label:'Junho (t)',data:terms.map(t=>jnt[t]),backgroundColor:'rgba(255,69,0,.75)',borderRadius:4}]},{});
+  makeTable('tbl-jj',['Terminal','Jan (Vag)','Jun (Vag)','Δ Vag','Δ %','Jan (t)','Jun (t)'],
+    terms.map(t=>{const dv=jnv[t]-jv[t];return[t,fn(jv[t]),fn(jnv[t]),(dv>0?'+':'')+fn(dv),((dv/jv[t])*100).toFixed(1)+'%',fnT(jt[t]),fnT(jnt[t])];})
   );
 }
 
+// ── TGRÃO ────────────────────────────────────
 function buildTGRAO(){
   document.getElementById('tgrao-vag').textContent=fn(tgraoVag);
   document.getElementById('tgrao-tons').textContent=fnT(tgraoTons)+' t';
-  mkC('c-tgrao-bar','bar',{
-    labels:MESES,
-    datasets:[
-      {label:'Vagões',data:DB.tgrao.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
-      {label:'Toneladas',data:DB.tgrao.map(r=>r.tons),type:'line',borderColor:'var(--orange)',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
-    ]
-  },{scales:{y:{type:'linear',position:'left',title:{display:true,text:'Vagões',color:'#6B7280'}},
-             y1:{type:'linear',position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  mkC('c-tgrao-par','bar',{
-    labels:MESES,
-    datasets:[
-      {label:'Ferrovia (%)',data:DB.tgrao.map(r=>r.ferr),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
-      {label:'Terminal (%)',data:DB.tgrao.map(r=>r.term),backgroundColor:'rgba(237,125,49,.8)',borderRadius:2},
-      {label:'Operação (%)',data:DB.tgrao.map(r=>r.op),  backgroundColor:'rgba(22,163,74,.7)', borderRadius:2},
-    ]
-  },{scales:{x:{stacked:true},y:{stacked:true,max:100}}});
-  makeTable('tbl-tgrao',
-    ['Mês','Plan','Realiz.','Δ vs Plan','Taxa','Op%','Term%','Ferr%','Toneladas (t)'],
-    DB.tgrao.map(r=>{const d=r.real-r.plan;return[r.m,fn(r.plan),fn(r.real),(d>0?'+':'')+fn(d),fn(r.taxa,2),fp(r.op),fp(r.term),fp(r.ferr),fnT(r.tons)];})
+  mkC('c-tgrao-bar','bar',{labels:MESES,datasets:[
+    {label:'Vagões',data:DB.tgrao.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
+    {label:'Toneladas',data:DB.tgrao.map(r=>r.tons),type:'line',borderColor:'var(--orange)',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
+  ]},{scales:{y:{type:'linear',position:'left'},y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}}});
+  mkC('c-tgrao-par','bar',{labels:MESES,datasets:[
+    {label:'Ferrovia (%)',data:DB.tgrao.map(r=>r.ferr),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
+    {label:'Terminal (%)',data:DB.tgrao.map(r=>r.term),backgroundColor:'rgba(237,125,49,.8)',borderRadius:2},
+    {label:'Operação (%)',data:DB.tgrao.map(r=>r.op),  backgroundColor:'rgba(22,163,74,.7)', borderRadius:2},
+  ]},{scales:{x:{stacked:true},y:{stacked:true,max:100}}});
+  makeTable('tbl-tgrao',['Mês','Plan','Real','Δ vs Plan','Taxa','Produto','Operador','Toneladas (t)'],
+    DB.tgrao.map(r=>{const d=r.real-r.plan;return[r.m,fn(r.plan),fn(r.real),(d>0?'+':'')+fn(d),fn(r.taxa,2),'Soja','RUMO',fnT(r.tons)];})
   );
 }
 
+// ── TEC ──────────────────────────────────────
 function buildTEC(){
   document.getElementById('tec-vag').textContent=fn(tecVag);
   document.getElementById('tec-tons').textContent=fnT(tecTons)+' t';
-  mkC('c-tec-bar','bar',{
-    labels:MESES,
-    datasets:[
-      {label:'Vagões',data:DB.tec.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
-      {label:'Toneladas',data:DB.tec.map(r=>r.tons),type:'line',borderColor:'#4472C4',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
-    ]
-  },{scales:{y:{type:'linear',position:'left',title:{display:true,text:'Vagões',color:'#6B7280'}},
-             y1:{type:'linear',position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  mkC('c-tec-tons','bar',{
-    labels:MESES,
-    datasets:DB.tec[0].moegas.map((m,i)=>({
-      label:m.n,
-      data:DB.tec.map(r=>r.moegas[i].tons),
-      backgroundColor:MC[i],borderRadius:2,
-    }))
-  },{scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  makeTable('tbl-tec',
-    ['Mês','Vagões','Taxa','Toneladas (t)','L12A (t)','Moeg-1 (t)','Moeg-2 (t)'],
-    DB.tec.map(r=>[r.m,fn(r.real),fn(r.taxa,2),fnT(r.tons),fnT(r.moegas[0].tons),fnT(r.moegas[1].tons),fnT(r.moegas[2].tons)])
+  mkC('c-tec-bar','bar',{labels:MESES,datasets:[
+    {label:'Vagões',data:DB.tec.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
+    {label:'Toneladas',data:DB.tec.map(r=>r.tons),type:'line',borderColor:'#4472C4',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
+  ]},{scales:{y:{type:'linear',position:'left'},y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}}});
+  mkC('c-tec-tons','bar',{labels:MESES,datasets:DB.tec[0].moegas.map((m,i)=>({label:m.n,data:DB.tec.map(r=>r.moegas[i].tons),backgroundColor:MC[i],borderRadius:2}))},{scales:{x:{stacked:true},y:{stacked:true}}});
+  makeTable('tbl-tec',['Mês','Vagões','Taxa','Produto(s)','Operador(es)','Toneladas (t)'],
+    DB.tec.map(r=>[r.m,fn(r.real),fn(r.taxa,2),'Soja (68%) + Milho (32%)','RUMO (65%) + VLI (35%)',fnT(r.tons)])
   );
 }
 
+// ── COP ──────────────────────────────────────
 function buildCOP(){
   document.getElementById('cop-vag').textContent=fn(copVag);
   document.getElementById('cop-tons').textContent=fnT(copTons)+' t';
-  mkC('c-cop-bar','bar',{
-    labels:MESES,
-    datasets:[
-      {label:'Vagões',data:DB.cop.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
-      {label:'Toneladas',data:DB.cop.map(r=>r.tons),type:'line',borderColor:'#6B7280',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
-    ]
-  },{scales:{y:{type:'linear',position:'left',title:{display:true,text:'Vagões',color:'#6B7280'}},
-             y1:{type:'linear',position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  mkC('c-cop-tons','bar',{
-    labels:MESES,
-    datasets:DB.cop[0].moegas.map((m,i)=>({
-      label:m.n,
-      data:DB.cop.map(r=>r.moegas[i].tons),
-      backgroundColor:MC[i],borderRadius:2,
-    }))
-  },{scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  makeTable('tbl-cop',
-    ['Mês','Vagões','Taxa','Toneladas (t)','Moegão (t)','Linha 5 (t)','Linha 6 (t)'],
-    DB.cop.map(r=>[r.m,fn(r.real),fn(r.taxa,2),fnT(r.tons),fnT(r.moegas[0].tons),fnT(r.moegas[1].tons),fnT(r.moegas[2].tons)])
+  mkC('c-cop-bar','bar',{labels:MESES,datasets:[
+    {label:'Vagões',data:DB.cop.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
+    {label:'Toneladas',data:DB.cop.map(r=>r.tons),type:'line',borderColor:'#6B7280',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
+  ]},{scales:{y:{type:'linear',position:'left'},y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}}});
+  mkC('c-cop-tons','bar',{labels:MESES,datasets:DB.cop[0].moegas.map((m,i)=>({label:m.n,data:DB.cop.map(r=>r.moegas[i].tons),backgroundColor:MC[i],borderRadius:2}))},{scales:{x:{stacked:true},y:{stacked:true}}});
+  makeTable('tbl-cop',['Mês','Vagões','Taxa','Produto','Operador(es)','Toneladas (t)'],
+    DB.cop.map(r=>[r.m,fn(r.real),fn(r.taxa,2),'Açúcar','MRS (55%) + RUMO (45%)',fnT(r.tons)])
   );
 }
 
+// ── CLI ──────────────────────────────────────
 function buildCLI(){
   document.getElementById('cli-vag').textContent=fn(cliVag);
   document.getElementById('cli-tons').textContent=fnT(cliTons)+' t';
-  mkC('c-cli-bar','bar',{
-    labels:MESES,
-    datasets:[
-      {label:'Vagões',data:DB.cli.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
-      {label:'Toneladas',data:DB.cli.map(r=>r.tons),type:'line',borderColor:TC.CLI,tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
-    ]
-  },{scales:{y:{type:'linear',position:'left',title:{display:true,text:'Vagões',color:'#6B7280'}},
-             y1:{type:'linear',position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  mkC('c-cli-tons','bar',{
-    labels:MESES,
-    datasets:DB.cli[0].moegas.map((m,i)=>({
-      label:m.n,
-      data:DB.cli.map(r=>r.moegas[i].tons),
-      backgroundColor:MC[i],borderRadius:2,
-    }))
-  },{scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-  makeTable('tbl-cli',
-    ['Mês','Vagões','Taxa','Toneladas (t)','CL-Mar (t)','CL-Terra (t)','Moeg-Mar (t)','Moeg-Terra (t)','T23 (t)'],
-    DB.cli.map(r=>[r.m,fn(r.real),fn(r.taxa,2),fnT(r.tons),...r.moegas.map(m=>fnT(m.tons))])
+  mkC('c-cli-bar','bar',{labels:MESES,datasets:[
+    {label:'Vagões',data:DB.cli.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
+    {label:'Toneladas',data:DB.cli.map(r=>r.tons),type:'line',borderColor:TC.CLI,tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
+  ]},{scales:{y:{type:'linear',position:'left'},y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}}});
+  mkC('c-cli-tons','bar',{labels:MESES,datasets:DB.cli[0].moegas.map((m,i)=>({label:m.n,data:DB.cli.map(r=>r.moegas[i].tons),backgroundColor:MC[i],borderRadius:2}))},{scales:{x:{stacked:true},y:{stacked:true}}});
+  makeTable('tbl-cli',['Mês','Vagões','Taxa','Produto(s)','Operador(es)','Toneladas (t)'],
+    DB.cli.map(r=>[r.m,fn(r.real),fn(r.taxa,2),'Soja (74%) + Milho (26%)','RUMO (72%) + VLI (28%)',fnT(r.tons)])
   );
 }
 
+// ── MOEGAS ───────────────────────────────────
 function buildMoegas(){
   const allM=[
-    // TGRÃO
     {m:'TGRÃO – Moegão Terra',t:'TGRÃO',v:tgraoVag,taxa:5.28,tons:tgraoTons},
-    // COP
-    ...DB.cop[0].moegas.map((m,i)=>({
-      m:'COP – '+m.n,t:'COP',
-      v:DB.cop.reduce((s,r)=>s+r.moegas[i].v,0),
-      taxa:DB.cop.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,
-      tons:DB.cop.reduce((s,r)=>s+r.moegas[i].tons,0),
-    })),
-    // TEC
-    ...DB.tec[0].moegas.map((m,i)=>({
-      m:'TEC – '+m.n,t:'TEC',
-      v:DB.tec.reduce((s,r)=>s+r.moegas[i].v,0),
-      taxa:DB.tec.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,
-      tons:DB.tec.reduce((s,r)=>s+r.moegas[i].tons,0),
-    })),
-    // CLI
-    ...DB.cli[0].moegas.map((m,i)=>({
-      m:'CLI – '+m.n,t:'CLI',
-      v:DB.cli.reduce((s,r)=>s+r.moegas[i].v,0),
-      taxa:DB.cli.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,
-      tons:DB.cli.reduce((s,r)=>s+r.moegas[i].tons,0),
-    })),
+    ...DB.cop[0].moegas.map((m,i)=>({m:'COP – '+m.n,t:'COP',v:DB.cop.reduce((s,r)=>s+r.moegas[i].v,0),taxa:DB.cop.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,tons:DB.cop.reduce((s,r)=>s+r.moegas[i].tons,0)})),
+    ...DB.tec[0].moegas.map((m,i)=>({m:'TEC – '+m.n,t:'TEC',v:DB.tec.reduce((s,r)=>s+r.moegas[i].v,0),taxa:DB.tec.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,tons:DB.tec.reduce((s,r)=>s+r.moegas[i].tons,0)})),
+    ...DB.cli[0].moegas.map((m,i)=>({m:'CLI – '+m.n,t:'CLI',v:DB.cli.reduce((s,r)=>s+r.moegas[i].v,0),taxa:DB.cli.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,tons:DB.cli.reduce((s,r)=>s+r.moegas[i].tons,0)})),
   ].sort((a,b)=>b.v-a.v);
-  mkC('c-moeg-vag','bar',{
-    labels:allM.map(r=>r.m.replace(' – ','·')),
-    datasets:[{label:'Vagões',data:allM.map(r=>r.v),backgroundColor:allM.map(r=>TC2[r.t]),borderRadius:3}]
-  },{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-  mkC('c-moeg-taxa','bar',{
-    labels:allM.map(r=>r.m.replace(' – ','·')),
-    datasets:[{label:'Taxa Média (Vgs/Hr)',data:allM.map(r=>r.taxa.toFixed(2)),backgroundColor:allM.map(r=>TC2[r.t]),borderRadius:3}]
-  },{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'Vgs/Hr',color:'#6B7280'}}}});
-  makeTable('tbl-moegas',
-    ['Moega','Terminal','Vagões','Taxa Média (Vgs/Hr)','Toneladas (t)','Status'],
+  mkC('c-moeg-vag','bar',{labels:allM.map(r=>r.m.replace(' – ','·')),datasets:[{label:'Vagões',data:allM.map(r=>r.v),backgroundColor:allM.map(r=>TC2[r.t]),borderRadius:3}]},{indexAxis:'y',plugins:{legend:{display:false}}});
+  mkC('c-moeg-taxa','bar',{labels:allM.map(r=>r.m.replace(' – ','·')),datasets:[{label:'Taxa Média (Vgs/Hr)',data:allM.map(r=>r.taxa.toFixed(2)),backgroundColor:allM.map(r=>TC2[r.t]),borderRadius:3}]},{indexAxis:'y',plugins:{legend:{display:false}}});
+  makeTable('tbl-moegas',['Moega','Terminal','Vagões','Taxa (Vgs/Hr)','Toneladas (t)','Status'],
     allM.map(r=>[r.m,r.t,fn(r.v),fn(r.taxa,2),fnT(r.tons),r.v>0?tag('green','Ativa'):tag('gray','Inativa')])
   );
 }
 
-function buildProdutos(){
-  // Simplificado com dados disponíveis
-  mkC('c-prod-donut','doughnut',{
-    labels:['Soja','Açúcar','Milho'],
-    datasets:[{data:[55,40,5],backgroundColor:['rgba(22,163,74,.8)','rgba(255,69,0,.8)','rgba(217,119,6,.8)'],borderColor:'#fff',borderWidth:3}]
-  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
-  mkC('c-ferr-donut','doughnut',{
-    labels:['RUMO','MRS','VLI'],
-    datasets:[{data:[60,35,5],backgroundColor:['rgba(255,69,0,.8)','rgba(68,114,196,.8)','rgba(107,114,128,.8)'],borderColor:'#fff',borderWidth:3}]
-  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
-}
-
+// ── PLANEJADO ────────────────────────────────
 function buildPlanejado(){
-  const makeDP=(id,arr,color)=>mkC(id,'bar',{labels:MESES,datasets:[
-    {label:'Planejado',data:arr.map(r=>r.plan),backgroundColor:'rgba(107,114,128,.4)',borderRadius:3},
-    {label:'Realizado',data:arr.map(r=>r.real),backgroundColor:color,borderRadius:3},
-  ]},{scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-  makeDP('c-plan-tgrao',DB.tgrao,'rgba(237,125,49,.8)');
-  makeDP('c-plan-cli',  DB.cli,  'rgba(255,69,0,.8)');
-  makeDP('c-plan-tec',  DB.tec,  'rgba(68,114,196,.8)');
-  makeDP('c-plan-cop',  DB.cop,  'rgba(107,114,128,.8)');
+  [['c-plan-tgrao','tgrao','rgba(237,125,49,.8)'],['c-plan-cli','cli','rgba(255,69,0,.8)'],
+   ['c-plan-tec','tec','rgba(68,114,196,.8)'],['c-plan-cop','cop','rgba(107,114,128,.8)']].forEach(([id,k,col])=>{
+    mkC(id,'bar',{labels:MESES,datasets:[{label:'Planejado',data:DB[k].map(r=>r.plan),backgroundColor:'rgba(107,114,128,.4)',borderRadius:3},{label:'Realizado',data:DB[k].map(r=>r.real),backgroundColor:col,borderRadius:3}]},{});
+  });
 }
 
+// ── RISCOS ───────────────────────────────────
 function buildRiscos(){
   const riscos=[
-    {r:'Sincronismo Ferrovia – COP',prob:'Alta',imp:'Alto',niv:'Alto',acao:'Monitoramento em tempo real'},
-    {r:'Junho parcial – TEC s/ toneladas',prob:'Média',imp:'Médio',niv:'Atenção',acao:'Validar dados pendentes'},
-    {r:'T23 inativo em Abr/Jan',prob:'Baixa',imp:'Médio',niv:'Médio',acao:'Planejar reativação'},
-    {r:'Crescimento CLI sustentado',prob:'Alta',imp:'Alto',niv:'Oportunidade',acao:'Expandir capacidade'},
-    {r:'TEC recorde Mai (18,03 Vgs/Hr)',prob:'Alta',imp:'Alto',niv:'Oportunidade',acao:'Replicar metodologia'},
-    {r:'Moegão-3 TEC inativo',prob:'Média',imp:'Médio',niv:'Atenção',acao:'Manutenção preventiva'},
+    {r:'Sincronismo Ferrovia – COP',prob:'Alta',niv:'Alto'},
+    {r:'TEC Junho s/ toneladas',prob:'Média',niv:'Atenção'},
+    {r:'T23 inativo Jan/Abr',prob:'Baixa',niv:'Médio'},
+    {r:'Expandir capacidade CLI',prob:'Alta',niv:'Oportunidade'},
+    {r:'Replicar TEC Maio (18 Vgs/Hr)',prob:'Alta',niv:'Oportunidade'},
+    {r:'Moegão-3 TEC inativo',prob:'Média',niv:'Atenção'},
   ];
-  const rm=document.getElementById('risk-matrix');
-  rm.innerHTML='<div class="card-top"><span class="ct-title">Matriz de Riscos</span></div>'+
-    riscos.map(r=>{
-      const c=r.niv==='Alto'?'red':r.niv==='Oportunidade'?'green':r.niv==='Atenção'?'yellow':'gray';
-      return`<div style="display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)">
-        <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--${c==='gray'?'gray':c})"></div>
-        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${r.r}</div>
-          <div style="font-size:10px;color:var(--gray);margin-top:1px">Prob: ${r.prob} · Impacto: ${r.imp}</div></div>
-        <div>${tag(c,r.niv)}</div>
-      </div>`;
-    }).join('');
-  mkC('c-risk','doughnut',{
-    labels:['Alto','Atenção','Oportunidade'],
-    datasets:[{data:[1,2,2],backgroundColor:['rgba(220,38,38,.8)','rgba(217,119,6,.8)','rgba(22,163,74,.8)'],borderColor:'#fff',borderWidth:3}]
-  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
-  const acoes=[
-    {a:'Monitorar sincronismo ferrovia COP',p:'Alta',pz:'2 semanas',r:'Operações',s:'Em Progresso'},
-    {a:'Validar toneladas TEC Junho',       p:'Alta',pz:'Imediato', r:'Análise',   s:'Pendente'},
-    {a:'Reativar Moegão-3 TEC',            p:'Média',pz:'1 mês',   r:'Manutenção',s:'Planejado'},
-    {a:'Expandir capacidade CLI',          p:'Média',pz:'2 meses', r:'Planejamento',s:'Planejado'},
-    {a:'Replicar metodologia TEC Maio',    p:'Alta',pz:'Contínuo', r:'Operações',  s:'Em Progresso'},
-  ];
-  makeTable('tbl-acoes',
-    ['Ação','Prioridade','Prazo','Responsável','Status'],
-    acoes.map(a=>[a.a,a.p,a.pz,a.r,tag(a.s==='Pendente'?'red':a.s==='Em Progresso'?'blue':'gray',a.s)])
+  document.getElementById('risk-matrix').innerHTML='<div class="card-top"><span class="ct-title">Matriz de Riscos</span></div>'+
+    riscos.map(r=>{const c=r.niv==='Alto'?'red':r.niv==='Oportunidade'?'green':r.niv==='Atenção'?'yellow':'gray';
+    return`<div style="display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--${c==='gray'?'gray':c})"></div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${r.r}</div>
+      <div style="font-size:10px;color:var(--gray);margin-top:1px">Prob: ${r.prob}</div></div>
+      <div>${tag(c,r.niv)}</div>
+    </div>`;}).join('');
+  mkC('c-risk','doughnut',{labels:['Alto','Atenção','Oportunidade'],datasets:[{data:[1,2,2],backgroundColor:['rgba(220,38,38,.8)','rgba(217,119,6,.8)','rgba(22,163,74,.8)'],borderColor:'#fff',borderWidth:3}]},{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
+  makeTable('tbl-acoes',['Ação','Prioridade','Prazo','Status'],
+    [['Monitorar sincronismo ferroviário COP','Alta','2 sem',tag('blue','Em Prog.')],
+     ['Validar toneladas TEC Junho','Alta','Imediato',tag('red','Pendente')],
+     ['Reativar Moegão-3 TEC','Média','1 mês',tag('gray','Planejado')],
+     ['Expandir capacidade CLI','Média','2 meses',tag('gray','Planejado')],
+     ['Replicar metodologia TEC Maio','Alta','Contínuo',tag('blue','Em Prog.')]]
   );
 }
 
-// ══════════════════════════════════════════════
-//  NAVEGAÇÃO
-// ══════════════════════════════════════════════
 const BUILDERS={
-  overview:buildOverview, volume:buildVolume, toneladas:buildToneladas,
-  taxa:buildTaxa, tendencia:buildTendencia, paradas:buildParadas,
-  jan_jun:buildJanJun, tgrao:buildTGRAO, tec:buildTEC,
-  cop:buildCOP, cli:buildCLI, moegas:buildMoegas,
-  produtos:buildProdutos, planejado:buildPlanejado, riscos:buildRiscos,
+  overview:buildOverview, produto:buildProduto, operador:buildOperador,
+  volume:buildVolume, toneladas:buildToneladas, taxa:buildTaxa,
+  tendencia:buildTendencia, paradas:buildParadas, jan_jun:buildJanJun,
+  tgrao:buildTGRAO, tec:buildTEC, cop:buildCOP, cli:buildCLI,
+  moegas:buildMoegas, planejado:buildPlanejado, riscos:buildRiscos,
 };
-const BUILT={};
 
+// ── NAVEGAÇÃO ────────────────────────────────
 document.querySelectorAll('.nav-item[data-p]').forEach(btn=>{
   btn.addEventListener('click',()=>{
     const p=btn.dataset.p;
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
     btn.classList.add('active');
-    const el=document.getElementById('page-'+p); if(el) el.classList.add('active');
+    const el=document.getElementById('page-'+p);if(el)el.classList.add('active');
     if(!BUILT[p]&&BUILDERS[p]){BUILDERS[p]();BUILT[p]=true;}
   });
 });
 
-// ══════════════════════════════════════════════
-//  SISTEMA DE FILTROS FUNCIONAL
-// ══════════════════════════════════════════════
-
-// Estado global dos filtros
-const FILTERS = { terminal: 'all', mes: 'all' };
-
-// Índice do mês pelo valor do select
-const MES_IDX = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5};
-
-// Retorna dados filtrados de um array mensal
-function filterArr(arr){
-  if(FILTERS.mes === 'all') return arr;
-  const i = MES_IDX[FILTERS.mes];
-  return i !== undefined ? [arr[i]] : arr;
+// ── EVENTOS DOS FILTROS ──────────────────────
+function onFilterChange(key, val, label){
+  FILTERS[key] = val;
+  // Invalida só as páginas sensíveis a filtros
+  ['overview','produto','operador','volume','toneladas','taxa','tendencia','paradas'].forEach(k=>{BUILT[k]=false;});
+  rebuildActive();
+  updatePills();
+  if(val !== 'all') showToast(`✓ Filtro ${key.charAt(0).toUpperCase()+key.slice(1)}: ${label}`);
 }
 
-// Retorna labels de meses filtrados
-function filterMeses(){
-  if(FILTERS.mes === 'all') return MESES;
-  const i = MES_IDX[FILTERS.mes];
-  return [MESES[i]];
-}
-
-// Retorna terminais filtrados para gráficos multi-terminal
-function filterTerminals(){
-  const all = [
-    {key:'tgrao', label:'TGRÃO', color:TC.TGRÃO, color2:TC2.TGRÃO},
-    {key:'tec',   label:'TEC',   color:TC.TEC,   color2:TC2.TEC},
-    {key:'cop',   label:'COP',   color:TC.COP,   color2:TC2.COP},
-    {key:'cli',   label:'CLI',   color:TC.CLI,   color2:TC2.CLI},
-  ];
-  if(FILTERS.terminal === 'all') return all;
-  return all.filter(t => t.label === FILTERS.terminal || t.key === FILTERS.terminal.toLowerCase());
-}
-
-// Reconstrói a página ativa com os filtros aplicados
-function applyFilters(){
-  const activeBtn = document.querySelector('.nav-item.active[data-p]');
-  if(!activeBtn) return;
-  const p = activeBtn.dataset.p;
-  // Força rebuild
-  BUILT[p] = false;
-  if(BUILDERS[p]){ BUILDERS[p](); BUILT[p] = true; }
-}
-
-// ── Patch buildOverview para usar filtros ────
-const _origOverview = buildOverview;
-buildOverview = function(){
-  const terminals = filterTerminals();
-  const labels    = terminals.map(t => t.label);
-
-  const getVag  = t => filterArr(DB[t.key]).reduce((s,r)=>s+r.real,0);
-  const getTons = t => filterArr(DB[t.key]).reduce((s,r)=>s+r.tons,0);
-  const vagArr  = terminals.map(getVag);
-  const tonsArr = terminals.map(getTons);
-  const totVag  = vagArr.reduce((s,v)=>s+v,0);
-  const totTons = tonsArr.reduce((s,v)=>s+v,0);
-
-  // KPIs
-  document.getElementById('ov-kpis').innerHTML=[
-    {lbl:'Total de Vagões (Filtrado)', val:fn(totVag),   sub:`${terminals.length} terminal(is) · ${filterMeses().length} mês(es)`, t:'trend-ok',  tr:'★ Filtrado', c:'orange'},
-    {lbl:'Maior Volume',               val:labels[vagArr.indexOf(Math.max(...vagArr))]||'—', sub:`${fn(Math.max(...vagArr))} vagões`, t:'trend-up', tr:'▲ Líder', c:'green'},
-    {lbl:'Vol. Movimentado (t)',        val:fnT(totTons), sub:'Toneladas filtradas', t:'trend-ok', tr:'⬛ Ton', c:'blue'},
-    {lbl:'Período',                    val:FILTERS.mes==='all'?'Jan–Jun':MESES[parseInt(FILTERS.mes)], sub:'Filtro de mês ativo', t:'trend-neu', tr:'📅', c:'gray'},
-  ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div>
-    <div class="kpi-sub">${k.sub}</div><div class="kpi-trend ${k.t}">${k.tr}</div>
-  </div>`).join('');
-
-  // Tons KPIs
-  document.getElementById('ov-tons').innerHTML=terminals.map(t=>{
-    const v=getVag(t), tn=getTons(t);
-    return`<div class="kpi-card orange">
-      <div class="kpi-label">${t.label} <span style="color:var(--orange);font-size:9px">⬛ TON</span></div>
-      <div class="kpi-val" style="font-size:17px">${fn(v)}</div>
-      <div class="kpi-sub">${fnT(tn)} t</div>
-    </div>`;
-  }).join('');
-
-  // Gráfico vagões
-  mkC('c-ov-prod','bar',{
-    labels,
-    datasets:[{label:'Vagões',data:vagArr,backgroundColor:terminals.map(t=>t.color2),borderRadius:4}]
-  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-
-  // Gráfico toneladas
-  mkC('c-ov-tons','bar',{
-    labels,
-    datasets:[{label:'Toneladas',data:tonsArr,backgroundColor:terminals.map(t=>t.color2),borderRadius:4}]
-  },{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-
-  // Mensal line — só terminais selecionados
-  mkC('c-ov-mensal','line',{labels:filterMeses(),datasets:
-    terminals.map(t=>({
-      label:t.label,
-      data:filterArr(DB[t.key]).map(r=>r.real),
-      borderColor:t.color,tension:.3,pointRadius:4,fill:false,borderWidth:2
-    }))
-  },{scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-
-  // Paradas
-  const avgFP=(key,field)=>{
-    const arr=filterArr(DB[key]);
-    if(key==='tgrao') return arr.reduce((s,r)=>s+r[field],0)/arr.length;
-    return arr.reduce((s,r)=>{
-      const ms=r.moegas.filter(m=>m.v+m.taxa>0);
-      return s+(ms.length?ms.reduce((ss,m)=>ss+m[field],0)/ms.length:0);
-    },0)/arr.length;
-  };
-  mkC('c-ov-paradas','bar',{
-    labels,
-    datasets:[
-      {label:'Ferrovia (%)',data:terminals.map(t=>avgFP(t.key,'ferr')),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
-      {label:'Terminal (%)',data:terminals.map(t=>avgFP(t.key,'term')),backgroundColor:'rgba(237,125,49,.8)', borderRadius:2},
-      {label:'Operação (%)',data:terminals.map(t=>avgFP(t.key,'op')),  backgroundColor:'rgba(22,163,74,.7)',  borderRadius:2},
-    ]
-  },{scales:{y:{max:100,title:{display:true,text:'%',color:'#6B7280'}}}});
-
-  // Tabela
-  makeTable('tbl-ov',
-    ['Terminal','Vagões','Taxa Méd (Vgs/Hr)','Toneladas (t)','Ferrovia %','Terminal %','Operação %'],
-    terminals.map(t=>{
-      const arr=filterArr(DB[t.key]);
-      const v=arr.reduce((s,r)=>s+r.real,0);
-      const tn=arr.reduce((s,r)=>s+r.tons,0);
-      const tx=arr.reduce((s,r)=>s+r.taxa,0)/arr.length;
-      return[t.label,fn(v),fn(tx,2),fnT(tn),fp(avgFP(t.key,'ferr')),fp(avgFP(t.key,'term')),fp(avgFP(t.key,'op'))];
-    })
-  );
-};
-
-// ── Patch buildVolume para usar filtros ──────
-const _origVolume = buildVolume;
-buildVolume = function(){
-  const terminals = filterTerminals();
-  const labels    = filterMeses();
-
-  document.getElementById('vol-kpis').innerHTML=terminals.map(t=>{
-    const v=filterArr(DB[t.key]).reduce((s,r)=>s+r.real,0);
-    return`<div class="kpi-card orange">
-      <div class="kpi-label">${t.label}</div><div class="kpi-val">${fn(v)}</div>
-      <div class="kpi-sub">${fnT(filterArr(DB[t.key]).reduce((s,r)=>s+r.tons,0))} t</div>
-    </div>`;
-  }).join('');
-
-  mkC('c-vol-bar','bar',{
-    labels:terminals.map(t=>t.label),
-    datasets:[{label:'Vagões',data:terminals.map(t=>filterArr(DB[t.key]).reduce((s,r)=>s+r.real,0)),
-      backgroundColor:terminals.map(t=>t.color2),borderRadius:4}]
-  },{plugins:{legend:{display:false}}});
-
-  mkC('c-vol-line','line',{labels,datasets:
-    terminals.map(t=>({
-      label:t.label,data:filterArr(DB[t.key]).map(r=>r.real),
-      borderColor:t.color,tension:.3,pointRadius:4,fill:false
-    }))
-  },{});
-
-  makeTable('tbl-vol',
-    ['Terminal',...labels,'Total'],
-    terminals.map(t=>{
-      const arr=filterArr(DB[t.key]);
-      return[t.label,...arr.map(r=>fn(r.real)),fn(arr.reduce((s,r)=>s+r.real,0))];
-    })
-  );
-};
-
-// ── Patch buildToneladas para usar filtros ───
-const _origTons = buildToneladas;
-buildToneladas = function(){
-  const terminals = filterTerminals();
-  const labels    = filterMeses();
-
-  const vT = t => filterArr(DB[t.key]).reduce((s,r)=>s+r.tons,0);
-  const vV = t => filterArr(DB[t.key]).reduce((s,r)=>s+r.real,0);
-
-  document.getElementById('tons-kpis').innerHTML=terminals.map(t=>{
-    const tn=vT(t),v=vV(t);
-    return`<div class="kpi-card orange">
-      <div class="kpi-label">${t.label} — Toneladas</div>
-      <div class="kpi-val" style="font-size:17px">${fnT(tn)} t</div>
-      <div class="kpi-sub">${fn(v)} vagões · ${fnT(v?tn/v:0)} t/vagão</div>
-    </div>`;
-  }).join('');
-
-  mkC('c-tons-bar','bar',{
-    labels:terminals.map(t=>t.label),
-    datasets:[{label:'Toneladas',data:terminals.map(vT),backgroundColor:terminals.map(t=>t.color2),borderRadius:4}]
-  },{plugins:{legend:{display:false}}});
-
-  mkC('c-tons-line','line',{labels,datasets:
-    terminals.map(t=>({
-      label:t.label,data:filterArr(DB[t.key]).map(r=>r.tons),
-      borderColor:t.color,tension:.3,pointRadius:4,fill:false
-    }))
-  },{scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-
-  const allTons = terminals.reduce((s,t)=>s+vT(t),0);
-  mkC('c-tons-donut','doughnut',{
-    labels:terminals.map(t=>t.label),
-    datasets:[{data:terminals.map(vT),backgroundColor:terminals.map(t=>t.color2),borderColor:'#fff',borderWidth:3}]
-  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
-
-  const tv=terminals.map(t=>({l:t.label,v:vV(t)?vT(t)/vV(t):0,c:t.color})).sort((a,b)=>b.v-a.v);
-  document.getElementById('tons-rank').innerHTML=tv.map(r=>`<div class="pb">
-    <div class="pb-top"><span class="pb-lbl">${r.l}</span><span class="pb-val">${fnT(r.v)} t/vagão</span></div>
-    <div class="pb-track"><div class="pb-fill" style="width:${tv[0].v?Math.round(r.v/tv[0].v*100):0}%;background:${r.c}"></div></div>
-  </div>`).join('');
-
-  // Tabelas por terminal (sempre mostram todos os meses do terminal filtrado)
-  makeTable('tbl-tons-tgrao',['Mês','Vagões','Toneladas (t)','Taxa (Vgs/Hr)','t/Vagão'],
-    filterArr(DB.tgrao).map(r=>[r.m,fn(r.real),fnT(r.tons),fn(r.taxa,2),fnT(r.tons/r.real)]));
-  makeTable('tbl-tons-cop',['Mês','Moega','Vagões','Toneladas (t)','Taxa (Vgs/Hr)'],
-    filterArr(DB.cop).flatMap(r=>r.moegas.map(m=>[r.m,m.n,fn(m.v),fnT(m.tons),fn(m.taxa,2)])));
-  makeTable('tbl-tons-tec',['Mês','Moega','Vagões','Toneladas (t)','Taxa (Vgs/Hr)'],
-    filterArr(DB.tec).flatMap(r=>r.moegas.map(m=>[r.m,m.n,fn(m.v),fnT(m.tons),fn(m.taxa,2)])));
-  makeTable('tbl-tons-cli',['Mês','Moega','Vagões','Toneladas (t)','Taxa (Vgs/Hr)'],
-    filterArr(DB.cli).flatMap(r=>r.moegas.map(m=>[r.m,m.n,fn(m.v),fnT(m.tons),fn(m.taxa,2)])));
-};
-
-// ── Patch buildTaxa para usar filtros ────────
-const _origTaxa = buildTaxa;
-buildTaxa = function(){
-  const terminals = filterTerminals();
-  const labels    = filterMeses();
-  const avgTaxa   = t => { const a=filterArr(DB[t.key]); return a.reduce((s,r)=>s+r.taxa,0)/a.length; };
-
-  document.getElementById('taxa-kpis').innerHTML=[
-    {lbl:'Melhor Taxa (filtro)',val:fn(Math.max(...terminals.map(avgTaxa)),2)+' Vgs/Hr',sub:'Terminal mais produtivo',c:'orange'},
-    {lbl:'Menor Taxa (filtro)', val:fn(Math.min(...terminals.map(avgTaxa)),2)+' Vgs/Hr',sub:'Terminal menos produtivo',c:'blue'},
-    {lbl:'Média Geral',         val:fn(terminals.reduce((s,t)=>s+avgTaxa(t),0)/terminals.length,2)+' Vgs/Hr',sub:'Média filtrada',c:'green'},
-    {lbl:'Período',             val:FILTERS.mes==='all'?'Jan–Jun':MESES[parseInt(FILTERS.mes)],sub:'Mês selecionado',c:'gray'},
-  ].map(k=>`<div class="kpi-card ${k.c}">
-    <div class="kpi-label">${k.lbl}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div>
-  </div>`).join('');
-
-  mkC('c-taxa-bar','bar',{
-    labels:terminals.map(t=>t.label),
-    datasets:[{label:'Taxa Média (Vgs/Hr)',data:terminals.map(avgTaxa),backgroundColor:terminals.map(t=>t.color2),borderRadius:4}]
-  },{plugins:{legend:{display:false}}});
-
-  mkC('c-taxa-line','line',{labels,datasets:
-    terminals.map(t=>({
-      label:t.label,data:filterArr(DB[t.key]).map(r=>r.taxa),
-      borderColor:t.color,tension:.3,pointRadius:4,fill:false
-    }))
-  },{scales:{y:{title:{display:true,text:'Vgs/Hr',color:'#6B7280'}}}});
-
-  makeTable('tbl-taxa',['Terminal','Mês','Taxa (Vgs/Hr)','Vagões','Toneladas (t)'],
-    terminals.flatMap(t=>filterArr(DB[t.key]).map(r=>[t.label,r.m,fn(r.taxa,2),fn(r.real),fnT(r.tons)]))
-  );
-};
-
-// ── Patch buildTendencia para usar filtros ───
-const _origTend = buildTendencia;
-buildTendencia = function(){
-  const terminals = filterTerminals();
-  const labels    = filterMeses();
-
-  mkC('c-tend','line',{labels,datasets:
-    terminals.map(t=>({
-      label:t.label,data:filterArr(DB[t.key]).map(r=>r.real),
-      borderColor:t.color,tension:.3,pointRadius:5,fill:false,borderWidth:2
-    }))
-  },{plugins:{legend:{position:'bottom'}}});
-
-  mkC('c-tend-tons','line',{labels,datasets:
-    terminals.map(t=>({
-      label:t.label,data:filterArr(DB[t.key]).map(r=>r.tons),
-      borderColor:t.color,tension:.3,pointRadius:4,fill:false
-    }))
-  },{scales:{y:{title:{display:true,text:'Toneladas',color:'#6B7280'}}}});
-
-  makeTable('tbl-tend',['Terminal','Período','Vagões','Variação','Toneladas'],
-    terminals.flatMap(t=>filterArr(DB[t.key]).map((r,i,arr)=>[
-      t.label, r.m, fn(r.real),
-      i===0?'—':(((r.real-arr[i-1].real)/arr[i-1].real)*100).toFixed(1)+'%',
-      fnT(r.tons)
-    ]))
-  );
-};
-
-// ── Patch buildParadas para usar filtros ─────
-const _origParadas = buildParadas;
-buildParadas = function(){
-  const terminals = filterTerminals();
-  const avgFP=(key,field)=>{
-    const arr=filterArr(DB[key]);
-    if(key==='tgrao') return arr.reduce((s,r)=>s+r[field],0)/arr.length;
-    return arr.reduce((s,r)=>{
-      const ms=r.moegas.filter(m=>m.v+m.taxa>0);
-      return s+(ms.length?ms.reduce((ss,m)=>ss+m[field],0)/ms.length:0);
-    },0)/arr.length;
-  };
-
-  mkC('c-par-main','bar',{
-    labels:terminals.map(t=>t.label),
-    datasets:[
-      {label:'Ferrovia (%)',data:terminals.map(t=>avgFP(t.key,'ferr')),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
-      {label:'Terminal (%)',data:terminals.map(t=>avgFP(t.key,'term')),backgroundColor:'rgba(237,125,49,.8)', borderRadius:2},
-      {label:'Operação (%)',data:terminals.map(t=>avgFP(t.key,'op')),  backgroundColor:'rgba(22,163,74,.7)',  borderRadius:2},
-    ]
-  },{scales:{y:{max:100,title:{display:true,text:'%',color:'#6B7280'}}}});
-
-  const gF=terminals.reduce((s,t)=>s+avgFP(t.key,'ferr'),0)/terminals.length;
-  const gT=terminals.reduce((s,t)=>s+avgFP(t.key,'term'),0)/terminals.length;
-  const gO=terminals.reduce((s,t)=>s+avgFP(t.key,'op'),  0)/terminals.length;
-  mkC('c-par-donut','doughnut',{
-    labels:['Ferrovia','Terminal','Operação'],
-    datasets:[{data:[gF.toFixed(1),gT.toFixed(1),gO.toFixed(1)],
-      backgroundColor:['rgba(68,114,196,.85)','rgba(237,125,49,.85)','rgba(22,163,74,.75)'],borderColor:'#fff',borderWidth:3}]
-  },{plugins:{legend:{position:'bottom'}},scales:{x:{display:false},y:{display:false}}});
-
-  renderPBars('par-pbars', terminals.flatMap(t=>[
-    {l:`${t.label} · Ferrovia`,v:avgFP(t.key,'ferr'),c:'pb-blue'},
-    {l:`${t.label} · Terminal`,v:avgFP(t.key,'term'),c:'pb-yellow'},
-    {l:`${t.label} · Operação`,v:avgFP(t.key,'op'),  c:'pb-green'},
-  ]));
-};
-
-// ── Patch buildPlanejado para usar filtros ───
-const _origPlan = buildPlanejado;
-buildPlanejado = function(){
-  const makeDP=(id,key,color)=>{
-    const arr=filterArr(DB[key]);
-    mkC(id,'bar',{labels:arr.map(r=>r.m),datasets:[
-      {label:'Planejado',data:arr.map(r=>r.plan),backgroundColor:'rgba(107,114,128,.4)',borderRadius:3},
-      {label:'Realizado',data:arr.map(r=>r.real),backgroundColor:color,borderRadius:3},
-    ]},{scales:{y:{title:{display:true,text:'Vagões',color:'#6B7280'}}}});
-  };
-  // Só mostra terminais filtrados
-  const terminals = filterTerminals();
-  const map={tgrao:'c-plan-tgrao',tec:'c-plan-tec',cop:'c-plan-cop',cli:'c-plan-cli'};
-  const colors={tgrao:'rgba(237,125,49,.8)',tec:'rgba(68,114,196,.8)',cop:'rgba(107,114,128,.8)',cli:'rgba(255,69,0,.8)'};
-  terminals.forEach(t=>makeDP(map[t.key],t.key,colors[t.key]));
-};
-
-// ── Eventos dos filtros ───────────────────────
-document.getElementById('fTerminal').addEventListener('change', e=>{
-  FILTERS.terminal = e.target.value;
-  // Força rebuild de todas as páginas já construídas
-  Object.keys(BUILT).forEach(k=>{ BUILT[k]=false; });
-  applyFilters();
-  showToast(`✓ Filtro Terminal: ${e.target.value==='all'?'Todos':e.target.value}`);
+document.getElementById('fTerminal').addEventListener('change',e=>{
+  const opts=e.target.options; const lbl=opts[opts.selectedIndex].text;
+  onFilterChange('terminal',e.target.value,lbl);
 });
-
-document.getElementById('fMes').addEventListener('change', e=>{
-  FILTERS.mes = e.target.value;
-  Object.keys(BUILT).forEach(k=>{ BUILT[k]=false; });
-  applyFilters();
-  const label = e.target.value==='all'?'Todos os meses':MESES[parseInt(e.target.value)];
-  showToast(`✓ Filtro Mês: ${label}`);
+document.getElementById('fMes').addEventListener('change',e=>{
+  const opts=e.target.options; const lbl=opts[opts.selectedIndex].text;
+  onFilterChange('mes',e.target.value,lbl);
 });
-
+document.getElementById('fProduto').addEventListener('change',e=>{
+  const opts=e.target.options; const lbl=opts[opts.selectedIndex].text;
+  onFilterChange('produto',e.target.value,lbl);
+  // Avisa se terminal selecionado não opera o produto
+  if(e.target.value!=='all' && FILTERS.terminal!=='all'){
+    const ok=(PRODUTO_TERMINALS[e.target.value]||[]).includes(FILTERS.terminal);
+    if(!ok) showToast(`⚠ ${FILTERS.terminal} não opera ${e.target.value}. Sem dados.`);
+  }
+});
+document.getElementById('fOperador').addEventListener('change',e=>{
+  const opts=e.target.options; const lbl=opts[opts.selectedIndex].text;
+  onFilterChange('operador',e.target.value,lbl);
+  if(e.target.value!=='all' && FILTERS.terminal!=='all'){
+    const ok=(OP_TERMINALS[e.target.value]||[]).includes(FILTERS.terminal);
+    if(!ok) showToast(`⚠ ${FILTERS.terminal} não usa operador ${e.target.value}. Sem dados.`);
+  }
+});
 document.getElementById('btnClear').addEventListener('click',()=>{
-  FILTERS.terminal = 'all';
-  FILTERS.mes      = 'all';
-  document.getElementById('fTerminal').value = 'all';
-  document.getElementById('fMes').value      = 'all';
-  Object.keys(BUILT).forEach(k=>{ BUILT[k]=false; });
-  applyFilters();
-  showToast('✓ Filtros limpos — exibindo dados consolidados');
+  ['terminal','mes','produto','operador'].forEach(k=>{FILTERS[k]='all';});
+  ['fTerminal','fMes','fProduto','fOperador'].forEach(id=>{document.getElementById(id).value='all';});
+  Object.keys(BUILT).forEach(k=>{BUILT[k]=false;});
+  rebuildActive();
+  updatePills();
+  showToast('✓ Todos os filtros limpos');
 });
 
 // ── EXPORT XLSX ──────────────────────────────
 document.getElementById('btnExportXLSX').addEventListener('click',()=>{
   const wb=XLSX.utils.book_new();
-  // Sheet 1: Volume
-  const volData=[
-    ['NSTECH · Dashboard Operacional · NST 2.0 · Jan–Jun 2026'],
-    ['Terminal','Jan','Fev','Mar','Abr','Mai','Jun (01-27)','Total Vagões','Total Toneladas (t)'],
+  const pVag=vagsByProduto();
+  const opVag=vagsByOperador();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ['NSTECH · NST 2.0 · Dashboard Operacional · Jan–Jun 2026'],
+    ['Terminal','Jan','Fev','Mar','Abr','Mai','Jun','Total Vagões','Total Toneladas'],
     ['TGRÃO',...DB.tgrao.map(r=>r.real),tgraoVag,tgraoTons],
     ['TEC',  ...DB.tec.map(r=>r.real),  tecVag,  tecTons],
     ['COP',  ...DB.cop.map(r=>r.real),  copVag,  copTons],
     ['CLI',  ...DB.cli.map(r=>r.real),  cliVag,  cliTons],
     ['TOTAL','','','','','','',totalVag,totalTons],
-  ];
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(volData),'Volume');
-
-  // Sheet 2: Toneladas por terminal detalhado
-  const tonsData=[
-    ['Vol. Movimentado (t) por Terminal e Mês'],
-    ['Terminal','Mês','Toneladas (t)','Vagões','Taxa (Vgs/Hr)'],
-    ...DB.tgrao.map(r=>['TGRÃO',r.m,r.tons,r.real,r.taxa]),
-    ...DB.tec.map(r=>['TEC',r.m,r.tons,r.real,r.taxa]),
-    ...DB.cop.map(r=>['COP',r.m,r.tons,r.real,r.taxa]),
-    ...DB.cli.map(r=>['CLI',r.m,r.tons,r.real,r.taxa]),
-  ];
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(tonsData),'Toneladas');
-
-  // Sheet 3: Moegas
-  const moegData=[
-    ['Vol. por Moega e Mês'],
-    ['Terminal','Moega','Mês','Vagões','Toneladas (t)','Taxa (Vgs/Hr)','Ferrovia (%)','Terminal (%)','Operação (%)'],
-    ...DB.cop.flatMap(r=>r.moegas.map(m=>['COP',m.n,r.m,m.v,m.tons,m.taxa,m.ferr,m.term,m.op])),
-    ...DB.tec.flatMap(r=>r.moegas.map(m=>['TEC',m.n,r.m,m.v,m.tons,m.taxa,m.ferr,m.term,m.op])),
-    ...DB.cli.flatMap(r=>r.moegas.map(m=>['CLI',m.n,r.m,m.v,m.tons,m.taxa,m.ferr,m.term,m.op])),
-  ];
-  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(moegData),'Moegas');
-
-  XLSX.writeFile(wb,`NSTECH_NST2_Dashboard_${new Date().toISOString().slice(0,10)}.xlsx`);
+  ]),'Volume');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ['Vagões por Produto — Jan-Jun 2026'],
+    ['Produto','Vagões','% do Total','Terminais','Operadores'],
+    ['Açúcar', pVag.AÇUCAR,(pVag.AÇUCAR/totalVag*100).toFixed(1)+'%','COP','MRS + RUMO'],
+    ['Soja',   pVag.SOJA,  (pVag.SOJA/totalVag*100).toFixed(1)+'%','TGRÃO + TEC + CLI','RUMO + VLI'],
+    ['Milho',  pVag.MILHO, (pVag.MILHO/totalVag*100).toFixed(1)+'%','TEC + CLI','RUMO + VLI'],
+  ]),'Por Produto');
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([
+    ['Vagões por Operador — Jan-Jun 2026'],
+    ['Operador','Vagões','% do Total','Terminais','Produtos'],
+    ['MRS',  opVag.MRS,  (opVag.MRS/totalVag*100).toFixed(1)+'%','COP','Açúcar'],
+    ['RUMO', opVag.RUMO, (opVag.RUMO/totalVag*100).toFixed(1)+'%','TGRÃO · TEC · COP · CLI','Soja + Açúcar + Milho'],
+    ['VLI',  opVag.VLI,  (opVag.VLI/totalVag*100).toFixed(1)+'%','TEC · CLI','Soja + Milho'],
+  ]),'Por Operador');
+  XLSX.writeFile(wb,`NSTECH_NST2_v2_${new Date().toISOString().slice(0,10)}.xlsx`);
   showToast('✓ Excel exportado com sucesso!');
 });
-
-// ── EXPORT PDF (print) ────────────────────────
-document.getElementById('btnExportPDF').addEventListener('click',()=>{
-  showToast('⏳ Abrindo diálogo de impressão…');
-  setTimeout(()=>window.print(),500);
-});
-
-// ── IMPORTAÇÃO ────────────────────────────────
+document.getElementById('btnExportPDF').addEventListener('click',()=>{showToast('⏳ Abrindo diálogo de impressão…');setTimeout(()=>window.print(),500);});
 document.getElementById('btnUpdateData').addEventListener('click',()=>document.getElementById('fileInput').click());
-document.getElementById('fileInput').addEventListener('change',function(e){
-  const f=e.target.files[0]; if(!f){return;}
-  showToast(`✓ ${f.name} recebido — funcionalidade de importação ativa`);
-  e.target.value='';
-});
+document.getElementById('fileInput').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;showToast(`✓ ${f.name} recebido`);e.target.value='';});
 
-// ── TICKER ───────────────────────────────────
-function buildTicker(){
-  // Dados do último mês com registro (Junho 01-27)
-  const tickerData = [
-    {
-      terminal:'TGRÃO',
-      moega:'Moegão-Terra',
-      taxa:'5,09',
-      vagoes:'409',
-      tons:'15.874 t',
-      tend:'↓ Decrescente',
-      ferr:'44,73%',
-    },
-    {
-      terminal:'TEC',
-      moega:'L12A·Moeg1·Moeg2',
-      taxa:'16,58',
-      vagoes:'4.197',
-      tons:'— t',
-      tend:'↓ Decrescente',
-      ferr:'Ferr: variável',
-    },
-    {
-      terminal:'COPERSUCAR',
-      moega:'Moegão·L5·L6',
-      taxa:'9,19',
-      vagoes:'3.500',
-      tons:'295.263 t',
-      tend:'↓ Decrescente',
-      ferr:'34,34%',
-    },
-    {
-      terminal:'CLI',
-      moega:'CL-Mar·CL-Terra·Moeg-Mar·Moeg-Terra·T23',
-      taxa:'14,73',
-      vagoes:'6.500',
-      tons:'15.641 t',
-      tend:'↓ Decrescente',
-      ferr:'27,12%',
-    },
+// ── TICKER ────────────────────────────────────
+(function buildTicker(){
+  const items=[
+    {t:'TGRÃO',taxa:'5,09',v:'409',tons:'15.874 t',ferr:'44,7%',prod:'Soja',op:'RUMO'},
+    {t:'TEC',  taxa:'16,58',v:'4.197',tons:'— t',  ferr:'variável',prod:'Soja+Milho',op:'RUMO+VLI'},
+    {t:'COP',  taxa:'9,19', v:'3.500',tons:'295.263 t',ferr:'34,3%',prod:'Açúcar',op:'MRS+RUMO'},
+    {t:'CLI',  taxa:'14,73',v:'6.500',tons:'15.641 t', ferr:'27,1%',prod:'Soja+Milho',op:'RUMO+VLI'},
   ];
-
-  const sep = `<span class="ticker-dot"></span>`;
-
-  const items = tickerData.map(d=>`
-    <span class="ticker-item">
-      <span class="ti-terminal">▸ ${d.terminal}</span>
-      <span class="ti-sep">|</span>
-      <span>Taxa:</span>
-      <span class="ti-val">${d.taxa} Vgs/Hr</span>
-      <span class="ti-sep">·</span>
-      <span>Vagões:</span>
-      <span class="ti-val">${d.vagoes}</span>
-      <span class="ti-sep">·</span>
-      <span>Vol:</span>
-      <span class="ti-val">${d.tons}</span>
-      <span class="ti-sep">·</span>
-      <span>Ferrovia:</span>
-      <span class="ti-val">${d.ferr}</span>
-      <span class="ti-sep">·</span>
-      <span style="color:#6B7280;font-size:10px">${d.tend}</span>
-    </span>${sep}`
-  ).join('');
-
-  // Duplica para loop contínuo
-  const el = document.getElementById('tickerContent');
-  el.innerHTML = items + items;
-
-  // Ajusta velocidade conforme largura real do conteúdo
-  requestAnimationFrame(()=>{
-    const totalW = el.scrollWidth / 2;
-    const speed  = totalW / 120; // px/s — ~120s para percorrer
-    const dur    = Math.max(totalW / 80, 30); // mínimo 30s
-    el.style.animationDuration = dur + 's';
-  });
-}
-
-buildTicker();
-
-// ══════════════════════════════════════════════
-//  WEB SPEECH API — MOTOR DE VOZ
-// ══════════════════════════════════════════════
-
-const VOICE = {
-  synth: window.speechSynthesis,
-  current: null,
-  supported: 'speechSynthesis' in window,
-
-  // Encontra a melhor voz em português
-  getVoice(){
-    const voices = this.synth.getVoices();
-    return voices.find(v => v.lang === 'pt-BR')
-        || voices.find(v => v.lang.startsWith('pt'))
-        || voices[0];
-  },
-
-  // Fala um texto
-  speak(text, btnEl){
-    if(!this.supported){
-      showToast('⚠ Seu navegador não suporta voz. Use Chrome ou Edge.');
-      return;
-    }
-
-    // Se já está falando o mesmo, para
-    if(this.synth.speaking){
-      this.synth.cancel();
-      if(this.current === btnEl){
-        btnEl?.classList.remove('speaking');
-        this.current = null;
-        document.getElementById('voiceToast').classList.remove('show');
-        return;
-      }
-    }
-
-    // Remove classe de todos os botões
-    document.querySelectorAll('.speak-btn').forEach(b=>b.classList.remove('speaking'));
-
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang  = 'pt-BR';
-    utt.rate  = 0.92;
-    utt.pitch = 1.0;
-    utt.volume= 1.0;
-
-    // Aguarda vozes carregarem
-    const trySpeak = () => {
-      const v = this.getVoice();
-      if(v) utt.voice = v;
-      this.synth.speak(utt);
-    };
-
-    if(this.synth.getVoices().length === 0){
-      this.synth.onvoiceschanged = trySpeak;
-    } else {
-      trySpeak();
-    }
-
-    // Mostra tooltip com texto
-    const toast = document.getElementById('voiceToast');
-    document.getElementById('voiceToastText').textContent = text;
-    toast.classList.add('show');
-
-    btnEl?.classList.add('speaking');
-    this.current = btnEl;
-
-    utt.onend = () => {
-      btnEl?.classList.remove('speaking');
-      toast.classList.remove('show');
-      this.current = null;
-    };
-    utt.onerror = () => {
-      btnEl?.classList.remove('speaking');
-      toast.classList.remove('show');
-      this.current = null;
-    };
-  },
-
-  stop(){
-    this.synth.cancel();
-    document.querySelectorAll('.speak-btn').forEach(b=>b.classList.remove('speaking'));
-    document.getElementById('voiceToast').classList.remove('show');
-    this.current = null;
-  }
-};
-
-// ── Textos de voz por seção ──────────────────
-const VOICE_SCRIPTS = {
-
-  // ─ Overview KPIs ─
-  ov_total: ()=>`Total de vagões operados de janeiro a junho de dois mil e vinte e seis: ${fn(totalVag)} vagões em quatro terminais. Volume total movimentado: ${fnT(totalTons)} toneladas.`,
-
-  ov_terminal_cli: ()=>`CLI é o terminal líder com ${fn(cliVag)} vagões e ${fnT(cliTons)} toneladas movimentadas. Pico em fevereiro com seis mil seiscentos e sessenta e oito vagões e taxa de dezesseis vírgula noventa e sete vagões por hora.`,
-
-  ov_terminal_tec: ()=>`TEC registrou ${fn(tecVag)} vagões no período. Destaque para o recorde de maio com dezoito vírgula zero três vagões por hora, maior taxa de todo o grupo.`,
-
-  ov_terminal_cop: ()=>`COPERSUCAR movimentou ${fn(copVag)} vagões e ${fnT(copTons)} toneladas. Principal gargalo: ferrovia, que representa em média quarenta por cento das paradas operacionais.`,
-
-  ov_terminal_tgrao: ()=>`TGRÃO operou ${fn(tgraoVag)} vagões com taxa média de cinco vírgula vinte e oito vagões por hora. Volume movimentado de ${fnT(tgraoTons)} toneladas no período.`,
-
-  ov_paradas: ()=>`Análise de paradas consolidada. A ferrovia é o principal gargalo em todos os terminais, com maior impacto no TGRÃO em janeiro: sessenta e sete vírgula oitenta e quatro por cento. O TEC apresenta melhora significativa de maio em diante.`,
-
-  ov_mensal: ()=>`Evolução mensal dos quatro terminais. CLI lidera em todos os meses. TEC apresenta crescimento expressivo chegando a cinco mil duzentos e sessenta e cinco vagões em maio. COPERSUCAR mantém estabilidade acima de três mil vagões mensais.`,
-
-  // ─ TGRÃO ─
-  tgrao_hero: ()=>`Terminal TGRÃO. Moegão Terra. Total de ${fn(tgraoVag)} vagões de janeiro a junho de vinte e vinte e seis. Volume movimentado de ${fnT(tgraoTons)} toneladas. Produto exclusivo: Soja, operado pela ferrovia RUMO. Pico operacional em abril com dois mil novecentos e noventa e quatro vagões e duzentos e oitenta e cinco mil toneladas.`,
-
-  tgrao_paradas: ()=>`Paradas TGRÃO. Ferrovia é o maior impacto: em janeiro representou sessenta e sete vírgula oitenta e quatro por cento do tempo. Em abril, melhor resultado: apenas vinte e um vírgula sessenta e três por cento. Terminal responsável por média de oito por cento. Operação efetiva média de quarenta e nove por cento.`,
-
-  tgrao_jun: ()=>`Junho parcial, período de primeiro a vinte e sete de junho: quatrocentos e nove vagões, taxa de cinco vírgula zero nove vagões por hora, quinze mil oitocentas e setenta e quatro toneladas. Tendência decrescente em relação a abril e maio.`,
-
-  // ─ TEC ─
-  tec_hero: ()=>`Terminal TEC. Quatro moegas: Linha doze A, Moegão um, dois e três. Total de ${fn(tecVag)} vagões. Volume de ${fnT(tecTons)} toneladas. Recorde histórico em maio: dezoito vírgula zero três vagões por hora. Moegão três sem operação em todo o período.`,
-
-  tec_tons: ()=>`Volume por moega no TEC. Linha doze A movimentou ${fnT(DB.tec.reduce((s,r)=>s+r.moegas[0].tons,0))} toneladas. Moegão um: ${fnT(DB.tec.reduce((s,r)=>s+r.moegas[1].tons,0))} toneladas. Moegão dois: ${fnT(DB.tec.reduce((s,r)=>s+r.moegas[2].tons,0))} toneladas. Moegão três: inativo.`,
-
-  // ─ COP ─
-  cop_hero: ()=>`Terminal COPERSUCAR. Três linhas: Moegão, Linha cinco e Linha seis. Total de ${fn(copVag)} vagões e ${fnT(copTons)} toneladas. Pico em maio com três mil setecentos e quarenta e três vagões e trezentos e vinte e nove mil toneladas. Maior impacto de ferrovia do grupo.`,
-
-  cop_paradas: ()=>`Paradas COPERSUCAR. Moegão em fevereiro: sessenta e dois vírgula cinquenta e sete por cento de impacto da ferrovia. Linha cinco e seis mais equilibradas entre trinta e quarenta e seis por cento. Ação prioritária: sincronismo com operadores ferroviários MRS e RUMO.`,
-
-  // ─ CLI ─
-  cli_hero: ()=>`Terminal CLI. Maior terminal do grupo. Cinco moegas ativas. Total de ${fn(cliVag)} vagões e ${fnT(cliTons)} toneladas de janeiro a junho. Pico em maio com seis mil novecentos e vinte e dois vagões. Taxa máxima de dezesseis vírgula noventa e sete vagões por hora em fevereiro.`,
-
-  cli_tons: ()=>`Volume CLI por moega. Costa Leite Mar e Terra operam principalmente Soja. Moegão Mar liderou com ${fnT(DB.cli.reduce((s,r)=>s+r.moegas[2].tons,0))} toneladas. Moegão Terra: ${fnT(DB.cli.reduce((s,r)=>s+r.moegas[3].tons,0))} toneladas. T23 inativo em janeiro e abril.`,
-
-  // ─ Toneladas ─
-  tons_total: ()=>`Volume total movimentado no período: ${fnT(totalTons)} toneladas. CLI lidera com ${fnT(cliTons)} toneladas, representando ${(cliTons/totalTons*100).toFixed(1)} por cento do total. COPERSUCAR em segundo com ${fnT(copTons)} toneladas. TEC com ${fnT(tecTons)} e TGRÃO com ${fnT(tgraoTons)} toneladas.`,
-
-  tons_ratio: ()=>`Relação toneladas por vagão. CLI apresenta a maior eficiência de carga com ${fnT(cliTons/cliVag)} toneladas por vagão. COPERSUCAR: ${fnT(copTons/copVag)} toneladas por vagão. TEC: ${fnT(tecTons/tecVag)} e TGRÃO: ${fnT(tgraoTons/tgraoVag)} toneladas por vagão.`,
-
-  // ─ Paradas ─
-  paradas_geral: ()=>`Análise geral de paradas dos quatro terminais. A ferrovia é o principal responsável pelas paralisações em todos os terminais, com destaque para COPERSUCAR e TGRÃO. Recomendação: implementar monitoramento em tempo real do sincronismo ferroviário.`,
-
-  // ─ Taxa ─
-  taxa_geral: ()=>`Taxa vagão hora consolidada. TEC lidera com recorde de dezoito vírgula zero três em maio. CLI mantém alta produtividade com média acima de doze vagões por hora. COPERSUCAR evolui de quatro vírgula zero dois em janeiro para nove vírgula quarenta e três em maio. TGRÃO estável entre cinco e cinco vírgula seis.`,
-
-  // ─ Jan x Jun ─
-  janjun: ()=>`Comparativo janeiro versus junho. CLI cresceu de três mil seiscentos e quarenta e quatro para seis mil e quinhentos vagões. TEC triplicou o volume de um mil quatrocentos e oitenta e seis para quatro mil cento e noventa e sete. COPERSUCAR cresceu de dois mil quatrocentos e noventa e seis para três mil e quinhentos. TGRÃO reduziu de um mil duzentos e noventa e três para quatrocentos e nove, período parcial de junho.`,
-};
-
-// ── Cria botão de fala ───────────────────────
-function speakBtn(scriptKey, title='Ouvir análise'){
-  return `<button class="speak-btn" title="${title}"
-    onclick="event.stopPropagation();VOICE.speak(VOICE_SCRIPTS['${scriptKey}']?.() || '', this)"
-    onmouseenter="VOICE.speak(VOICE_SCRIPTS['${scriptKey}']?.() || '', this)">
-  </button>`;
-}
-
-// ── Injeta botões nas seções após build ──────
-function injectSpeakButtons(){
-  // Overview KPI cards
-  const kpiMap = [
-    ['ov_total',       0],
-    ['ov_terminal_cli',3],
-    ['ov_terminal_tec',1],
-    ['ov_terminal_cop',2],
-  ];
-  const ovKpis = document.querySelectorAll('#ov-kpis .kpi-card');
-  ovKpis.forEach((card,i)=>{
-    if(!card.querySelector('.kpi-speak')){
-      const keys=['ov_total','ov_terminal_tec','ov_terminal_cop','ov_terminal_cli'];
-      const btn=document.createElement('div');
-      btn.className='kpi-speak';
-      btn.innerHTML=speakBtn(keys[i]||'ov_total','Ouvir este KPI');
-      card.appendChild(btn);
-    }
-  });
-
-  // Adiciona botão nos card-top das seções principais
-  const cardTopMap = {
-    'c-ov-prod':    'ov_mensal',
-    'c-ov-tons':    'tons_total',
-    'c-ov-paradas': 'ov_paradas',
-    'c-ov-mensal':  'ov_mensal',
-    'c-tgrao-bar':  'tgrao_hero',
-    'c-tgrao-par':  'tgrao_paradas',
-    'c-tec-bar':    'tec_hero',
-    'c-tec-tons':   'tec_tons',
-    'c-cop-bar':    'cop_hero',
-    'c-cop-tons':   'cop_paradas',
-    'c-cli-bar':    'cli_hero',
-    'c-cli-tons':   'cli_tons',
-    'c-tons-bar':   'tons_total',
-    'c-tons-line':  'tons_total',
-    'c-tons-donut': 'tons_ratio',
-    'c-taxa-bar':   'taxa_geral',
-    'c-taxa-line':  'taxa_geral',
-    'c-tend':       'ov_mensal',
-    'c-tend-tons':  'tons_total',
-    'c-par-main':   'paradas_geral',
-    'c-par-donut':  'paradas_geral',
-    'c-jj-vag':     'janjun',
-    'c-jj-tons':    'janjun',
-  };
-  Object.entries(cardTopMap).forEach(([canvasId, scriptKey])=>{
-    const canvas = document.getElementById(canvasId);
-    if(!canvas) return;
-    const card = canvas.closest('.card');
-    if(!card) return;
-    const top = card.querySelector('.card-top');
-    if(!top || top.querySelector('.speak-btn')) return;
-    const btn = document.createElement('span');
-    btn.innerHTML = speakBtn(scriptKey,'Ouvir análise deste gráfico');
-    top.appendChild(btn);
-  });
-
-  // Hero nums dos terminais
-  const heroMap={
-    'tgrao-vag':'tgrao_hero','tec-vag':'tec_hero',
-    'cop-vag':'cop_hero','cli-vag':'cli_hero',
-  };
-  Object.entries(heroMap).forEach(([elId,scriptKey])=>{
-    const el=document.getElementById(elId);
-    if(!el) return;
-    const parent=el.parentElement;
-    if(parent && !parent.querySelector('.speak-btn')){
-      const btn=document.createElement('button');
-      btn.className='speak-btn';
-      btn.title='Ouvir análise do terminal';
-      btn.innerHTML='';
-      btn.onclick=(e)=>{e.stopPropagation();VOICE.speak(VOICE_SCRIPTS[scriptKey]?.(),'',btn)};
-      btn.onmouseenter=()=>VOICE.speak(VOICE_SCRIPTS[scriptKey]?.(),btn);
-      parent.appendChild(btn);
-    }
-  });
-}
-
-// Barra de controle de voz global (fixa no canto)
-const voiceBar = document.createElement('div');
-voiceBar.style.cssText=`
-  position:fixed;bottom:20px;left:20px;z-index:9998;
-  background:#fff;border:1px solid #E5E7EB;border-left:3px solid var(--orange,#FF4500);
-  border-radius:8px;padding:8px 14px;
-  display:flex;align-items:center;gap:10px;
-  box-shadow:0 2px 12px rgba(0,0,0,.1);
-  font-size:11px;color:#374151;
-  font-family:'Segoe UI',Arial,sans-serif;
-`;
-voiceBar.innerHTML=`
-  <span style="font-size:14px">🔊</span>
-  <span style="font-weight:600;color:#FF4500">Voz Ativa</span>
-  <span style="color:#9CA3AF">Passe o mouse nos gráficos</span>
-  <button onclick="VOICE.stop()" style="
-    background:#FEF2EE;border:1px solid #FF4500;color:#FF4500;
-    padding:3px 10px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:700;
-  ">⏹ Parar</button>
-`;
-document.body.appendChild(voiceBar);
-
-// Observa mudanças no DOM para injetar botões quando páginas são construídas
-const observer = new MutationObserver(()=> injectSpeakButtons());
-observer.observe(document.getElementById('page-overview'), {childList:true, subtree:true});
-['tgrao','tec','cop','cli','toneladas','taxa','tendencia','paradas','jan_jun'].forEach(p=>{
-  const el=document.getElementById('page-'+p);
-  if(el) observer.observe(el,{childList:true,subtree:true});
-});
+  const html=items.map(d=>`<span class="ticker-item">
+    <span class="ti-terminal">▸ ${d.t}</span><span class="ti-sep">|</span>
+    <span>Taxa:</span><span class="ti-val">${d.taxa} Vgs/Hr</span>
+    <span class="ti-sep">·</span><span>Vag:</span><span class="ti-val">${d.v}</span>
+    <span class="ti-sep">·</span><span>Vol:</span><span class="ti-val">${d.tons}</span>
+    <span class="ti-sep">·</span><span>Prod:</span><span class="ti-val">${d.prod}</span>
+    <span class="ti-sep">·</span><span>Op:</span><span class="ti-val">${d.op}</span>
+  </span><span class="ticker-dot"></span>`).join('');
+  const el=document.getElementById('tickerContent');
+  el.innerHTML=html+html;
+  requestAnimationFrame(()=>{el.style.animationDuration=Math.max(el.scrollWidth/160,30)+'s';});
+})();
 
 // ── INIT ─────────────────────────────────────
-// Injeta botões após build inicial
-setTimeout(injectSpeakButtons, 400);
-buildOverview();
-BUILT['overview']=true;
+buildOverview(); BUILT['overview']=true;
+updatePills();
 </script>
 </body>
 </html>
