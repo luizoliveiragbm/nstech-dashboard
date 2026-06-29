@@ -3,8 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NST 2.0 · Acesso · NSTECH</title>
+<title>Performance nos Trilhos · NSTECH · NST 2.0</title>
+<meta name="description" content="NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA.">
+<meta property="og:title" content="Performance nos Trilhos · NSTECH · NST 2.0" />
+<meta property="og:description" content="Performance nos Trilhos · NSTECH · NST 2.0." />
+<meta property="og:image" content="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/refs/heads/main/thumb-1024x600.jpg" />
+<meta property="og:url" content="https://luizoliveiragbm.github.io/nstech-dashboard/" />
+<meta property="og:type" content="website" />
 <link rel="icon" href="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/27542949fffde30353a0a2ba2f11798dd051f496/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/refs/heads/main/favicon-96x96.png" type="image/png" sizes="32x32">
+<link rel="icon" href="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/refs/heads/main/web-app-manifest-192x192.png" type="image/png" sizes="192x192">
+<link rel="icon" href="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/refs/heads/main/web-app-manifest-512x512.png" sizes="512x512">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;font-family:'Segoe UI',Arial,sans-serif}
@@ -245,7 +256,8 @@
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
     <div class="success-title">Acesso liberado!</div>
-    <div class="success-sub">Redirecionando para o dashboard<br><strong style="color:#FF4500">Performance nos Trilhos · NST 2.0</strong></div>
+    <div class="success-sub">      Redirecionando para o dashboard<br><strong style="color:#FF4500">Performance nos Trilhos · NST 2.0</strong></div>
+    <div style="font-size:10px;color:#9CA3AF;text-align:center;margin-top:4px">Registrando sessão segura…</div>
     <div class="redirect-bar"><div class="redirect-fill" id="rbar"></div></div>
     <a id="link-dash" href="https://luizoliveiragbm.github.io/nstech-dashboard/" target="_top"
        style="margin-top:6px;font-size:12px;color:#FF4500;font-weight:700;text-decoration:underline;display:none">
@@ -257,13 +269,26 @@
   </div>
 </div>
 
+<!-- Aviso legal -->
+<div style="position:relative;z-index:10;max-width:420px;width:100%;margin-top:14px">
+  <div style="background:rgba(255,255,255,.85);border:1px solid #E5E7EB;border-left:3px solid #FF4500;border-radius:8px;padding:10px 14px;display:flex;align-items:flex-start;gap:9px;">
+    <svg style="width:16px;height:16px;flex-shrink:0;margin-top:1px;color:#FF4500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <p style="font-size:10px;color:#6B7280;line-height:1.55;margin:0">
+      <strong style="color:#374151;display:block;margin-bottom:2px">Informação Confidencial · NSTECH</strong>
+      Os dados, análises e informações exibidos nesta plataforma são de propriedade exclusiva da <strong style="color:#FF4500">NSTECH</strong>.
+      É estritamente proibida a reprodução, distribuição ou utilização externa sem autorização prévia e por escrito.
+      O acesso não autorizado é sujeito às penalidades previstas em lei.
+    </p>
+  </div>
+</div>
+
 <div class="page-footer">
   GBM Tech &amp; Control by NSTECH · Claude IA · Jan–Jun 2026
 </div>
 
 <script>
 const SENHA_CORRETA = '123456';
-const DASHBOARD_URL = 'https://luizoliveiragbm.github.io/nstech-dashboard/';
+const DASHBOARD_URL = 'https://luizoliveiragbm.github.io/nstech-dashboard/dashboard.html';
 
 const senhaInput = document.getElementById('senha');
 const btnLogin   = document.getElementById('btn-login');
@@ -317,6 +342,10 @@ function doLogin(){
       setTimeout(()=>{ document.getElementById('rbar').style.width='100%'; },50);
       // Tenta redirecionar após 2.2s
       setTimeout(()=>{
+        // Grava sessão autenticada
+        sessionStorage.setItem('nst_auth','1');
+        sessionStorage.setItem('nst_user', document.getElementById('email').value.trim());
+        sessionStorage.setItem('nst_ts', Date.now());
         try{
           window.top.location.href = DASHBOARD_URL;
         } catch(e){
