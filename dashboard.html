@@ -16,6 +16,39 @@
 <link rel="icon" href="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/refs/heads/main/web-app-manifest-512x512.png" sizes="512x512">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  NSTECH · NST 2.0 · Guarda de Rota (Auth Guard)            ║
+  ║  Cole este bloco como PRIMEIRO elemento dentro de <head>    ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<script>
+(function(){
+  // URL da página de login (ajuste se necessário)
+  var LOGIN_URL = 'https://luizoliveiragbm.github.io/nstech-dashboard/index.html';
+
+  // Verifica se existe sessão válida
+  var auth = sessionStorage.getItem('nst_auth');
+  var ts   = parseInt(sessionStorage.getItem('nst_ts') || '0', 10);
+
+  // Sessão expira em 8 horas (em ms)
+  var SESSION_TTL = 8 * 60 * 60 * 1000;
+  var agora = Date.now();
+
+  if(!auth || (agora - ts) > SESSION_TTL){
+    // Limpa sessão expirada
+    sessionStorage.removeItem('nst_auth');
+    sessionStorage.removeItem('nst_user');
+    sessionStorage.removeItem('nst_ts');
+
+    // Redireciona para login imediatamente (antes de renderizar qualquer coisa)
+    window.location.replace(LOGIN_URL);
+  }
+})();
+</script>
+  
 <style>
 :root{
   --orange:#FF4500;--orange2:#FF6B35;--orange3:rgba(255,69,0,.10);
