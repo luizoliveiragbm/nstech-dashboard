@@ -296,6 +296,10 @@ td.r{text-align:right}
     <span class="nav-dot"></span>Impacto Paralisações
     <span class="nav-badge">NEW</span>
   </button>
+  <button class="nav-item" data-p="pesos_quebra">
+    <span class="nav-dot"></span>Pesos &amp; Quebra
+    <span class="nav-badge">NEW</span>
+  </button>
 </nav>
 <main class="main">
 
@@ -630,6 +634,38 @@ td.r{text-align:right}
   <div class="g1 card"><div class="card-top"><span class="ct-title">Plano de Ação</span></div><div class="tbl-wrap"><table id="tbl-acoes"></table></div></div>
 </div>
 
+<!-- PESOS & QUEBRA -->
+<div class="page" id="page-pesos_quebra">
+  <div class="page-header"><div class="ph-accent"></div><div>
+    <div class="ph-title">Pesos <span class="hl">&amp; Quebra</span> <span style="font-size:12px;font-weight:600;color:var(--gray)">(em implantação)</span></div>
+    <div class="ph-sub">Peso Transporte × Peso Balança · Jan–Jun 2026 · 4 Terminais</div>
+  </div><div class="ph-badge">NEW</div></div>
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span style="font-size:10px;font-weight:700;color:var(--gray);letter-spacing:.5px;text-transform:uppercase">Terminal:</span>
+    <select class="filter-sel" id="pq-terminal" style="min-width:100px">
+      <option value="all">Todos</option>
+      <option value="TGRÃO">TGRÃO</option>
+      <option value="TEC">TEC</option>
+      <option value="COP">COP — COPERSUCAR</option>
+      <option value="CLI">CLI</option>
+    </select>
+    <div style="width:1px;height:20px;background:var(--border)"></div>
+    <select class="filter-sel" id="pq-mes" style="min-width:100px">
+      <option value="all">Mês: Todos</option>
+      <option value="0">Janeiro</option>
+      <option value="1">Fevereiro</option>
+      <option value="2">Março</option>
+      <option value="3">Abril</option>
+      <option value="4">Maio</option>
+      <option value="5">Junho</option>
+    </select>
+    <div style="width:1px;height:20px;background:var(--border)"></div>
+    <span style="font-size:10px;font-weight:700;color:var(--orange)">⚠ Peso Transporte: dado ainda não fechado — valores exibidos são exemplo/ilustrativos</span>
+  </div>
+  <div class="kpi-grid g4" id="pq-kpis"></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Comparativo Mensal — Peso Balança × Peso Transporte</span><span class="ct-badge">EM IMPLANTAÇÃO</span></div><div class="chart-wrap h280"><canvas id="pq-c-comp"></canvas></div></div>
+  <div class="g1 card"><div class="card-top"><span class="ct-title">Detalhamento por Terminal e Mês</span></div><div class="tbl-wrap"><table id="pq-tbl"></table></div></div>
+</div>
 </main>
 </div>
 <footer class="footer">NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA</footer>
@@ -823,6 +859,71 @@ function vagsByMesOp(filtTerminal) {
     return {MRS:mrs,RUMO:rumo,VLI:vli};
   });
 }
+// ── PESOS & QUEBRA (em implantação) ─────────────────────────────
+// Peso Balança = Vol. Movimentado (t) já existente no dashboard (DB.*.tons)
+const PESO_BALANCA = {
+  tgrao:[52144.54,161228.45,245952.81,285001.84,224837.74,21924.74],
+  cop:  [219089.62,243289.61,268113.50,282946.45,329900.99,338367.30],
+  tec:  [142913.90,193017.27,322474.94,385727.52,223901.93,332.97],
+  cli:  [351789.47,661586.18,590111.73,603156.44,630979.01,27409.45],
+};
+// Peso Transporte = ainda não fechado; preencher conforme dados oficiais chegarem
+const PESO_TRANSPORTE = {
+  tgrao:[null,null,null,null,null,19200],
+  cop:  [null,null,null,null,null,null],
+  tec:  [null,null,null,null,null,null],
+  cli:  [null,null,null,null,null,null],
+};
+function buildPesosQuebra(filtTerminal, filtMes){
+  filtTerminal = filtTerminal || 'all';
+  filtMes = (filtMes==null || filtMes==='') ? 'all' : filtMes;
+  var mesIdx = filtMes==='all' ? null : parseInt(filtMes);
+  var terms = ['tgrao','cop','tec','cli'];
+  var termLabel = {tgrao:'TGRÃO',cop:'COP',tec:'TEC',cli:'CLI'};
+  var rows=[], totBal=0, totTra=0, totBalComTra=0, countTra=0;
+  terms.forEach(function(k){
+    if(filtTerminal!=='all' && termLabel[k]!==filtTerminal) return;
+    MESES.forEach(function(mes,i){
+      if(mesIdx!=null && i!==mesIdx) return;
+      var bal=PESO_BALANCA[k][i]||0;
+      var tra=PESO_TRANSPORTE[k][i];
+      totBal+=bal;
+      var quebra=null, quebraPct=null;
+      if(tra!=null){ totTra+=tra; totBalComTra+=bal; countTra++; quebra=tra-bal; quebraPct=tra>0?(quebra/tra*100):null; }
+      rows.push([termLabel[k],mes,fnT(bal)+' t', tra!=null?fnT(tra)+' t':'— (peso não fechado)', quebra!=null?fnT(quebra)+' t':'—', quebraPct!=null?quebraPct.toFixed(2)+'%':'—']);
+    });
+  });
+  var quebraTotal = countTra>0 ? (totTra-totBalComTra) : null;
+  if(typeof makeTable==='function') makeTable('pq-tbl',['Terminal','Mês','Peso Balança (t)','Peso Transporte (t)','Quebra (t)','Quebra (%)'],rows);
+  var kpiEl=document.getElementById('pq-kpis');
+  if(kpiEl){
+    kpiEl.innerHTML=
+      '<div class="card"><div class="ct-title">Peso Balança (Total)</div><div class="hero-num" style="font-size:22px">'+fnT(totBal)+' t</div></div>'+
+      '<div class="card"><div class="ct-title">Peso Transporte (Total)</div><div class="hero-num" style="font-size:22px">'+(countTra>0?fnT(totTra)+' t':'—')+'</div><div style="font-size:10px;color:var(--orange);margin-top:4px">⚠ peso não fechado</div></div>'+
+      '<div class="card"><div class="ct-title">Quebra (Total)</div><div class="hero-num" style="font-size:22px">'+(quebraTotal!=null?fnT(quebraTotal)+' t':'—')+'</div></div>'+
+      '<div class="card"><div class="ct-title">Amostras c/ Peso Transporte</div><div class="hero-num" style="font-size:22px">'+countTra+'</div></div>';
+  }
+  var ctxEl=document.getElementById('pq-c-comp');
+  if(ctxEl && typeof mkC==='function'){
+    var chartLabels = mesIdx!=null ? [MESES[mesIdx]] : MESES;
+    var idxList = mesIdx!=null ? [mesIdx] : MESES.map(function(_,i){return i;});
+    var balData = idxList.map(function(i){ var s=0; terms.forEach(function(k){ if(filtTerminal==='all'||termLabel[k]===filtTerminal) s+=PESO_BALANCA[k][i]||0; }); return s; });
+    var traData = idxList.map(function(i){ var s=0,has=false; terms.forEach(function(k){ if(filtTerminal==='all'||termLabel[k]===filtTerminal){ if(PESO_TRANSPORTE[k][i]!=null){ s+=PESO_TRANSPORTE[k][i]; has=true; } } }); return has?s:null; });
+    if(window.pqChart) window.pqChart.destroy();
+    window.pqChart = mkC('pq-c-comp','bar',{labels:chartLabels,datasets:[
+      {label:'Peso Balança (t)',data:balData,backgroundColor:MC,borderRadius:4},
+      {label:'Peso Transporte (t)',data:traData,type:'line',borderColor:'var(--orange)',borderDash:[5,5],tension:.3,pointRadius:4,fill:false},
+    ]});
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  buildPesosQuebra('all','all');
+  var pqSel=document.getElementById('pq-terminal');
+  var pqMes=document.getElementById('pq-mes');
+  function pqRefresh(){ buildPesosQuebra(pqSel?pqSel.value:'all', pqMes?pqMes.value:'all'); }
+  if(pqSel) pqSel.addEventListener('change',pqRefresh);
+  if(pqMes) pqMes.addEventListener('change',pqRefresh);
+});
 
 function vagsByTerminalProduto(filtMes) {
   filtMes = filtMes || 'all';
