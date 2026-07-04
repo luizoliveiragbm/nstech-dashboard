@@ -506,6 +506,16 @@ td.r{text-align:right}
     <div class="card"><div class="card-top"><span class="ct-title">Toneladas por Linha</span></div><div class="chart-wrap h240"><canvas id="c-cop-tons"></canvas></div></div>
     <div class="card"><div class="card-top"><span class="ct-title">Detalhamento Mensal</span></div><div class="tbl-wrap"><table id="tbl-cop"></table></div></div>
   </div>
+  <div class="sdiv"></div>
+  <div class="g2-12">
+    <div>
+      <div style="font-size:20px;font-weight:800;line-height:1.25;margin-bottom:16px">COP: <span class="hl">Consistência</span><br>e <span class="hl">Fluxo</span> Contínuo</div>
+      <div style="margin-bottom:14px"><div class="hero-num" style="font-size:32px">966</div><div class="hero-unit">Vagões (média/turno)</div></div>
+      <div style="margin-bottom:14px"><div class="hero-num" style="font-size:32px">9.10</div><div class="hero-unit">Média Vg/Hr</div></div>
+      <div><div class="hero-num" style="font-size:32px">24h</div><div class="hero-unit">Disponibilidade Total</div></div>
+    </div>
+    <div class="card"><div class="card-top"><span class="ct-title">Estabilidade Operacional por Turno</span><span class="ct-badge">ESTIMADO</span></div><div class="chart-wrap h260"><canvas id="c-cop-turno"></canvas></div></div>
+  </div>
 </div>
 
 <!-- CLI -->
@@ -923,6 +933,20 @@ document.addEventListener('DOMContentLoaded',function(){
   function pqRefresh(){ buildPesosQuebra(pqSel?pqSel.value:'all', pqMes?pqMes.value:'all'); }
   if(pqSel) pqSel.addEventListener('change',pqRefresh);
   if(pqMes) pqMes.addEventListener('change',pqRefresh);
+});
+// ── Consistência e Fluxo Contínuo — gráficos por turno (estimados) ──
+document.addEventListener('DOMContentLoaded',function(){
+  if(typeof mkC==='function'){
+    mkC('c-tec-turno','line',{labels:['01x07','07x13','13x19','19x01'],datasets:[
+      {label:'Vg/Hr (estimado)',data:[15.5,14.9,13.2,14.7],borderColor:'#ED7D31',backgroundColor:'rgba(237,125,49,.15)',tension:.35,pointRadius:5,pointBackgroundColor:'#ED7D31',fill:true},
+    ]},{scales:{y:{beginAtZero:true,suggestedMax:18}}});
+    mkC('c-cop-turno','line',{labels:['01x07','07x13','13x19','19x01'],datasets:[
+      {label:'Vg/Hr (estimado)',data:[9.6,9.2,8.1,9.0],borderColor:'#ED7D31',backgroundColor:'rgba(237,125,49,.15)',tension:.35,pointRadius:5,pointBackgroundColor:'#ED7D31',fill:true},
+    ]},{scales:{y:{beginAtZero:true,suggestedMax:12}}});
+    mkC('c-cli-turno','line',{labels:['01x07','07x13','13x19','19x01'],datasets:[
+      {label:'Vg/Hr (estimado)',data:[15.9,15.3,13.6,15.1],borderColor:'#ED7D31',backgroundColor:'rgba(237,125,49,.15)',tension:.35,pointRadius:5,pointBackgroundColor:'#ED7D31',fill:true},
+    ]},{scales:{y:{beginAtZero:true,suggestedMax:18}}});
+  }
 });
 
 function vagsByTerminalProduto(filtMes) {
@@ -1418,9 +1442,9 @@ function buildTGRAO(){
     {label:'Toneladas',data:DB.tgrao.map(r=>r.tons),type:'line',borderColor:'var(--orange)',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
   ]},{scales:{y:{type:'linear',position:'left'},y1:{type:'linear',position:'right',grid:{drawOnChartArea:false}}}});
   mkC('c-tgrao-par','bar',{labels:MESES,datasets:[
-    {label:'Ferrovia (%)',data:DB.tgrao.map(r=>r.ferr),backgroundColor:'rgba(68,114,196,.8)',borderRadius:2},
-    {label:'Terminal (%)',data:DB.tgrao.map(r=>r.term),backgroundColor:'rgba(237,125,49,.8)',borderRadius:2},
-    {label:'Operação (%)',data:DB.tgrao.map(r=>r.op),backgroundColor:'rgba(22,163,74,.7)',borderRadius:2},
+    {label:'Ferrovia (%)',data:DB.tgrao.map(r=>r.ferr),backgroundColor:'#A6A6A6',borderRadius:2},
+    {label:'Terminal (%)',data:DB.tgrao.map(r=>r.term),backgroundColor:'#595959',borderRadius:2},
+    {label:'Operação (%)',data:DB.tgrao.map(r=>r.op),backgroundColor:'#ED7D31',borderRadius:2},
   ]},{scales:{x:{stacked:true},y:{stacked:true,max:100}}});
   makeTable('tbl-tgrao',['Mês','Plan','Real','Δ vs Plan','Taxa','Produto','Operador','Toneladas (t)'],
     DB.tgrao.map((r,i)=>{
@@ -1430,6 +1454,10 @@ function buildTGRAO(){
       return[r.m,fn(r.plan),fn(r.real),(d>0?'+':'')+fn(d),fn(r.taxa,2),prods,'RUMO',fnT(r.tons)];
     })
   );
+  // Consistência e Fluxo Contínuo — estimativa por turno (aguardando dado real por turno)
+  mkC('c-tgrao-turno','line',{labels:['01x07','07x13','13x19','19x01'],datasets:[
+    {label:'Vg/Hr (estimado)',data:[5.3,5.1,4.7,5.0],borderColor:'#ED7D31',backgroundColor:'rgba(237,125,49,.15)',tension:.35,pointRadius:5,pointBackgroundColor:'#ED7D31',fill:true},
+  ]},{scales:{y:{beginAtZero:true,suggestedMax:8}}});
 }
 
 function buildTEC(){
