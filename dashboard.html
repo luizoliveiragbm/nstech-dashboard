@@ -233,6 +233,18 @@ td.r{text-align:right}
   </div>
   <div class="filter-divider"></div>
   <div class="filter-group">
+    <span class="filter-label">Ano</span>
+    <select class="filter-sel" id="fAno">
+      <option value="2025">2025</option>
+      <option value="2026" selected>2026</option>
+      <option value="2027">2027</option>
+      <option value="2028">2028</option>
+      <option value="2029">2029</option>
+      <option value="2030">2030</option>
+    </select>
+  </div>
+  <div class="filter-divider"></div>
+  <div class="filter-group">
     <span class="filter-label">Mês</span>
     <select class="filter-sel" id="fMes">
       <option value="all">Todos</option>
@@ -242,6 +254,12 @@ td.r{text-align:right}
       <option value="3">Abril</option>
       <option value="4">Maio</option>
       <option value="5">Junho</option>
+      <option value="6">Julho</option>
+      <option value="7">Agosto</option>
+      <option value="8">Setembro</option>
+      <option value="9">Outubro</option>
+      <option value="10">Novembro</option>
+      <option value="11">Dezembro</option>
     </select>
   </div>
   <div class="filter-divider"></div>
@@ -300,6 +318,8 @@ td.r{text-align:right}
     <span class="nav-dot"></span>Pesos &amp; Quebra
     <span class="nav-badge">NEW</span>
   </button>
+  <div class="nav-section">Ferramentas</div>
+  <button class="nav-item" data-p="editor_dados"><span class="nav-dot"></span>Editor de Dados</button>
 </nav>
 <main class="main">
 
@@ -676,6 +696,78 @@ td.r{text-align:right}
   <div class="g1 card"><div class="card-top"><span class="ct-title">Comparativo Mensal — Peso Balança × Peso Transporte</span><span class="ct-badge">EM IMPLANTAÇÃO</span></div><div class="chart-wrap h280"><canvas id="pq-c-comp"></canvas></div></div>
   <div class="g1 card"><div class="card-top"><span class="ct-title">Detalhamento por Terminal e Mês</span></div><div class="tbl-wrap"><table id="pq-tbl"></table></div></div>
 </div>
+<!-- EDITOR DE DADOS -->
+<div class="page" id="page-editor_dados">
+  <div class="page-header"><div class="ph-accent"></div><div>
+    <div class="ph-title">Editor <span class="hl">de Dados</span></div>
+    <div class="ph-sub">Atualização manual quinzenal · Terminal × Mês</div>
+  </div><div class="ph-badge">INTERNO</div></div>
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Novo Lançamento / Atualização</span></div>
+    <div style="display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap">
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal</label>
+        <select class="filter-sel" id="ed-terminal">
+          <option value="tgrao">TGRÃO</option><option value="tec">TEC</option><option value="cop">COP</option><option value="cli">CLI</option>
+        </select></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ano</label>
+        <select class="filter-sel" id="ed-ano">
+          <option value="2025">2025</option><option value="2026" selected>2026</option><option value="2027">2027</option>
+        </select></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Mês</label>
+        <select class="filter-sel" id="ed-mes">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
+          <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
+          <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Indicador (Moega)</label>
+        <select class="filter-sel" id="ed-moega" style="min-width:170px"></select></div>
+    </div>
+    <div id="ed-scope-note" style="font-size:11px;color:var(--gray);margin-bottom:10px"></div>
+    <div style="max-width:320px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding:12px;border:1px dashed var(--border);border-radius:8px">
+      <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Dados desta Moega (Indicador selecionado)</div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega)</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr (moega)</label><input type="number" step="0.01" id="ed-moega-taxa" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Toneladas (moega)</label><input type="number" step="0.01" id="ed-moega-tons" class="filter-sel" style="width:100%"></div>
+    </div>
+    <div style="max-width:320px;display:flex;flex-direction:column;gap:10px">
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Planejado</label><input type="number" id="ed-plan" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr</label><input type="number" step="0.01" id="ed-taxa" class="filter-sel" style="width:100%"></div>
+
+      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Açúcar</div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-ac-mrs" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-ac-rumo" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-ac-vli" class="filter-sel" style="width:100%"></div>
+
+      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Soja</div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-so-mrs" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-so-rumo" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-so-vli" class="filter-sel" style="width:100%"></div>
+
+      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Milho</div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-mi-mrs" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-mi-rumo" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-mi-vli" class="filter-sel" style="width:100%"></div>
+
+      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Relatório de Paradas por Moega</div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Operação (%)</label><input type="number" step="0.01" id="ed-op" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal (%)</label><input type="number" step="0.01" id="ed-term" class="filter-sel" style="width:100%"></div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ferrovia (%)</label><input type="number" step="0.01" id="ed-ferr" class="filter-sel" style="width:100%"></div>
+
+      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Vol. Movimentado (t)</div>
+      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">TONS (soma automática das moegas)</label><input type="number" step="0.01" id="ed-tons" class="filter-sel" style="width:100%;opacity:.75" readonly></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;align-items:center">
+      <button class="btn-export" id="ed-save">💾 Salvar e Atualizar Dashboard</button>
+      <span id="ed-status" style="font-size:12px;color:var(--green)"></span>
+    </div>
+    <div style="font-size:11px;color:var(--gray);margin-top:10px">ℹ "Vagões Realizados" é calculado automaticamente (soma dos 9 campos Op. MRS/RUMO/Vli dos 3 produtos) — não precisa digitar.</div>
+  </div>
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Histórico de Lançamentos Manuais</span></div>
+    <div class="tbl-wrap"><table id="ed-tbl"></table></div>
+  </div>
+</div>
 </main>
 </div>
 <footer class="footer">NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA</footer>
@@ -683,7 +775,7 @@ td.r{text-align:right}
 
 <script>
 'use strict';
-const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun'];
+const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 // ── DADOS REAIS Produto × Operador por Terminal × Mês ──────────
 const PROD_OP_REAL = {
@@ -694,6 +786,12 @@ const PROD_OP_REAL = {
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:2994,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Abr
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:2445,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Mai
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:2028,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Jun (fechado 30/06)
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Jul
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Ago
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Set
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Out
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Nov
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },   // Dez
   ],
   cop: [
     { AÇUCAR:{MRS:2343,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:153,VLI:0},  MILHO:{MRS:0,RUMO:0,VLI:0} }, // Jan
@@ -702,6 +800,12 @@ const PROD_OP_REAL = {
     { AÇUCAR:{MRS:1214,RUMO:0,VLI:0},   SOJA:{MRS:1324,RUMO:693,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Abr
     { AÇUCAR:{MRS:1896,RUMO:0,VLI:0},   SOJA:{MRS:974,RUMO:873,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Mai
     { AÇUCAR:{MRS:1965,RUMO:0,VLI:0},   SOJA:{MRS:925,RUMO:973,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Jun (fechado 30/06)
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Jul
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Ago
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Set
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Out
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Nov
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0}, MILHO:{MRS:0,RUMO:0,VLI:0} },// Dez
   ],
   tec: [
     { AÇUCAR:{MRS:480,RUMO:630,VLI:0},  SOJA:{MRS:0,RUMO:0,VLI:376},  MILHO:{MRS:0,RUMO:0,VLI:0} },// Jan
@@ -710,6 +814,12 @@ const PROD_OP_REAL = {
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0},      SOJA:{MRS:445,RUMO:1149,VLI:1450},MILHO:{MRS:0,RUMO:0,VLI:0} },// Abr
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0},      SOJA:{MRS:1170,RUMO:1370,VLI:725},MILHO:{MRS:0,RUMO:0,VLI:0} },// Mai
     { AÇUCAR:{MRS:1159,RUMO:594,VLI:0},   SOJA:{MRS:0,RUMO:875,VLI:1991},MILHO:{MRS:0,RUMO:0,VLI:0} },// Jun (fechado 30/06)
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Jul
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Ago
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Set
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Out
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Nov
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0},   SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0} },// Dez
   ],
   cli: [
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:2294,VLI:537},  MILHO:{MRS:0,RUMO:0,VLI:368} },// Jan
@@ -718,6 +828,12 @@ const PROD_OP_REAL = {
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:5455,VLI:0},    MILHO:{MRS:875,RUMO:0,VLI:0} }, // Abr
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:4520,VLI:0},    MILHO:{MRS:2402,RUMO:0,VLI:0} },// Mai
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:4499,VLI:0},    MILHO:{MRS:2793,RUMO:0,VLI:0} },// Jun (fechado 30/06)
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},    MILHO:{MRS:0,RUMO:0,VLI:0} },// Jul
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},    MILHO:{MRS:0,RUMO:0,VLI:0} },// Ago
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},    MILHO:{MRS:0,RUMO:0,VLI:0} },// Set
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},    MILHO:{MRS:0,RUMO:0,VLI:0} },// Out
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},    MILHO:{MRS:0,RUMO:0,VLI:0} },// Nov
+    { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},    MILHO:{MRS:0,RUMO:0,VLI:0} },// Dez
   ],
 };
 
@@ -765,6 +881,12 @@ const DB = {
     {m:'Abr',plan:1813,real:2994,taxa:5.31,op:71.17,term:5.08, ferr:21.63,tons:285001.84},
     {m:'Mai',plan:1813,real:2445,taxa:5.60,op:53.56,term:5.63, ferr:41.36,tons:224837.74},
     {m:'Jun',plan:2020,real:2028,taxa:5.08,op:42.91,term:12.53,ferr:44.56,tons:21924.74},
+    {m:'Jul',plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0},
+    {m:'Ago',plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0},
+    {m:'Set',plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0},
+    {m:'Out',plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0},
+    {m:'Nov',plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0},
+    {m:'Dez',plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0},
   ],
   cop:[
     {m:'Jan',plan:2562,real:2496,taxa:4.02,moegas:[{n:'Moegão',v:153,taxa:0.26,op:3.85,term:75.51,ferr:20.64,tons:14674.59},{n:'Linha 5',v:1362,taxa:2.21,op:59.41,term:23.33,ferr:17.26,tons:119977.04},{n:'Linha 6',v:981,taxa:1.55,op:44.35,term:40.92,ferr:14.74,tons:84437.99}],tons:219089.62},
@@ -773,6 +895,12 @@ const DB = {
     {m:'Abr',plan:3384,real:3231,taxa:10.14,moegas:[{n:'Moegão',v:2017,taxa:5.06,op:34.17,term:19.34,ferr:44.65,tons:180766.76},{n:'Linha 5',v:599,taxa:2.49,op:36.05,term:16.97,ferr:46.98,tons:50382.98},{n:'Linha 6',v:615,taxa:2.59,op:35.87,term:17.49,ferr:46.64,tons:51796.71}],tons:282946.45},
     {m:'Mai',plan:4090,real:3743,taxa:9.43,moegas:[{n:'Moegão',v:1847,taxa:4.64,op:34.17,term:19.34,ferr:46.49,tons:166425.41},{n:'Linha 5',v:946,taxa:2.40,op:36.05,term:16.97,ferr:46.98,tons:81317.21},{n:'Linha 6',v:950,taxa:2.39,op:35.87,term:17.49,ferr:46.64,tons:82158.37}],tons:329900.99},
     {m:'Jun',plan:4243,real:3863,taxa:9.1,moegas:[{n:'Moegão',v:1899,taxa:4.46,op:33.60,term:12.53,ferr:44.56,tons:169552.30},{n:'Linha 5',v:0,taxa:2.26,op:39.00,term:18.75,ferr:42.25,tons:81035.65},{n:'Linha 6',v:1964,taxa:2.38,op:41.09,term:18.75,ferr:40.17,tons:87779.35}],tons:338367.30},
+    {m:'Jul',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Ago',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Set',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Out',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Nov',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Dez',plan:0,real:0,taxa:0,moegas:[],tons:0},
   ],
   tec:[
     {m:'Jan',plan:1515,real:1486,taxa:2.75,moegas:[{n:'LINHA 12A',v:1110,taxa:2.15,op:43.50,term:25.82,ferr:30.68,tons:106229.40},{n:'Moegão-1',v:293,taxa:0.46,op:6.86,term:78.64,ferr:14.50,tons:28531.25},{n:'Moegão-2',v:83,taxa:0.14,op:1.81,term:75.37,ferr:22.82,tons:8153.25},{n:'Moegão-3',v:0,taxa:0.00,op:0,term:100,ferr:0,tons:0}],tons:142913.90},
@@ -781,6 +909,12 @@ const DB = {
     {m:'Abr',plan:3942,real:4044,taxa:14.66,moegas:[{n:'LINHA 12A',v:1149,taxa:3.84,op:33.24,term:8.37,ferr:58.39,tons:108494.44},{n:'Moegão-1',v:1050,taxa:4.38,op:25.44,term:7.87,ferr:66.68,tons:102900.00},{n:'Moegão-2',v:1845,taxa:6.44,op:30.10,term:9.68,ferr:60.22,tons:174333.08},{n:'Moegão-3',v:0,taxa:0.00,op:0,term:100,ferr:0,tons:0}],tons:385727.52},
     {m:'Mai',plan:5995,real:5265,taxa:18.03,moegas:[{n:'LINHA 12A',v:1370,taxa:5.13,op:32.53,term:3.64,ferr:63.83,tons:64995.25},{n:'Moegão-1',v:1978,taxa:5.71,op:45.89,term:13.41,ferr:40.69,tons:71681.10},{n:'Moegão-2',v:1917,taxa:7.19,op:25.38,term:10.46,ferr:64.15,tons:87225.58},{n:'Moegão-3',v:0,taxa:0.00,op:0,term:100,ferr:0,tons:0}],tons:223901.93},
     {m:'Jun',plan:4776,real:4619,taxa:14.77,moegas:[{n:'LINHA 12A',v:875,taxa:2.28,op:19.90,term:33.40,ferr:46.70,tons:63.15},{n:'Moegão-1',v:1753,taxa:6.04,op:30.94,term:9.36,ferr:59.70,tons:183.90},{n:'Moegão-2',v:1991,taxa:6.45,op:26.55,term:16.28,ferr:57.16,tons:85.92},{n:'Moegão-3',v:0,taxa:0.00,op:0,term:0,ferr:0,tons:0}],tons:332.97},
+    {m:'Jul',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Ago',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Set',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Out',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Nov',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Dez',plan:0,real:0,taxa:0,moegas:[],tons:0},
   ],
   cli:[
     {m:'Jan',plan:3730,real:3644,taxa:7.32,moegas:[{n:'CL-Mar',v:257,taxa:0.40,op:9.29,term:76.91,ferr:13.80,tons:24707.00},{n:'CL-Terra',v:280,taxa:0.44,op:9.68,term:76.35,ferr:13.97,tons:27071.05},{n:'Moegão-Mar',v:813,taxa:1.23,op:13.97,term:74.68,ferr:11.34,tons:80081.66},{n:'Moegão-Terra',v:2294,taxa:5.25,op:37.26,term:21.52,ferr:41.21,tons:219929.76},{n:'T23',v:0,taxa:0.00,op:0,term:100,ferr:0,tons:0}],tons:351789.47},
@@ -789,9 +923,61 @@ const DB = {
     {m:'Abr',plan:6366,real:6330,taxa:12.22,moegas:[{n:'CL-Mar',v:1211,taxa:2.42,op:50.19,term:19.18,ferr:30.63,tons:114616.62},{n:'CL-Terra',v:1239,taxa:2.48,op:48.92,term:20.34,ferr:30.74,tons:117121.11},{n:'Moegão-Mar',v:3005,taxa:5.50,op:47.88,term:28.00,ferr:24.11,tons:286729.86},{n:'Moegão-Terra',v:875,taxa:1.82,op:12.81,term:53.92,ferr:33.28,tons:84688.85},{n:'T23',v:0,taxa:0.00,op:0,term:99.24,ferr:0.76,tons:0}],tons:603156.44},
     {m:'Mai',plan:7040,real:6922,taxa:16.70,moegas:[{n:'CL-Mar',v:821,taxa:2.26,op:29.16,term:19.76,ferr:51.08,tons:71892.87},{n:'CL-Terra',v:896,taxa:2.50,op:28.15,term:20.08,ferr:51.77,tons:77365.92},{n:'Moegão-Mar',v:2803,taxa:6.39,op:41.56,term:17.42,ferr:41.02,tons:248239.48},{n:'Moegão-Terra',v:1938,taxa:4.53,op:28.85,term:28.66,ferr:45.34,tons:188513.83},{n:'T23',v:464,taxa:1.02,op:14.89,term:46.39,ferr:38.72,tons:44966.91}],tons:630979.01},
     {m:'Jun',plan:8060,real:7292,taxa:15.17,moegas:[{n:'CL-Mar',v:798,taxa:1.58,op:31.33,term:38.94,ferr:29.72,tons:4482.91},{n:'CL-Terra',v:751,taxa:1.50,op:31.91,term:37.86,ferr:30.24,tons:3580.51},{n:'Moegão-Mar',v:2950,taxa:5.81,op:45.65,term:24.88,ferr:29.48,tons:9706.65},{n:'Moegão-Terra',v:2039,taxa:4.77,op:30.98,term:28.39,ferr:40.63,tons:7160.75},{n:'T23',v:754,taxa:1.51,op:24.71,term:44.68,ferr:30.62,tons:2478.63}],tons:27409.45},
+    {m:'Jul',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Ago',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Set',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Out',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Nov',plan:0,real:0,taxa:0,moegas:[],tons:0},
+    {m:'Dez',plan:0,real:0,taxa:0,moegas:[],tons:0},
   ],
 };
 
+// ── SUPORTE MULTI-ANO (2025–2030) ───────────────────────────────
+function emptyYearDB(){
+  const row=(m)=>({m,plan:0,real:0,taxa:0,op:0,term:0,ferr:0,tons:0,moegas:[]});
+  return { tgrao: MESES.map(row), cop: MESES.map(row), tec: MESES.map(row), cli: MESES.map(row) };
+}
+function emptyYearProdOp(){
+  const z=()=>({AÇUCAR:{MRS:0,RUMO:0,VLI:0},SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0}});
+  return { tgrao: MESES.map(z), cop: MESES.map(z), tec: MESES.map(z), cli: MESES.map(z) };
+}
+const ANOS_DISPONIVEIS=[2025,2026,2027,2028,2029,2030];
+const DB_ANOS={ 2026: JSON.parse(JSON.stringify(DB)) };
+const PROD_OP_REAL_ANOS={ 2026: JSON.parse(JSON.stringify(PROD_OP_REAL)) };
+ANOS_DISPONIVEIS.forEach(function(y){ if(y!==2026){ DB_ANOS[y]=emptyYearDB(); PROD_OP_REAL_ANOS[y]=emptyYearProdOp(); } });
+function refreshAllHeroCards(){
+  try{
+    const map=[['tgrao','tgrao-vag','tgrao-tons'],['tec','tec-vag','tec-tons'],['cop','cop-vag','cop-tons'],['cli','cli-vag','cli-tons']];
+    map.forEach(function(m){
+      const vagEl=document.getElementById(m[1]), tonsEl=document.getElementById(m[2]);
+      if(DB[m[0]]){
+        const vag=DB[m[0]].reduce((s,r)=>s+(r.real||0),0);
+        const tons=DB[m[0]].reduce((s,r)=>s+(r.tons||0),0);
+        if(vagEl) vagEl.textContent=fn(vag);
+        if(tonsEl) tonsEl.textContent=fnT(tons)+' t';
+      }
+    });
+  }catch(e){}
+}
+window.refreshAllHeroCards=refreshAllHeroCards;
+let ANO_ATIVO=2026;
+function trocarAno(novoAno){
+  novoAno=parseInt(novoAno);
+  if(!DB_ANOS[novoAno]) return;
+  ['tgrao','tec','cop','cli'].forEach(function(k){
+    DB[k].length=0; Array.prototype.push.apply(DB[k], DB_ANOS[novoAno][k]);
+    PROD_OP_REAL[k].length=0; Array.prototype.push.apply(PROD_OP_REAL[k], PROD_OP_REAL_ANOS[novoAno][k]);
+  });
+  ANO_ATIVO=novoAno;
+  ['buildTGRAO','buildTEC','buildCOP','buildCLI'].forEach(function(fn){
+    if(typeof window[fn]==='function'){ try{ window[fn](); }catch(e){} }
+  });
+  refreshAllHeroCards();
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const anoSel=document.getElementById('fAno');
+  if(anoSel) anoSel.addEventListener('change', function(){ trocarAno(this.value); });
+});
 const tgraoVag=DB.tgrao.reduce((s,r)=>s+r.real,0);
 const copVag  =DB.cop.reduce((s,r)=>s+r.real,0);
 const tecVag  =DB.tec.reduce((s,r)=>s+r.real,0);
@@ -948,6 +1134,217 @@ document.addEventListener('DOMContentLoaded',function(){
     ]},{scales:{y:{beginAtZero:true,suggestedMax:18}}});
   }
 });
+// ── EDITOR DE DADOS (atualização manual quinzenal) ──────────────
+(function(){
+  const PREFIX='editor-lancamento:';
+  const labelT={tgrao:'TGRÃO',tec:'TEC',cop:'COP',cli:'CLI'};
+  const mesesL=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const MOEGAS_POR_TERMINAL={
+    tgrao:['Linha 1'],
+    tec:['LINHA 12A','Moegão - 1','Moegão - 2','Moegão - 3'],
+    cop:['Moegão','Linha 5','Linha 6'],
+    cli:['Costa Leite - Mar','Costa Leite - Terra','Moegão - Mar','Moegão - Terra','T23'],
+  };
+  function slug(s){ return String(s).replace(/[^a-zA-Z0-9]+/g,'_'); }
+  function populaMoegas(){
+    const term=document.getElementById('ed-terminal').value;
+    const sel=document.getElementById('ed-moega');
+    if(!sel) return;
+    const lista=MOEGAS_POR_TERMINAL[term]||[];
+    sel.innerHTML=lista.map(n=>'<option value="'+n+'">'+n+'</option>').join('');
+    atualizarTonsAuto();
+  }
+  async function edLoadAll(){
+    try{
+      const list=await window.storage.list(PREFIX,false);
+      if(!list||!list.keys) return [];
+      const out=[];
+      for(const k of list.keys){
+        try{ const r=await window.storage.get(k,false); if(r) out.push(JSON.parse(r.value)); }catch(e){}
+      }
+      return out;
+    }catch(e){ return []; }
+  }
+  function upsertMoega(row, moegaNome, mv, mtaxa, mtons){
+    if(!row.moegas) row.moegas=[];
+    let alvo=row.moegas.find(x=>x.n===moegaNome);
+    if(!alvo){ alvo={n:moegaNome,v:0,taxa:0,op:0,term:0,ferr:0,tons:0}; row.moegas.push(alvo); }
+    alvo.v=mv; alvo.taxa=mtaxa; alvo.tons=mtons;
+  }
+  function getRowFor(terminal,ano,mes){
+    try{
+      const anoN=parseInt(ano);
+      const isActive=(typeof ANO_ATIVO!=='undefined' && anoN===ANO_ATIVO);
+      const src = isActive ? DB : (typeof DB_ANOS!=='undefined' ? DB_ANOS[anoN] : null);
+      return src && src[terminal] ? src[terminal][mes] : null;
+    }catch(e){ return null; }
+  }
+  function atualizarTonsAuto(){
+    const terminal=document.getElementById('ed-terminal').value;
+    const ano=document.getElementById('ed-ano').value;
+    const mes=parseInt(document.getElementById('ed-mes').value);
+    const moega=document.getElementById('ed-moega').value;
+    const moegaTonsAtual=parseFloat(document.getElementById('ed-moega-tons').value)||0;
+    const row=getRowFor(terminal,ano,mes);
+    let somaTons=moegaTonsAtual, somaVag=parseFloat(document.getElementById('ed-moega-vag').value)||0;
+    if(row && row.moegas){
+      row.moegas.forEach(function(m){ if(m.n!==moega){ somaTons+=(m.tons||0); somaVag+=(m.v||0); } });
+    }
+    const tonsEl=document.getElementById('ed-tons');
+    if(tonsEl) tonsEl.value=somaTons.toFixed(2);
+    return {tons:somaTons, vag:somaVag};
+  }
+  function edApplyToDB(entry){
+    try{
+      const ano=parseInt(entry.ano);
+      if(typeof DB_ANOS==='undefined' || !DB_ANOS[ano]) return false;
+      const isActive=(typeof ANO_ATIVO!=='undefined' && ano===ANO_ATIVO);
+      const targetDB = isActive ? DB : DB_ANOS[ano];
+      const targetPO = isActive ? PROD_OP_REAL : PROD_OP_REAL_ANOS[ano];
+      if(targetDB[entry.terminal] && targetDB[entry.terminal][entry.mes]){
+        const row=targetDB[entry.terminal][entry.mes];
+        if(entry.moega) upsertMoega(row, entry.moega, entry.moegaVag, entry.moegaTaxa, entry.moegaTons);
+        row.plan=entry.plan; row.taxa=entry.taxa;
+        row.tons = row.moegas && row.moegas.length ? row.moegas.reduce((s,m)=>s+(m.tons||0),0) : entry.tons;
+        row.real = row.moegas && row.moegas.length ? row.moegas.reduce((s,m)=>s+(m.v||0),0) : entry.real;
+        row.op=entry.op; row.term=entry.term; row.ferr=entry.ferr;
+      }
+      if(targetPO[entry.terminal] && entry.prodOp){ targetPO[entry.terminal][entry.mes]=entry.prodOp; }
+      return isActive;
+    }catch(e){ return false; }
+  }
+  function edRerender(terminal){
+    const fnName='build'+terminal.toUpperCase();
+    if(typeof window[fnName]==='function'){ try{ window[fnName](); }catch(e){} }
+  }
+  window.edLoadIntoForm=async function(key){
+    try{
+      const r=await window.storage.get(key,false);
+      if(!r) return;
+      const e=JSON.parse(r.value);
+      document.getElementById('ed-terminal').value=e.terminal; populaMoegas();
+      document.getElementById('ed-ano').value=e.ano;
+      document.getElementById('ed-mes').value=e.mes;
+      if(e.moega) document.getElementById('ed-moega').value=e.moega;
+      document.getElementById('ed-plan').value=e.plan;
+      document.getElementById('ed-taxa').value=e.taxa;
+      document.getElementById('ed-op').value=e.op;
+      document.getElementById('ed-term').value=e.term;
+      document.getElementById('ed-ferr').value=e.ferr;
+      document.getElementById('ed-moega-taxa').value=e.moegaTaxa||'';
+      document.getElementById('ed-moega-tons').value=e.moegaTons||'';
+      document.getElementById('ed-moega-vag').value=e.moegaVag||'';
+      if(e.prodOp){
+        document.getElementById('ed-ac-mrs').value=e.prodOp.AÇUCAR.MRS; document.getElementById('ed-ac-rumo').value=e.prodOp.AÇUCAR.RUMO; document.getElementById('ed-ac-vli').value=e.prodOp.AÇUCAR.VLI;
+        document.getElementById('ed-so-mrs').value=e.prodOp.SOJA.MRS; document.getElementById('ed-so-rumo').value=e.prodOp.SOJA.RUMO; document.getElementById('ed-so-vli').value=e.prodOp.SOJA.VLI;
+        document.getElementById('ed-mi-mrs').value=e.prodOp.MILHO.MRS; document.getElementById('ed-mi-rumo').value=e.prodOp.MILHO.RUMO; document.getElementById('ed-mi-vli').value=e.prodOp.MILHO.VLI;
+      }
+      atualizarTonsAuto();
+      updateScopeNote();
+      const statusEl=document.getElementById('ed-status');
+      statusEl.style.color='#4472C4'; statusEl.textContent='✎ Carregado para edição — altere e clique em Salvar';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }catch(e){}
+  };
+  window.edDeleteEntry=async function(key){
+    if(!confirm('Excluir este lançamento do histórico? Isso não pode ser desfeito.')) return;
+    try{
+      await window.storage.delete(key,false);
+      edRenderTable();
+      const statusEl=document.getElementById('ed-status');
+      if(statusEl){ statusEl.style.color='var(--gray)'; statusEl.textContent='🗑 Lançamento excluído do histórico'; setTimeout(()=>{statusEl.textContent='';},3000); }
+    }catch(e){}
+  };
+  async function edRenderTable(){
+    const entries=await edLoadAll();
+    entries.sort((a,b)=>(a.ano+':'+a.terminal+':'+a.mes).localeCompare(b.ano+':'+b.terminal+':'+b.mes));
+    const wrap=document.getElementById('ed-tbl');
+    if(!wrap) return;
+    let html='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr>'+
+      ['','','Terminal','Ano','Mês','Moega','Planejado','Real (calc.)','Taxa','Toneladas','Status','Atualizado em'].map(h=>'<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--orange)">'+h+'</th>').join('')+
+      '</tr>';
+    entries.forEach(e=>{
+      const ativo=(typeof ANO_ATIVO!=='undefined' && parseInt(e.ano)===ANO_ATIVO);
+      const key=PREFIX+e.terminal+':'+e.ano+':'+e.mes+':'+slug(e.moega||'agregado');
+      html+='<tr>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)"><button data-k="'+key+'" class="ed-edit-btn" style="cursor:pointer;background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px" title="Editar">✎</button></td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)"><button data-k="'+key+'" class="ed-del-btn" style="cursor:pointer;background:none;border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--orange)" title="Excluir">✕</button></td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(labelT[e.terminal]||e.terminal)+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+e.ano+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(mesesL[e.mes]||e.mes)+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(e.moega||'—')+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+e.plan+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+e.real+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+e.taxa+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+e.tons+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(ativo?'✔ ano ativo':'💾 salvo')+'</td>'+
+        '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+new Date(e.ts).toLocaleString('pt-BR')+'</td>'+
+      '</tr>';
+    });
+    html+='</table>';
+    wrap.innerHTML=html;
+    wrap.querySelectorAll('.ed-edit-btn').forEach(function(b){
+      b.addEventListener('click', function(){ window.edLoadIntoForm(this.getAttribute('data-k')); });
+    });
+    wrap.querySelectorAll('.ed-del-btn').forEach(function(b){
+      b.addEventListener('click', function(){ window.edDeleteEntry(this.getAttribute('data-k')); });
+    });
+  }
+  function getNum(id){ const el=document.getElementById(id); const v=parseFloat(el&&el.value); return isNaN(v)?0:v; }
+  function updateScopeNote(){
+    const ano=parseInt(document.getElementById('ed-ano').value);
+    const note=document.getElementById('ed-scope-note');
+    if(!note) return;
+    const ativo=(typeof ANO_ATIVO!=='undefined' && ano===ANO_ATIVO);
+    if(ativo){ note.style.color='var(--green)'; note.textContent='✔ '+ano+' é o ano ativo no dashboard agora — este lançamento atualiza o gráfico na hora.'; }
+    else{ note.style.color='var(--orange)'; note.textContent='💾 '+ano+' está salvo e pronto — troque o filtro "Ano" no topo do dashboard para "'+ano+'" para visualizar nos gráficos.'; }
+  }
+  async function edSave(){
+    const terminal=document.getElementById('ed-terminal').value;
+    const ano=document.getElementById('ed-ano').value;
+    const mes=parseInt(document.getElementById('ed-mes').value);
+    const moega=document.getElementById('ed-moega').value;
+    const plan=getNum('ed-plan'), taxa=getNum('ed-taxa');
+    const op=getNum('ed-op'), term=getNum('ed-term'), ferr=getNum('ed-ferr');
+    const moegaTaxa=getNum('ed-moega-taxa'), moegaTons=getNum('ed-moega-tons'), moegaVag=getNum('ed-moega-vag');
+    const somas=atualizarTonsAuto();
+    const tons=somas.tons;
+    const acMrs=getNum('ed-ac-mrs'), acRumo=getNum('ed-ac-rumo'), acVli=getNum('ed-ac-vli');
+    const soMrs=getNum('ed-so-mrs'), soRumo=getNum('ed-so-rumo'), soVli=getNum('ed-so-vli');
+    const miMrs=getNum('ed-mi-mrs'), miRumo=getNum('ed-mi-rumo'), miVli=getNum('ed-mi-vli');
+    const real=somas.vag;
+    const prodOp={AÇUCAR:{MRS:acMrs,RUMO:acRumo,VLI:acVli},SOJA:{MRS:soMrs,RUMO:soRumo,VLI:soVli},MILHO:{MRS:miMrs,RUMO:miRumo,VLI:miVli}};
+    const entry={terminal,ano,mes,moega,moegaVag,moegaTaxa,moegaTons,plan,real,taxa,tons,op,term,ferr,prodOp,ts:Date.now()};
+    const key=PREFIX+terminal+':'+ano+':'+mes+':'+slug(moega);
+    const statusEl=document.getElementById('ed-status');
+    try{
+      await window.storage.set(key, JSON.stringify(entry), false);
+      const applied=edApplyToDB(entry);
+      if(applied){ edRerender(terminal); if(typeof refreshAllHeroCards==='function') refreshAllHeroCards(); }
+      statusEl.style.color= applied ? 'var(--green)' : 'var(--orange)';
+      statusEl.textContent= applied ? ('✔ Salvo e aplicado ao gráfico — Vagões Real.: '+real) : ('💾 Salvo (ano '+ano+' não é o ativo agora) — Vagões Real.: '+real);
+      setTimeout(()=>{ statusEl.textContent=''; },5000);
+      edRenderTable();
+    }catch(e){
+      statusEl.style.color='var(--orange)';
+      statusEl.textContent='✖ Erro ao salvar: '+(e&&e.message?e.message:'tente novamente');
+    }
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    const btn=document.getElementById('ed-save');
+    if(btn) btn.addEventListener('click', edSave);
+    const anoSel=document.getElementById('ed-ano'), mesSel=document.getElementById('ed-mes'), termSel=document.getElementById('ed-terminal'), moegaSel=document.getElementById('ed-moega'), moegaTonsInp=document.getElementById('ed-moega-tons');
+    if(anoSel) anoSel.addEventListener('change', function(){ updateScopeNote(); atualizarTonsAuto(); });
+    if(mesSel) mesSel.addEventListener('change', atualizarTonsAuto);
+    if(termSel) termSel.addEventListener('change', populaMoegas);
+    if(moegaSel) moegaSel.addEventListener('change', atualizarTonsAuto);
+    if(moegaTonsInp) moegaTonsInp.addEventListener('input', atualizarTonsAuto);
+    populaMoegas();
+    updateScopeNote();
+    edRenderTable();
+    edLoadAll().then(function(entries){ entries.forEach(edApplyToDB); edRenderTable(); if(typeof refreshAllHeroCards==='function') refreshAllHeroCards(); });
+  });
+})();
 
 function vagsByTerminalProduto(filtMes) {
   filtMes = filtMes || 'all';
@@ -1435,8 +1832,8 @@ function buildJanJun(){
 }
 
 function buildTGRAO(){
-  document.getElementById('tgrao-vag').textContent=fn(tgraoVag);
-  document.getElementById('tgrao-tons').textContent=fnT(tgraoTons)+' t';
+  document.getElementById('tgrao-vag').textContent=fn(DB.tgrao.reduce((s,r)=>s+r.real,0));
+  document.getElementById('tgrao-tons').textContent=fnT(DB.tgrao.reduce((s,r)=>s+r.tons,0))+' t';
   mkC('c-tgrao-bar','bar',{labels:MESES,datasets:[
     {label:'Vagões',data:DB.tgrao.map(r=>r.real),backgroundColor:MC,borderRadius:4,yAxisID:'y'},
     {label:'Toneladas',data:DB.tgrao.map(r=>r.tons),type:'line',borderColor:'var(--orange)',tension:.3,pointRadius:4,fill:false,yAxisID:'y1'},
