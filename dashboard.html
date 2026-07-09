@@ -1715,7 +1715,49 @@ document.addEventListener('DOMContentLoaded',function(){
     ]},{scales:{y:{beginAtZero:true,suggestedMax:18}}});
   }
 });
-// ── EDITOR DE DADOS (atualização manual quinzenal) ──────────────
+// ── PREENCHIMENTO AUTOMÁTICO DO HISTÓRICO COM DADOS REAIS ───────
+// Roda ao carregar a página: preenche apenas o que ainda NÃO existe
+// no histórico (nunca sobrescreve edições já feitas pelo usuário).
+(function(){
+  const PREFIX='editor-lancamento:';
+  function slug(s){ return String(s).replace(/[^a-zA-Z0-9]+/g,'_'); }
+  const MOEGAS_POR_TERMINAL={
+    tgrao:['Linha 1'],
+    tec:['LINHA 12A','Moegão - 1','Moegão - 2','Moegão - 3'],
+    cop:['Moegão','Linha 5','Linha 6'],
+    cli:['Costa Leite - Mar','Costa Leite - Terra','Moegão - Mar','Moegão - Terra','T23'],
+  };
+  async function seedHistoricoSeNecessario(){
+    if(typeof DB==='undefined' || typeof PROD_OP_REAL==='undefined' || typeof window.storage==='undefined') return;
+    const ano=(typeof ANO_ATIVO!=='undefined')?String(ANO_ATIVO):'2026';
+    let novos=0;
+    for(const terminal of ['tgrao','tec','cop','cli']){
+      for(let mes=0; mes<=5; mes++){
+        const row=DB[terminal] && DB[terminal][mes];
+        if(!row) continue;
+        const prodOp=(PROD_OP_REAL[terminal] && PROD_OP_REAL[terminal][mes]) ? PROD_OP_REAL[terminal][mes] : {AÇUCAR:{MRS:0,RUMO:0,VLI:0},SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0}};
+        const moegasReais = (row.moegas && row.moegas.length) ? row.moegas : [{n:MOEGAS_POR_TERMINAL[terminal][0], v:row.real, taxa:row.taxa, tons:row.tons}];
+        for(const m of moegasReais){
+          const moegaNome = m.n || MOEGAS_POR_TERMINAL[terminal][0];
+          const key=PREFIX+terminal+':'+ano+':'+mes+':'+slug(moegaNome);
+          let existe=true;
+          try{ await window.storage.get(key); }catch(e){ existe=false; }
+          if(existe) continue;
+          const entry={
+            terminal:terminal, ano:ano, mes:mes, moega:moegaNome,
+            moegaVag:m.v||0, moegaTaxa:m.taxa||0,
+            plan:row.plan||0, real:m.v||0, taxa:row.taxa||0, tons:m.tons||0,
+            op:row.op||0, term:row.term||0, ferr:row.ferr||0,
+            prodOp:prodOp, ts:Date.now(), origem:'dados originais do Dashboard'
+          };
+          try{ await window.storage.set(key, JSON.stringify(entry)); novos++; }catch(e){}
+        }
+      }
+    }
+    if(novos>0) document.dispatchEvent(new Event('ed-refresh-request'));
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(seedHistoricoSeNecessario, 800); });
+})();
 (function(){
   const PREFIX='editor-lancamento:';
   const labelT={tgrao:'TGRÃO',tec:'TEC',cop:'COP',cli:'CLI'};
@@ -1922,6 +1964,7 @@ document.addEventListener('DOMContentLoaded',function(){
     populaMoegas();
     updateScopeNote();
     edRenderTable();
+    document.addEventListener('ed-refresh-request', edRenderTable);
     edLoadAll().then(function(entries){ entries.forEach(edApplyToDB); edRenderTable(); if(typeof refreshAllHeroCards==='function') refreshAllHeroCards(); });
   });
 })();
