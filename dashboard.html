@@ -773,8 +773,49 @@ td.r{text-align:right}
 <footer class="footer">NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA</footer>
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.15.0/firebase-app-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.15.0/firebase-firestore-compat.js"></script>
 <script>
 'use strict';
+// ── FIREBASE (Firestore) — substitui o armazenamento nativo do artefato ──
+(function(){
+  const firebaseConfig = {
+    apiKey: "AIzaSyBGvgVVwAhY5cv9_3xArfNfhilgXP-879k",
+    authDomain: "dashboard-operacional-75039.firebaseapp.com",
+    projectId: "dashboard-operacional-75039",
+    storageBucket: "dashboard-operacional-75039.firebasestorage.app",
+    messagingSenderId: "563209450870",
+    appId: "1:563209450870:web:74ab0eb836c73399b2f657",
+    measurementId: "G-5J6CW24L52"
+  };
+  try{
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const COL='dashboard_data';
+    window.storage = {
+      set: async function(key, value){
+        await db.collection(COL).doc(key).set({ value: value, ts: Date.now() });
+        return { key, value };
+      },
+      get: async function(key){
+        const doc = await db.collection(COL).doc(key).get();
+        if(!doc.exists) throw new Error('not found: '+key);
+        return { key, value: doc.data().value };
+      },
+      delete: async function(key){
+        await db.collection(COL).doc(key).delete();
+        return { key, deleted: true };
+      },
+      list: async function(prefix){
+        const snap = await db.collection(COL).get();
+        const keys = [];
+        snap.forEach(function(doc){ if(!prefix || doc.id.indexOf(prefix)===0) keys.push(doc.id); });
+        return { keys, prefix };
+      }
+    };
+    console.log('Firebase conectado — armazenamento agora é online (Firestore).');
+  }catch(e){ console.error('Erro ao inicializar Firebase:', e); }
+})();
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 // ── DADOS REAIS Produto × Operador por Terminal × Mês ──────────
