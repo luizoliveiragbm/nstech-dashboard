@@ -1156,15 +1156,24 @@ td.r{text-align:right}
       });
       wrap.querySelectorAll('.ch-fechar-btn').forEach(function(btn){
         btn.addEventListener('click', async function(e){
+          e.preventDefault();
           e.stopPropagation();
           const key=btn.getAttribute('data-key');
+          btn.disabled=true;
+          btn.textContent='...';
           try{
             const r=await window.storage.get(key);
             const chamado=JSON.parse(r.value);
             chamado.status='Fechado';
             await window.storage.set(key, JSON.stringify(chamado));
+            console.log('[NST] Chamado '+chamado.numero+' fechado com sucesso.');
             carregarChamados();
-          }catch(err){}
+          }catch(err){
+            console.error('[NST] Erro ao fechar chamado ('+key+'):', err && err.message ? err.message : err);
+            btn.disabled=false;
+            btn.textContent='Fechar';
+            alert('Não foi possível fechar o chamado. Veja a página "Log" para detalhes do erro.');
+          }
         });
       });
     }catch(e){
