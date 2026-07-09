@@ -1894,7 +1894,6 @@ document.addEventListener('DOMContentLoaded',function(){
       document.getElementById('ed-mes').value=e.mes;
       if(e.moega) document.getElementById('ed-moega').value=e.moega;
       document.getElementById('ed-plan').value=e.plan;
-      document.getElementById('ed-taxa').value=e.taxa;
       document.getElementById('ed-op').value=e.op;
       document.getElementById('ed-term').value=e.term;
       document.getElementById('ed-ferr').value=e.ferr;
@@ -1970,9 +1969,10 @@ document.addEventListener('DOMContentLoaded',function(){
     const ano=document.getElementById('ed-ano').value;
     const mes=parseInt(document.getElementById('ed-mes').value);
     const moega=document.getElementById('ed-moega').value;
-    const plan=getNum('ed-plan'), taxa=getNum('ed-taxa');
+    const plan=getNum('ed-plan');
     const op=getNum('ed-op'), term=getNum('ed-term'), ferr=getNum('ed-ferr');
     const moegaTaxa=getNum('ed-moega-taxa'), moegaTons=getNum('ed-moega-tons'), moegaVag=getNum('ed-moega-vag');
+    const taxa=moegaTaxa;
     const somas=atualizarTonsAuto();
     const tons=somas.tons;
     const acMrs=getNum('ed-ac-mrs'), acRumo=getNum('ed-ac-rumo'), acVli=getNum('ed-ac-vli');
