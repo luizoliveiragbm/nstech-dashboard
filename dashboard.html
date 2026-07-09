@@ -1259,9 +1259,12 @@ td.r{text-align:right}
       sec.style.justifyContent='space-between';
       sec.style.alignItems='center';
       const seta=document.createElement('span');
-      seta.textContent='▾';
+      seta.textContent='▸';
       sec.appendChild(seta);
+      let elInit=sec.nextElementSibling;
+      while(elInit && !elInit.classList.contains('nav-section')){ elInit.style.display='none'; elInit=elInit.nextElementSibling; }
       sec.addEventListener('click', function(){
+        if(window.nstMenuLocked) return;
         const abrindo = seta.textContent==='▸';
         seta.textContent = abrindo ? '▾' : '▸';
         let el=sec.nextElementSibling;
