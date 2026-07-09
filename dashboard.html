@@ -289,7 +289,7 @@ td.r{text-align:right}
   <button class="btn-clear" id="btnClear">✕ Limpar Filtros</button>
   <button class="btn-export" id="btnExportXLSX">⬇ Excel</button>
   <button class="btn-export" id="btnExportPDF">⬇ PDF</button>
-  <a class="btn-export" href="https://luizoliveiragbm.github.io/nstech-dashboard/apresentacao.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">APRESENTAÇÃO</a>
+  <a class="btn-export" href="https://luizoliveiragbm.github.io/nstech-dashboard/apresentacao.pdf" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">APRESENTAÇÃO</a>
 </div>
 <div class="shell">
 <nav class="sidebar">
@@ -322,8 +322,8 @@ td.r{text-align:right}
   </button>
   <div class="nav-section">Ferramentas</div>
   <button class="nav-item" data-p="editor_dados"><span class="nav-dot"></span>Editor de Dados</button>
-  <button class="nav-item" data-p="log_sistema"><span class="nav-dot"></span>Log</button>
   <button class="nav-item" data-p="abrir_chamado"><span class="nav-dot"></span>Abrir Chamado</button>
+  <button class="nav-item" data-p="log_sistema"><span class="nav-dot"></span>Log</button>
   <!-- ⚠️ "Manual do Dashboard" deve SEMPRE ser o último item de Ferramentas -->
   <button class="nav-item" data-p="manual_dashboard"><span class="nav-dot"></span>Manual do Dashboard</button>
 </nav>
@@ -1114,25 +1114,59 @@ td.r{text-align:right}
       if(!list || !list.keys || !list.keys.length){ wrap.innerHTML='<div style="padding:12px;color:var(--gray)">Nenhum chamado registrado ainda.</div>'; return; }
       const chamados=[];
       for(const k of list.keys){
-        try{ const r=await window.storage.get(k); chamados.push(JSON.parse(r.value)); }catch(e){}
+        try{ const r=await window.storage.get(k); chamados.push(Object.assign({_key:k}, JSON.parse(r.value))); }catch(e){}
       }
       chamados.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
       let html='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr>'+
-        ['Nº Chamado','Abertura','Previsão Encerr.','Status','Tipo','Área','Solicitante'].map(h=>'<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--orange)">'+h+'</th>').join('')+
+        ['','Nº Chamado','Abertura','Previsão Encerr.','Status','Tipo','Área','Solicitante'].map(h=>'<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--orange)">'+h+'</th>').join('')+
         '</tr>';
-      chamados.forEach(function(c){
-        html+='<tr>'+
+      chamados.forEach(function(c,i){
+        const fechado = c.status==='Fechado';
+        html+='<tr class="ch-row" data-idx="'+i+'" style="cursor:pointer">'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border);color:var(--orange);width:16px">▸</td>'+
           '<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">'+c.numero+'</td>'+
           '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.dataAbertura+' '+c.horaAbertura+'</td>'+
           '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.previsaoEncerramento+'</td>'+
-          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="background:rgba(237,125,49,.15);color:var(--orange);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">'+c.status+'</span></td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+
+            '<span style="background:'+(fechado?'rgba(22,163,74,.15)':'rgba(237,125,49,.15)')+';color:'+(fechado?'#16A34A':'var(--orange)')+';padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">'+c.status+'</span>'+
+            (fechado?'':' <button class="ch-fechar-btn" data-key="'+c._key+'" style="margin-left:6px;font-size:10px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);background:none;cursor:pointer;color:var(--gray)">Fechar</button>')+
+          '</td>'+
           '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.tipo+'</td>'+
           '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(c.area||'—')+'</td>'+
           '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.nome+'</td>'+
-        '</tr>';
+        '</tr>'+
+        '<tr class="ch-detail-row" data-idx="'+i+'" style="display:none;background:rgba(0,0,0,.03)"><td colspan="8" style="padding:12px 16px;font-size:12px;color:#333844;line-height:1.6">'+
+          '<b>E-mail:</b> '+(c.email||'—')+' &nbsp;·&nbsp; <b>Telefone/WhatsApp:</b> '+(c.telefone||'—')+'<br>'+
+          '<b>Descrição:</b> '+(c.descricao||'—')+
+        '</td></tr>';
       });
       html+='</table>';
       wrap.innerHTML=html;
+      wrap.querySelectorAll('.ch-row').forEach(function(row){
+        row.addEventListener('click', function(e){
+          if(e.target.classList.contains('ch-fechar-btn')) return;
+          const idx=row.getAttribute('data-idx');
+          const detail=wrap.querySelector('.ch-detail-row[data-idx="'+idx+'"]');
+          const arrow=row.querySelector('td');
+          if(!detail) return;
+          const abrindo = detail.style.display==='none';
+          detail.style.display = abrindo ? 'table-row' : 'none';
+          if(arrow) arrow.textContent = abrindo ? '▾' : '▸';
+        });
+      });
+      wrap.querySelectorAll('.ch-fechar-btn').forEach(function(btn){
+        btn.addEventListener('click', async function(e){
+          e.stopPropagation();
+          const key=btn.getAttribute('data-key');
+          try{
+            const r=await window.storage.get(key);
+            const chamado=JSON.parse(r.value);
+            chamado.status='Fechado';
+            await window.storage.set(key, JSON.stringify(chamado));
+            carregarChamados();
+          }catch(err){}
+        });
+      });
     }catch(e){
       wrap.innerHTML='<div style="padding:12px;color:var(--orange)">Erro ao carregar chamados: '+(e&&e.message?e.message:e)+'</div>';
     }
