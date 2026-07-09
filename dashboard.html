@@ -324,6 +324,8 @@ td.r{text-align:right}
   <button class="nav-item" data-p="editor_dados"><span class="nav-dot"></span>Editor de Dados</button>
   <button class="nav-item" data-p="log_sistema"><span class="nav-dot"></span>Log</button>
   <button class="nav-item" data-p="abrir_chamado"><span class="nav-dot"></span>Abrir Chamado</button>
+  <!-- ⚠️ "Manual do Dashboard" deve SEMPRE ser o último item de Ferramentas -->
+  <button class="nav-item" data-p="manual_dashboard"><span class="nav-dot"></span>Manual do Dashboard</button>
 </nav>
 <main class="main">
 
@@ -856,6 +858,91 @@ td.r{text-align:right}
     <div id="ch-tbl" style="max-height:400px;overflow-y:auto"></div>
   </div>
 </div>
+<!-- MANUAL DO DASHBOARD -->
+<div class="page" id="page-manual_dashboard">
+  <div class="page-header"><div class="ph-accent"></div><div>
+    <div class="ph-title">Manual <span class="hl">do Dashboard</span></div>
+    <div class="ph-sub">Guia completo de uso e documentação</div>
+  </div><div class="ph-badge">NEW</div></div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Objetivo Geral</span></div>
+    <div style="padding:6px 4px;color:#333844;font-size:13px;line-height:1.6">Este dashboard consolida os dados operacionais dos 4 terminais (TGRÃO, TEC, COPERSUCAR e CLI) do Porto de Santos, permitindo acompanhar volume movimentado, produtividade, paradas e desempenho mensal em um só lugar — substituindo o acompanhamento manual por planilhas.</div>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Indicadores (KPIs)</span></div>
+    <ul style="padding:6px 20px;color:#333844;font-size:13px;line-height:1.7;margin:0">
+      <li><b>Total Vagões</b> — soma de vagões finalizados no período/terminal filtrado.</li>
+      <li><b>Vol. Movimentado (t)</b> — toneladas transportadas, somando todas as moegas do terminal.</li>
+      <li><b>Taxa Vgs/Hr</b> — produtividade média: vagões descarregados por hora.</li>
+      <li><b>Líder de Volume</b> — terminal com maior volume no período selecionado.</li>
+    </ul>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Gráficos e Análises</span></div>
+    <ul style="padding:6px 20px;color:#333844;font-size:13px;line-height:1.7;margin:0">
+      <li><b>Vagões/Toneladas por Terminal</b> — comparação direta entre os 4 terminais.</li>
+      <li><b>Evolução Mensal</b> — como cada terminal evoluiu mês a mês.</li>
+      <li><b>Impacto das Paradas (%)</b> — percentual de tempo perdido por Ferrovia, Terminal ou Operação.</li>
+      <li><b>Planejado × Realizado</b> — quanto cada terminal atingiu da meta mensal.</li>
+      <li><b>Consistência e Fluxo Contínuo</b> — estabilidade da produtividade por turno.</li>
+    </ul>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Significado das Cores</span></div>
+    <ul style="padding:6px 20px;color:#333844;font-size:13px;line-height:1.7;margin:0;list-style:none">
+      <li>🟠 <b>Laranja</b> — cor principal da marca NST; destaques, títulos e KPIs.</li>
+      <li>🔵 <b>Azul</b> — geralmente representa Ferrovia ou comparações entre terminais.</li>
+      <li>🟢 <b>Verde</b> — valores positivos, metas atingidas ou categoria "Operação".</li>
+      <li>⚪ <b>Cinza</b> — dados neutros, desabilitados ou aguardando preenchimento.</li>
+    </ul>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Filtros</span></div>
+    <div style="padding:6px 4px;color:#333844;font-size:13px;line-height:1.6">Os filtros no topo (Terminal, Ano, Mês, Produto, Operador) recalculam todos os KPIs, gráficos e tabelas da tela ativa. Trocar o "Ano" também substitui os dados exibidos por terminal, refletindo apenas o período selecionado.</div>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Origem dos Dados</span></div>
+    <div style="padding:6px 4px;color:#333844;font-size:13px;line-height:1.6">Os dados têm origem nos relatórios mensais de "Análise de Taxa Vagão/Hora" e "Descarga por Produto/Operador" de cada terminal, inseridos manualmente via <b>Editor de Dados</b> e armazenados em um banco de dados online.</div>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Atualização dos Dados</span></div>
+    <div style="padding:6px 4px;color:#333844;font-size:13px;line-height:1.6">A atualização é feita periodicamente através do <b>Editor de Dados</b>. Ao salvar um lançamento, o gráfico do terminal correspondente é atualizado automaticamente, sem precisar recarregar a página.</div>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Navegação</span></div>
+    <div style="padding:6px 4px;color:#333844;font-size:13px;line-height:1.6">O menu lateral está organizado em 4 seções retráteis: <b>Visão Geral</b>, <b>Por Terminal</b>, <b>Análises</b> e <b>Ferramentas</b>. Clique no título de cada seção para recolher/expandir as opções.</div>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Ferramentas Disponíveis</span></div>
+    <ul style="padding:6px 20px;color:#333844;font-size:13px;line-height:1.7;margin:0">
+      <li><b>Editor de Dados</b> — lançamento manual de dados por terminal/mês/moega.</li>
+      <li><b>Log</b> — histórico técnico de gravações e mensagens do sistema.</li>
+      <li><b>Abrir Chamado</b> — registro de suporte, com número de protocolo automático.</li>
+      <li><b>Manual do Dashboard</b> — esta página.</li>
+    </ul>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Mapa Estrutural do Dashboard</span></div>
+    <div id="manual-accordion"></div>
+  </div>
+
+  <div class="g1 card" style="border-left:4px solid var(--orange);background:rgba(237,125,49,.06)">
+    <div style="padding:6px 4px;font-size:12.5px;color:#333844;line-height:1.6">
+      <b style="color:var(--orange)">⚠ Observação Importante:</b><br>
+      Este dashboard é um template demonstrativo de interface (layout visual), desenvolvido exclusivamente para apresentação de conceito. Não possui integração funcional com sistemas da NSTECH nem representa qualquer produto oficial. Todos os direitos, identidade visual e marcas pertencem à NSTECH e são respeitados neste projeto.
+    </div>
+  </div>
+</div>
 </main>
 </div>
 <footer class="footer">NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA</footer>
@@ -951,7 +1038,48 @@ td.r{text-align:right}
     marcarUltimaAtualizacao();
   });
 })();
-// ── ABRIR CHAMADO — formulário funcional integrado ao Firestore ─
+// ── MANUAL DO DASHBOARD — mapa estrutural (accordion) ───────────
+(function(){
+  const ITENS=[
+    {t:'Dashboard Principal', d:'Tela inicial com visão consolidada dos 4 terminais: total de vagões, volume movimentado, terminal líder e período selecionado, além dos gráficos comparativos de vagões e toneladas.'},
+    {t:'Indicadores Operacionais', d:'Métricas específicas de cada terminal: taxa de produtividade (Vgs/Hr), percentual de paradas por categoria (Operação/Terminal/Ferrovia) e consistência por turno.'},
+    {t:'KPIs', d:'Números-chave exibidos nos cards do topo de cada página — total de vagões, volume em toneladas, taxa média e comparativo com o planejado.'},
+    {t:'Gráficos', d:'Representações visuais (barras, linhas e roscas) que facilitam a comparação entre terminais, meses e categorias de parada.'},
+    {t:'Ferramentas', d:'Conjunto de utilitários internos: Editor de Dados (lançamento manual), Log (auditoria), Abrir Chamado (suporte) e este Manual.'},
+    {t:'Relatórios', d:'Tabelas de detalhamento mensal por terminal, com Planejado, Realizado, Taxa, Produto/Operador e Toneladas.'},
+    {t:'Filtros', d:'Seletores de Terminal, Ano, Mês, Produto e Operador no topo do dashboard, que recalculam os dados exibidos em tempo real.'},
+    {t:'Exportação', d:'Botões para exportar os dados filtrados em Excel ou PDF, além do botão Apresentação, que abre os slides de fechamento mensal.'},
+    {t:'Chamados', d:'Ferramenta "Abrir Chamado", acessível pelo menu ou pelo botão flutuante NST, para registrar problemas ou sugestões com número de protocolo automático.'},
+    {t:'Manual', d:'Esta página — documentação de uso do dashboard e mapa estrutural de todas as áreas disponíveis.'},
+  ];
+  function renderAccordion(){
+    const wrap=document.getElementById('manual-accordion');
+    if(!wrap || wrap.dataset.done) return;
+    wrap.dataset.done='1';
+    wrap.innerHTML=ITENS.map(function(item,i){
+      return '<div style="border-bottom:1px solid var(--border)">'+
+        '<div class="manual-acc-head" data-i="'+i+'" style="display:flex;justify-content:space-between;align-items:center;padding:12px 4px;cursor:pointer;font-weight:700;color:#1a1d24;font-size:13px">'+
+          '<span>'+item.t+'</span><span class="manual-acc-icon" style="color:var(--orange);font-size:16px;font-weight:800;width:20px;text-align:center">+</span>'+
+        '</div>'+
+        '<div class="manual-acc-body" style="display:none;padding:0 4px 14px;color:#333844;font-size:12.5px;line-height:1.6">'+item.d+'</div>'+
+      '</div>';
+    }).join('');
+    wrap.querySelectorAll('.manual-acc-head').forEach(function(head){
+      head.addEventListener('click', function(){
+        const body=head.nextElementSibling;
+        const icon=head.querySelector('.manual-acc-icon');
+        const abrindo = body.style.display==='none';
+        body.style.display = abrindo ? 'block' : 'none';
+        icon.textContent = abrindo ? '−' : '+';
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    renderAccordion();
+    const navBtn=document.querySelector('[data-p="manual_dashboard"]');
+    if(navBtn) navBtn.addEventListener('click', renderAccordion);
+  });
+})();
 (function(){
   const PREFIX='chamado:';
   function pad(n){ return n<10?'0'+n:n; }
