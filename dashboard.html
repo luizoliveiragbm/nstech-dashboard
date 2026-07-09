@@ -323,6 +323,7 @@ td.r{text-align:right}
   <div class="nav-section">Ferramentas</div>
   <button class="nav-item" data-p="editor_dados"><span class="nav-dot"></span>Editor de Dados</button>
   <button class="nav-item" data-p="log_sistema"><span class="nav-dot"></span>Log</button>
+  <button class="nav-item" data-p="abrir_chamado"><span class="nav-dot"></span>Abrir Chamado</button>
 </nav>
 <main class="main">
 
@@ -792,17 +793,67 @@ td.r{text-align:right}
     <div id="log-tbl" style="max-height:560px;overflow-y:auto"></div>
   </div>
 </div>
-<!-- ABRIR CHAMADO (placeholder — formulário completo em breve) -->
+<!-- ABRIR CHAMADO -->
 <div class="page" id="page-abrir_chamado">
   <div class="page-header"><div class="ph-accent"></div><div>
     <div class="ph-title">Abrir <span class="hl">Chamado</span></div>
-    <div class="ph-sub">Suporte NST 2.0</div>
-  </div><div class="ph-badge">EM BREVE</div></div>
+    <div class="ph-sub">Suporte NST 2.0 · Registro e acompanhamento de chamados</div>
+  </div><div class="ph-badge">NEW</div></div>
+
   <div class="g1 card">
-    <div class="card-top"><span class="ct-title">Formulário de Chamado</span></div>
-    <div style="padding:24px;color:var(--gray);text-align:center">
-      🚧 Esta ferramenta está sendo preparada — o formulário completo de abertura de chamados aparecerá aqui em breve.
+    <div class="card-top"><span class="ct-title">Novo Chamado</span></div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="flex:1;min-width:160px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Nº do Chamado</label><input type="text" id="ch-numero" class="filter-sel" style="width:100%;background:#2e323c;color:#9aa1ad;cursor:not-allowed" readonly></div>
+      <div style="flex:1;min-width:140px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Data</label><input type="text" id="ch-data" class="filter-sel" style="width:100%;background:#2e323c;color:#9aa1ad;cursor:not-allowed" readonly></div>
+      <div style="flex:1;min-width:120px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Hora</label><input type="text" id="ch-hora" class="filter-sel" style="width:100%;background:#2e323c;color:#9aa1ad;cursor:not-allowed" readonly></div>
     </div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="flex:1;min-width:200px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Nome *</label><input type="text" id="ch-nome" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:200px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">E-mail *</label><input type="email" id="ch-email" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Telefone / WhatsApp *</label><input type="text" id="ch-telefone" class="filter-sel" style="width:100%"></div>
+    </div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="flex:1;min-width:220px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tipo de Chamado *</label>
+        <select id="ch-tipo" class="filter-sel" style="width:100%">
+          <option value="">Selecione...</option>
+          <option>Sistema com problema</option>
+          <option>Dashboard com problema</option>
+          <option>Indicadores incorretos</option>
+          <option>Relatórios</option>
+          <option>Erro de atualização</option>
+          <option>Lentidão</option>
+          <option>Sugestão de melhoria</option>
+          <option>Outros</option>
+        </select>
+      </div>
+      <div style="flex:1;min-width:220px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Área do Dashboard</label>
+        <select id="ch-area" class="filter-sel" style="width:100%">
+          <option value="">Selecione...</option>
+          <option>Dashboard Principal</option>
+          <option>KPIs</option>
+          <option>Indicadores Operacionais</option>
+          <option>Ferramentas</option>
+          <option>Relatórios</option>
+          <option>Exportação</option>
+          <option>Filtros</option>
+          <option>Login</option>
+          <option>Outra</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Descrição Detalhada *</label>
+      <textarea id="ch-descricao" class="filter-sel" style="width:100%;min-height:110px;resize:vertical;padding:10px;font-family:inherit"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="btn-export" id="ch-enviar">📩 Enviar Chamado</button>
+      <span id="ch-status" style="font-size:12px"></span>
+    </div>
+  </div>
+
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Histórico de Chamados</span><button class="btn-export" id="ch-refresh" style="margin-left:auto">🔄 Atualizar</button></div>
+    <div id="ch-tbl" style="max-height:400px;overflow-y:auto"></div>
   </div>
 </div>
 </main>
@@ -900,7 +951,118 @@ td.r{text-align:right}
     marcarUltimaAtualizacao();
   });
 })();
-// ── BOTÃO FLUTUANTE NST → "Abrir Chamado" ───────────────────────
+// ── ABRIR CHAMADO — formulário funcional integrado ao Firestore ─
+(function(){
+  const PREFIX='chamado:';
+  function pad(n){ return n<10?'0'+n:n; }
+  function gerarNumero(){
+    const hex=Math.floor(Math.random()*0xFFFFFF).toString(16).toUpperCase().padStart(6,'0');
+    return 'NST-'+hex;
+  }
+  function agora(){
+    const d=new Date();
+    return { data: pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear(), hora: pad(d.getHours())+':'+pad(d.getMinutes()), ts:d.getTime() };
+  }
+  function addDias(dataStr, dias){
+    const p=dataStr.split('/'); const dt=new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));
+    dt.setDate(dt.getDate()+dias);
+    return pad(dt.getDate())+'/'+pad(dt.getMonth()+1)+'/'+dt.getFullYear();
+  }
+  function preencherCabecalho(){
+    const numEl=document.getElementById('ch-numero');
+    const dataEl=document.getElementById('ch-data');
+    const horaEl=document.getElementById('ch-hora');
+    const a=agora();
+    if(numEl && !numEl.value) numEl.value=gerarNumero();
+    if(dataEl) dataEl.value=a.data;
+    if(horaEl) horaEl.value=a.hora;
+  }
+  async function carregarChamados(){
+    const wrap=document.getElementById('ch-tbl');
+    if(!wrap || typeof window.storage==='undefined') return;
+    wrap.innerHTML='<div style="padding:12px;color:var(--gray)">Carregando...</div>';
+    try{
+      const list=await window.storage.list(PREFIX);
+      if(!list || !list.keys || !list.keys.length){ wrap.innerHTML='<div style="padding:12px;color:var(--gray)">Nenhum chamado registrado ainda.</div>'; return; }
+      const chamados=[];
+      for(const k of list.keys){
+        try{ const r=await window.storage.get(k); chamados.push(JSON.parse(r.value)); }catch(e){}
+      }
+      chamados.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+      let html='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr>'+
+        ['Nº Chamado','Abertura','Previsão Encerr.','Status','Tipo','Área','Solicitante'].map(h=>'<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--orange)">'+h+'</th>').join('')+
+        '</tr>';
+      chamados.forEach(function(c){
+        html+='<tr>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700">'+c.numero+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.dataAbertura+' '+c.horaAbertura+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.previsaoEncerramento+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)"><span style="background:rgba(237,125,49,.15);color:var(--orange);padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700">'+c.status+'</span></td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.tipo+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(c.area||'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+c.nome+'</td>'+
+        '</tr>';
+      });
+      html+='</table>';
+      wrap.innerHTML=html;
+    }catch(e){
+      wrap.innerHTML='<div style="padding:12px;color:var(--orange)">Erro ao carregar chamados: '+(e&&e.message?e.message:e)+'</div>';
+    }
+  }
+  async function enviarChamado(){
+    const statusEl=document.getElementById('ch-status');
+    const nome=document.getElementById('ch-nome').value.trim();
+    const email=document.getElementById('ch-email').value.trim();
+    const telefone=document.getElementById('ch-telefone').value.trim();
+    const tipo=document.getElementById('ch-tipo').value;
+    const area=document.getElementById('ch-area').value;
+    const descricao=document.getElementById('ch-descricao').value.trim();
+    if(!nome || !email || !telefone || !tipo || !descricao){
+      statusEl.style.color='var(--orange)';
+      statusEl.textContent='⚠ Preencha os campos obrigatórios (Nome, E-mail, Telefone, Tipo e Descrição).';
+      return;
+    }
+    const numero=document.getElementById('ch-numero').value || gerarNumero();
+    const a=agora();
+    const chamado={
+      numero: numero, nome: nome, email: email, telefone: telefone, tipo: tipo, area: area, descricao: descricao,
+      dataAbertura: a.data, horaAbertura: a.hora, ts: a.ts,
+      previsaoEncerramento: addDias(a.data,5),
+      status: 'Aberto'
+    };
+    try{
+      await window.storage.set(PREFIX+numero, JSON.stringify(chamado));
+      statusEl.style.color='var(--green)';
+      statusEl.textContent='✔ Chamado '+numero+' aberto com sucesso!';
+      document.getElementById('ch-nome').value='';
+      document.getElementById('ch-email').value='';
+      document.getElementById('ch-telefone').value='';
+      document.getElementById('ch-tipo').value='';
+      document.getElementById('ch-area').value='';
+      document.getElementById('ch-descricao').value='';
+      document.getElementById('ch-numero').value=gerarNumero();
+      preencherCabecalho();
+      setTimeout(function(){ statusEl.textContent=''; },5000);
+      carregarChamados();
+      if(typeof marcarUltimaAtualizacao==='function') marcarUltimaAtualizacao();
+    }catch(e){
+      statusEl.style.color='var(--orange)';
+      statusEl.textContent='✖ Erro ao enviar chamado: '+(e&&e.message?e.message:e);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    preencherCabecalho();
+    const btn=document.getElementById('ch-enviar');
+    if(btn) btn.addEventListener('click', enviarChamado);
+    const refreshBtn=document.getElementById('ch-refresh');
+    if(refreshBtn) refreshBtn.addEventListener('click', carregarChamados);
+    carregarChamados();
+    const navBtn=document.querySelector('[data-p="abrir_chamado"]');
+    if(navBtn) navBtn.addEventListener('click', function(){ preencherCabecalho(); carregarChamados(); });
+    const fab=document.getElementById('nst-fab');
+    if(fab) fab.addEventListener('click', function(){ preencherCabecalho(); carregarChamados(); });
+  });
+})();
 (function(){
   const css = `
     #nst-fab{position:fixed;bottom:24px;right:24px;z-index:9999;cursor:pointer;
