@@ -792,6 +792,19 @@ td.r{text-align:right}
     <div id="log-tbl" style="max-height:560px;overflow-y:auto"></div>
   </div>
 </div>
+<!-- ABRIR CHAMADO (placeholder — formulário completo em breve) -->
+<div class="page" id="page-abrir_chamado">
+  <div class="page-header"><div class="ph-accent"></div><div>
+    <div class="ph-title">Abrir <span class="hl">Chamado</span></div>
+    <div class="ph-sub">Suporte NST 2.0</div>
+  </div><div class="ph-badge">EM BREVE</div></div>
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Formulário de Chamado</span></div>
+    <div style="padding:24px;color:var(--gray);text-align:center">
+      🚧 Esta ferramenta está sendo preparada — o formulário completo de abertura de chamados aparecerá aqui em breve.
+    </div>
+  </div>
+</div>
 </main>
 </div>
 <footer class="footer">NST 2.0 · Performance nos Trilhos · Jan–Jun 2026 · Porto de Santos · GBM Tech & Control by NSTECH · Claude IA</footer>
@@ -887,7 +900,44 @@ td.r{text-align:right}
     marcarUltimaAtualizacao();
   });
 })();
-// ── MENU SUPERIOR FIXO (sticky ao rolar) ────────────────────────
+// ── BOTÃO FLUTUANTE NST → "Abrir Chamado" ───────────────────────
+(function(){
+  const css = `
+    #nst-fab{position:fixed;bottom:24px;right:24px;z-index:9999;cursor:pointer;
+      width:74px;height:74px;display:flex;align-items:center;justify-content:center;
+      transition:transform .25s ease;}
+    #nst-fab:hover{transform:scale(1.08);}
+    #nst-fab .nst-fab-ring{position:absolute;width:74px;height:74px;border-radius:50%;
+      border:3px solid transparent;border-top-color:#FF6600;border-right-color:#FF6600;
+      animation:nstFabSpin 1.4s linear infinite;}
+    #nst-fab img{width:56px;height:56px;border-radius:50%;position:relative;z-index:2;
+      object-fit:cover;box-shadow:0 2px 10px rgba(0,0,0,.35);transition:box-shadow .25s ease;}
+    #nst-fab:hover img{box-shadow:0 6px 20px rgba(0,0,0,.5);}
+    @keyframes nstFabSpin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  `;
+  const style=document.createElement('style');
+  style.textContent=css;
+  document.head.appendChild(style);
+
+  window.irParaPagina=function(id){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    const target=document.getElementById('page-'+id);
+    if(target) target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(b){ b.classList.remove('active'); });
+    const navBtn=document.querySelector('[data-p="'+id+'"]');
+    if(navBtn) navBtn.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const fab=document.createElement('div');
+    fab.id='nst-fab';
+    fab.title='Abrir Chamado';
+    fab.innerHTML='<div class="nst-fab-ring"></div><img src="https://raw.githubusercontent.com/luizoliveiragbm/nstech-dashboard/refs/heads/main/nst-icon.jpg" alt="NST">';
+    document.body.appendChild(fab);
+    fab.addEventListener('click', function(){ window.irParaPagina('abrir_chamado'); });
+  });
+})();
 (function(){
   function aplicarSticky(){
     const header=document.querySelector('header');
