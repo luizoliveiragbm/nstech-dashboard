@@ -211,8 +211,9 @@ td.r{text-align:right}
     <div class="tb-badge">NST 2.0</div>
   </div>
   <div class="tb-right">
-    <div class="tb-period">01/01/2026 · 30/06/2026 · Porto de Santos</div>
-    <button class="tb-update" id="btnUpdateData">⬆ Atualizar Dados</button>
+    <div class="tb-period">Porto de Santos <span id="tb-lastupdate" style="opacity:.75;font-size:11px"></span></div>
+    <button class="tb-update" id="btnUpdateData">⬆ Atualizar Dados <span id="tb-clock" style="font-size:10px;opacity:.8"></span></button>
+    <button class="tb-update" id="btnRefresh" title="Recarregar dashboard">Refresh</button>
     <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
   </div>
 </header>
@@ -288,6 +289,7 @@ td.r{text-align:right}
   <button class="btn-clear" id="btnClear">✕ Limpar Filtros</button>
   <button class="btn-export" id="btnExportXLSX">⬇ Excel</button>
   <button class="btn-export" id="btnExportPDF">⬇ PDF</button>
+  <a class="btn-export" href="https://luizoliveiragbm.github.io/nstech-dashboard/apresentacao.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">APRESENTAÇÃO</a>
 </div>
 <div class="shell">
 <nav class="sidebar">
@@ -320,6 +322,7 @@ td.r{text-align:right}
   </button>
   <div class="nav-section">Ferramentas</div>
   <button class="nav-item" data-p="editor_dados"><span class="nav-dot"></span>Editor de Dados</button>
+  <button class="nav-item" data-p="log_sistema"><span class="nav-dot"></span>Log</button>
 </nav>
 <main class="main">
 
@@ -723,41 +726,38 @@ td.r{text-align:right}
       <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Indicador (Moega)</label>
         <select class="filter-sel" id="ed-moega" style="min-width:170px"></select></div>
     </div>
-    <div id="ed-scope-note" style="font-size:11px;color:var(--gray);margin-bottom:10px"></div>
-    <div style="max-width:320px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;padding:12px;border:1px dashed var(--border);border-radius:8px">
-      <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Dados desta Moega (Indicador selecionado)</div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega)</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr (moega)</label><input type="number" step="0.01" id="ed-moega-taxa" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Toneladas (moega)</label><input type="number" step="0.01" id="ed-moega-tons" class="filter-sel" style="width:100%"></div>
+    <div id="ed-scope-note" style="font-size:11px;color:var(--gray);margin-bottom:14px"></div>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:16px">
+      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Dados desta Moega (Indicador selecionado)</div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Planejado</label><input type="number" id="ed-plan" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega)</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr (moega)</label><input type="number" step="0.01" id="ed-moega-taxa" class="filter-sel" style="width:100%"></div>
+      </div>
+      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Açúcar</div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-ac-mrs" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-ac-rumo" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-ac-vli" class="filter-sel" style="width:100%"></div>
+        <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Soja</div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-so-mrs" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-so-rumo" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-so-vli" class="filter-sel" style="width:100%"></div>
+        <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Milho</div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-mi-mrs" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-mi-rumo" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-mi-vli" class="filter-sel" style="width:100%"></div>
+        <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Relatório de Paradas por Moega</div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Operação (%)</label><input type="number" step="0.01" id="ed-op" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal (%)</label><input type="number" step="0.01" id="ed-term" class="filter-sel" style="width:100%"></div>
+        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ferrovia (%)</label><input type="number" step="0.01" id="ed-ferr" class="filter-sel" style="width:100%"></div>
+      </div>
     </div>
-    <div style="max-width:320px;display:flex;flex-direction:column;gap:10px">
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Planejado</label><input type="number" id="ed-plan" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr</label><input type="number" step="0.01" id="ed-taxa" class="filter-sel" style="width:100%"></div>
-
-      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Açúcar</div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-ac-mrs" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-ac-rumo" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-ac-vli" class="filter-sel" style="width:100%"></div>
-
-      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Soja</div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-so-mrs" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-so-rumo" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-so-vli" class="filter-sel" style="width:100%"></div>
-
-      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Milho</div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-mi-mrs" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-mi-rumo" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-mi-vli" class="filter-sel" style="width:100%"></div>
-
-      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Relatório de Paradas por Moega</div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Operação (%)</label><input type="number" step="0.01" id="ed-op" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal (%)</label><input type="number" step="0.01" id="ed-term" class="filter-sel" style="width:100%"></div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ferrovia (%)</label><input type="number" step="0.01" id="ed-ferr" class="filter-sel" style="width:100%"></div>
-
-      <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Vol. Movimentado (t)</div>
-      <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">TONS (soma automática das moegas)</label><input type="number" step="0.01" id="ed-tons" class="filter-sel" style="width:100%;opacity:.75" readonly></div>
+    <div style="max-width:340px;margin-bottom:16px">
+      <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vol. Movimentado (t) — TONS (soma automática das moegas)</label>
+      <input type="number" step="0.01" id="ed-tons" class="filter-sel" style="width:100%;background:#2e323c;color:#9aa1ad;cursor:not-allowed" readonly>
     </div>
-    <div style="display:flex;gap:10px;margin-top:16px;align-items:center">
+    <div style="display:flex;gap:10px;align-items:center">
       <button class="btn-export" id="ed-save">💾 Salvar e Atualizar Dashboard</button>
       <span id="ed-status" style="font-size:12px;color:var(--green)"></span>
     </div>
@@ -765,7 +765,22 @@ td.r{text-align:right}
   </div>
   <div class="g1 card">
     <div class="card-top"><span class="ct-title">Histórico de Lançamentos Manuais</span></div>
-    <div class="tbl-wrap"><table id="ed-tbl"></table></div>
+    <div id="ed-tbl" style="max-height:320px;overflow-y:auto"></div>
+  </div>
+</div>
+<!-- LOG DO SISTEMA -->
+<div class="page" id="page-log_sistema">
+  <div class="page-header"><div class="ph-accent"></div><div>
+    <div class="ph-title">Log <span class="hl">do Sistema</span></div>
+    <div class="ph-sub">Registro completo de todas as gravações no banco de dados (Firestore)</div>
+  </div><div class="ph-badge">INTERNO</div></div>
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Mensagens do Console (log, avisos, erros)</span><button class="btn-export" id="log-console-clear" style="margin-left:auto">🗑 Limpar</button></div>
+    <div id="log-console-tbl" style="max-height:280px;overflow-y:auto"></div>
+  </div>
+  <div class="g1 card">
+    <div class="card-top"><span class="ct-title">Todas as Gravações</span><button class="btn-export" id="log-refresh" style="margin-left:auto">🔄 Atualizar Log</button></div>
+    <div id="log-tbl" style="max-height:560px;overflow-y:auto"></div>
   </div>
 </div>
 </main>
@@ -789,8 +804,14 @@ td.r{text-align:right}
     measurementId: "G-5J6CW24L52"
   };
   try{
+    // ⚠️⚠️⚠️ NÃO ALTERAR firebaseConfig SEM AVISO PRÉVIO ⚠️⚠️⚠️
+    // Esta configuração conecta o dashboard ao banco de dados Firestore.
+    // Qualquer mudança aqui desconecta o Editor de Dados do banco online.
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    // Corrige erro "Could not reach Cloud Firestore backend" em ambientes
+    // que bloqueiam conexão streaming (WebChannel) — detecta automaticamente.
+    db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
     const COL='dashboard_data';
     window.storage = {
       set: async function(key, value){
@@ -816,9 +837,176 @@ td.r{text-align:right}
     console.log('Firebase conectado — armazenamento agora é online (Firestore).');
   }catch(e){ console.error('Erro ao inicializar Firebase:', e); }
 })();
+// ⚠️ VERIFICAÇÃO AUTOMÁTICA DE INTEGRIDADE — não remover ─────────
+(function(){
+  function checarIntegridade(){
+    const problemas=[];
+    if(typeof DB==='undefined' || !DB.tgrao || !DB.tec || !DB.cop || !DB.cli) problemas.push('Estrutura DB incompleta/renomeada');
+    if(typeof PROD_OP_REAL==='undefined' || !PROD_OP_REAL.tgrao) problemas.push('Estrutura PROD_OP_REAL incompleta/renomeada');
+    if(typeof window.storage==='undefined' || typeof window.storage.set!=='function') problemas.push('Conexão com Firebase/Firestore não encontrada');
+    if(problemas.length){
+      const banner=document.createElement('div');
+      banner.style.cssText='position:fixed;top:0;left:0;width:100%;background:#c0392b;color:#fff;padding:10px;text-align:center;font-weight:700;font-size:13px;z-index:99999;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+      banner.textContent='⚠️ Alerta de integridade: '+problemas.join(' | ')+' — o Editor de Dados pode não funcionar corretamente.';
+      document.body.prepend(banner);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(checarIntegridade, 600); });
+})();
+// ── RELÓGIO, REFRESH E ÚLTIMA ATUALIZAÇÃO ───────────────────────
+(function(){
+  function pad(n){ return n<10?'0'+n:n; }
+  function horaAtual(){
+    const d=new Date();
+    return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  }
+  function tickClock(){
+    const el=document.getElementById('tb-clock');
+    if(el) el.textContent='('+horaAtual()+')';
+  }
+  function marcarUltimaAtualizacao(){
+    const el=document.getElementById('tb-lastupdate');
+    if(el) el.textContent='· Última alteração: '+new Date().toLocaleDateString('pt-BR');
+  }
+  window.marcarUltimaAtualizacao=marcarUltimaAtualizacao;
+  document.addEventListener('DOMContentLoaded', function(){
+    tickClock();
+    setInterval(tickClock, 1000);
+    const refreshBtn=document.getElementById('btnRefresh');
+    if(refreshBtn) refreshBtn.addEventListener('click', function(){ location.reload(); });
+    const savedTs=localStorage.getItem && null; // não usamos localStorage; deixa em branco até 1ª gravação
+    marcarUltimaAtualizacao();
+  });
+})();
+// ── MENU SUPERIOR FIXO (sticky ao rolar) ────────────────────────
+(function(){
+  function aplicarSticky(){
+    const header=document.querySelector('header');
+    const ticker=document.querySelector('.ticker-wrap');
+    const filtros=document.querySelector('.filters-bar');
+    let offset=0;
+    [header, ticker, filtros].forEach(function(el){
+      if(!el) return;
+      el.style.position='sticky';
+      el.style.top=offset+'px';
+      el.style.zIndex='60';
+      offset += el.offsetHeight;
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(aplicarSticky, 300);
+    window.addEventListener('resize', aplicarSticky);
+  });
+})();
+// ── MENU LATERAL RETRÁTIL (Visão Geral / Por Terminal / Análises / Ferramentas) ──
+(function(){
+  function initColapsavel(){
+    document.querySelectorAll('.nav-section').forEach(function(sec){
+      if(sec.dataset.colapsavelInit) return;
+      sec.dataset.colapsavelInit='1';
+      sec.style.cursor='pointer';
+      sec.style.userSelect='none';
+      sec.style.display='flex';
+      sec.style.justifyContent='space-between';
+      sec.style.alignItems='center';
+      const seta=document.createElement('span');
+      seta.textContent='▾';
+      sec.appendChild(seta);
+      sec.addEventListener('click', function(){
+        const abrindo = seta.textContent==='▸';
+        seta.textContent = abrindo ? '▾' : '▸';
+        let el=sec.nextElementSibling;
+        while(el && !el.classList.contains('nav-section')){
+          el.style.display = abrindo ? '' : 'none';
+          el=el.nextElementSibling;
+        }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(initColapsavel, 300); });
+})();
+(function(){
+  window._consoleLog=[];
+  const MAXLOG=300;
+  ['log','warn','error'].forEach(function(nivel){
+    const original=console[nivel];
+    console[nivel]=function(){
+      const args=Array.prototype.slice.call(arguments);
+      const texto=args.map(function(a){ try{ return typeof a==='object'?JSON.stringify(a):String(a); }catch(e){ return String(a); } }).join(' ');
+      window._consoleLog.unshift({nivel:nivel, texto:texto, ts:Date.now()});
+      if(window._consoleLog.length>MAXLOG) window._consoleLog.length=MAXLOG;
+      if(typeof window.renderConsoleLog==='function') window.renderConsoleLog();
+      original.apply(console, args);
+    };
+  });
+  const cores={log:'var(--gray)', warn:'#e0a020', error:'#e05050'};
+  window.renderConsoleLog=function(){
+    const wrap=document.getElementById('log-console-tbl');
+    if(!wrap) return;
+    if(!window._consoleLog.length){ wrap.innerHTML='<div style="padding:12px;color:var(--gray)">Nenhuma mensagem registrada ainda.</div>'; return; }
+    let html='<table style="width:100%;border-collapse:collapse;font-size:11.5px">';
+    window._consoleLog.forEach(function(m){
+      html+='<tr><td style="padding:5px 8px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--gray)">'+new Date(m.ts).toLocaleTimeString('pt-BR')+'</td>'+
+        '<td style="padding:5px 8px;border-bottom:1px solid var(--border);font-weight:700;color:'+(cores[m.nivel]||'var(--gray)')+'">'+m.nivel.toUpperCase()+'</td>'+
+        '<td style="padding:5px 8px;border-bottom:1px solid var(--border);word-break:break-word">'+m.texto+'</td></tr>';
+    });
+    html+='</table>';
+    wrap.innerHTML=html;
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    window.renderConsoleLog();
+    const clearBtn=document.getElementById('log-console-clear');
+    if(clearBtn) clearBtn.addEventListener('click', function(){ window._consoleLog=[]; window.renderConsoleLog(); });
+    const navLog=document.querySelector('[data-p="log_sistema"]');
+    if(navLog) navLog.addEventListener('click', window.renderConsoleLog);
+  });
+})();
+(function(){
+  async function carregarLog(){
+    const wrap=document.getElementById('log-tbl');
+    if(!wrap || typeof window.storage==='undefined') return;
+    wrap.innerHTML='<div style="padding:12px;color:var(--gray)">Carregando...</div>';
+    try{
+      const list=await window.storage.list('');
+      if(!list || !list.keys || !list.keys.length){ wrap.innerHTML='<div style="padding:12px;color:var(--gray)">Nenhum registro encontrado ainda.</div>'; return; }
+      const registros=[];
+      for(const k of list.keys){
+        try{ const r=await window.storage.get(k); registros.push({key:k, ...JSON.parse(r.value)}); }catch(e){}
+      }
+      registros.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+      let html='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr>'+
+        ['Chave','Terminal','Ano','Mês','Moega','Vagões','Toneladas','Gravado em'].map(h=>'<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--orange)">'+h+'</th>').join('')+
+        '</tr>';
+      registros.forEach(function(r){
+        html+='<tr>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:10px;color:var(--gray)">'+r.key+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.terminal||'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.ano||'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.mes!=null?r.mes:'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.moega||'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.real!=null?r.real:'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.tons!=null?r.tons:'—')+'</td>'+
+          '<td style="padding:6px 8px;border-bottom:1px solid var(--border)">'+(r.ts?new Date(r.ts).toLocaleString('pt-BR'):'—')+'</td>'+
+        '</tr>';
+      });
+      html+='</table>';
+      wrap.innerHTML=html;
+    }catch(e){
+      wrap.innerHTML='<div style="padding:12px;color:var(--orange)">Erro ao carregar log: '+(e&&e.message?e.message:e)+'</div>';
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    const btn=document.getElementById('log-refresh');
+    if(btn) btn.addEventListener('click', carregarLog);
+    const navLog=document.querySelector('[data-p="log_sistema"]');
+    if(navLog) navLog.addEventListener('click', carregarLog);
+  });
+})();
 const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 // ── DADOS REAIS Produto × Operador por Terminal × Mês ──────────
+// ⚠️⚠️⚠️ NÃO RENOMEAR "PROD_OP_REAL" NEM SEUS 4 TERMINAIS ⚠️⚠️⚠️
+// Usado pelo Editor de Dados para gravar Açúcar/Soja/Milho por mês.
 const PROD_OP_REAL = {
   tgrao: [
     { AÇUCAR:{MRS:0,RUMO:0,VLI:0}, SOJA:{MRS:0,RUMO:0,VLI:0},   MILHO:{MRS:0,RUMO:1293,VLI:0} }, // Jan: Milho/RUMO
@@ -914,6 +1102,9 @@ const PRODUTO_OP = {
   cli:   buildProdutoOpRatios('cli'),
 };
 
+// ⚠️⚠️⚠️ NÃO RENOMEAR "DB" NEM SEUS 4 TERMINAIS (tgrao/tec/cop/cli) ⚠️⚠️⚠️
+// Essa estrutura é referenciada pelo Editor de Dados, pelo Firestore e por
+// todas as páginas de terminal. Renomear quebra a integração com o banco.
 const DB = {
   tgrao:[
     {m:'Jan',plan:1255,real:1293,taxa:5.40,op:28.06,term:4.09, ferr:67.84,tons:52144.54},
@@ -1225,7 +1416,7 @@ document.addEventListener('DOMContentLoaded',function(){
     const ano=document.getElementById('ed-ano').value;
     const mes=parseInt(document.getElementById('ed-mes').value);
     const moega=document.getElementById('ed-moega').value;
-    const moegaTonsAtual=parseFloat(document.getElementById('ed-moega-tons').value)||0;
+    const moegaTonsAtual=0; // campo "Toneladas (moega)" removido — aguardando nova fonte de dados
     const row=getRowFor(terminal,ano,mes);
     let somaTons=moegaTonsAtual, somaVag=parseFloat(document.getElementById('ed-moega-vag').value)||0;
     if(row && row.moegas){
@@ -1273,7 +1464,6 @@ document.addEventListener('DOMContentLoaded',function(){
       document.getElementById('ed-term').value=e.term;
       document.getElementById('ed-ferr').value=e.ferr;
       document.getElementById('ed-moega-taxa').value=e.moegaTaxa||'';
-      document.getElementById('ed-moega-tons').value=e.moegaTons||'';
       document.getElementById('ed-moega-vag').value=e.moegaVag||'';
       if(e.prodOp){
         document.getElementById('ed-ac-mrs').value=e.prodOp.AÇUCAR.MRS; document.getElementById('ed-ac-rumo').value=e.prodOp.AÇUCAR.RUMO; document.getElementById('ed-ac-vli').value=e.prodOp.AÇUCAR.VLI;
