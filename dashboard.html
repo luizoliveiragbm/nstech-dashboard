@@ -727,32 +727,41 @@ td.r{text-align:right}
         <select class="filter-sel" id="ed-moega" style="min-width:170px"></select></div>
     </div>
     <div id="ed-scope-note" style="font-size:11px;color:var(--gray);margin-bottom:14px"></div>
-    <div style="display:flex;gap:28px;flex-wrap:wrap;margin-bottom:16px">
-      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Dados desta Moega (Indicador selecionado)</div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Planejado</label><input type="number" id="ed-plan" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega)</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr (moega)</label><input type="number" step="0.01" id="ed-moega-taxa" class="filter-sel" style="width:100%"></div>
-      </div>
-      <div style="flex:1;min-width:260px;display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Açúcar</div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-ac-mrs" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-ac-rumo" class="filter-sel" style="width:100%"></div>
+    <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Dados desta Moega (Indicador selecionado)</div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Planejado</label><input type="number" id="ed-plan" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega)</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr (moega)</label><input type="number" step="0.01" id="ed-moega-taxa" class="filter-sel" style="width:100%"></div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px">
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Produto: Açúcar</div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-ac-mrs" class="filter-sel" style="width:100%"></div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-ac-rumo" class="filter-sel" style="width:100%"></div>
         <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-ac-vli" class="filter-sel" style="width:100%"></div>
-        <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Soja</div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-so-mrs" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-so-rumo" class="filter-sel" style="width:100%"></div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Produto: Soja</div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-so-mrs" class="filter-sel" style="width:100%"></div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-so-rumo" class="filter-sel" style="width:100%"></div>
         <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-so-vli" class="filter-sel" style="width:100%"></div>
-        <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Produto: Milho</div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-mi-mrs" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-mi-rumo" class="filter-sel" style="width:100%"></div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Produto: Milho</div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /MRS</label><input type="number" id="ed-mi-mrs" class="filter-sel" style="width:100%"></div>
+        <div style="margin-bottom:12px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /RUMO</label><input type="number" id="ed-mi-rumo" class="filter-sel" style="width:100%"></div>
         <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Op. /Vli</label><input type="number" id="ed-mi-vli" class="filter-sel" style="width:100%"></div>
-        <div style="margin-top:8px;font-size:11px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px">Relatório de Paradas por Moega</div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Operação (%)</label><input type="number" step="0.01" id="ed-op" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal (%)</label><input type="number" step="0.01" id="ed-term" class="filter-sel" style="width:100%"></div>
-        <div><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ferrovia (%)</label><input type="number" step="0.01" id="ed-ferr" class="filter-sel" style="width:100%"></div>
       </div>
     </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px">
+    <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Relatório de Paradas por Moega</div>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px">
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Operação (%)</label><input type="number" step="0.01" id="ed-op" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal (%)</label><input type="number" step="0.01" id="ed-term" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ferrovia (%)</label><input type="number" step="0.01" id="ed-ferr" class="filter-sel" style="width:100%"></div>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px">
     <div style="max-width:340px;margin-bottom:16px">
       <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vol. Movimentado (t) — TONS (soma automática das moegas)</label>
       <input type="number" step="0.01" id="ed-tons" class="filter-sel" style="width:100%;background:#2e323c;color:#9aa1ad;cursor:not-allowed" readonly>
