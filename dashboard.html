@@ -2093,10 +2093,16 @@ document.addEventListener('DOMContentLoaded',function(){
       statusEl.textContent= applied ? ('✔ Salvo e aplicado ao gráfico — Vagões Real.: '+real) : ('💾 Salvo (ano '+ano+' não é o ativo agora) — Vagões Real.: '+real);
       setTimeout(()=>{ statusEl.textContent=''; },5000);
       edRenderTable();
+      edLimparFormularioMoega();
     }catch(e){
       statusEl.style.color='var(--orange)';
       statusEl.textContent='✖ Erro ao salvar: '+(e&&e.message?e.message:'tente novamente');
     }
+  }
+  function edLimparFormularioMoega(){
+    ['ed-plan','ed-moega-vag','ed-moega-taxa','ed-tons','ed-op','ed-term','ed-ferr',
+     'ed-ac-mrs','ed-ac-rumo','ed-ac-vli','ed-so-mrs','ed-so-rumo','ed-so-vli','ed-mi-mrs','ed-mi-rumo','ed-mi-vli'
+    ].forEach(function(id){ const el=document.getElementById(id); if(el) el.value=''; });
   }
   document.addEventListener('DOMContentLoaded',function(){
     const btn=document.getElementById('ed-save');
