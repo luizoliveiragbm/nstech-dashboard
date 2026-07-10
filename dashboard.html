@@ -1878,12 +1878,13 @@ document.addEventListener('DOMContentLoaded',function(){
       return out;
     }catch(e){ return []; }
   }
-  function upsertMoega(row, moegaNome, mv, mtaxa, mtons){
+  function upsertMoega(row, moegaNome, mv, mtaxa, mtons, mprodOp){
     if(!row.moegas) row.moegas=[];
     let alvo=row.moegas.find(x=>x.n===moegaNome);
-    if(!alvo){ alvo={n:moegaNome,v:0,taxa:0,op:0,term:0,ferr:0,tons:0}; row.moegas.push(alvo); }
+    if(!alvo){ alvo={n:moegaNome,v:0,taxa:0,op:0,term:0,ferr:0,tons:0,prodOp:null}; row.moegas.push(alvo); }
     alvo.v=mv; alvo.taxa=mtaxa;
     if(mtons!=null && !isNaN(mtons)){ alvo.tons=mtons; }
+    if(mprodOp){ alvo.prodOp=mprodOp; }
   }
   function getRowFor(terminal,ano,mes){
     try{
@@ -1938,13 +1939,22 @@ document.addEventListener('DOMContentLoaded',function(){
       if(targetDB[entry.terminal] && targetDB[entry.terminal][entry.mes]){
         const row=targetDB[entry.terminal][entry.mes];
         const moegaTonsVal = (entry.moegaTons!=null) ? entry.moegaTons : (entry.tons!=null ? entry.tons : 0);
-        if(entry.moega) upsertMoega(row, entry.moega, entry.moegaVag, entry.moegaTaxa, moegaTonsVal);
+        if(entry.moega) upsertMoega(row, entry.moega, entry.moegaVag, entry.moegaTaxa, moegaTonsVal, entry.prodOp);
         row.plan=entry.plan; row.taxa=entry.taxa;
         row.tons = row.moegas && row.moegas.length ? row.moegas.reduce((s,m)=>s+(m.tons||0),0) : entry.tons;
         row.real = row.moegas && row.moegas.length ? row.moegas.reduce((s,m)=>s+(m.v||0),0) : entry.real;
         row.op=entry.op; row.term=entry.term; row.ferr=entry.ferr;
+        // soma o prodOp de todas as moegas do terminal/mes (nao sobrescreve com a ultima)
+        if(targetPO[entry.terminal]){
+          const produtos=['AÇUCAR','SOJA','MILHO'], ops=['MRS','RUMO','VLI'];
+          const somaPO={AÇUCAR:{MRS:0,RUMO:0,VLI:0},SOJA:{MRS:0,RUMO:0,VLI:0},MILHO:{MRS:0,RUMO:0,VLI:0}};
+          (row.moegas||[]).forEach(function(m){
+            if(!m.prodOp) return;
+            produtos.forEach(function(p){ ops.forEach(function(o){ somaPO[p][o]+=(m.prodOp[p]&&m.prodOp[p][o])||0; }); });
+          });
+          targetPO[entry.terminal][entry.mes]=somaPO;
+        }
       }
-      if(targetPO[entry.terminal] && entry.prodOp){ targetPO[entry.terminal][entry.mes]=entry.prodOp; }
       return isActive;
     }catch(e){ return false; }
   }
