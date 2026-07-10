@@ -775,6 +775,51 @@ td.r{text-align:right}
   </div>
   <div class="g1 card">
     <div class="card-top"><span class="ct-title">Histórico de Lançamentos Manuais</span></div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+      <div style="min-width:150px">
+        <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Terminal</label>
+        <select class="filter-sel" id="ed-hist-terminal" style="width:100%">
+          <option value="all">Todos</option>
+          <option value="tgrao">TGRÃO</option>
+          <option value="tec">TEC</option>
+          <option value="cop">COP</option>
+          <option value="cli">CLI</option>
+        </select>
+      </div>
+      <div style="min-width:120px">
+        <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Ano</label>
+        <select class="filter-sel" id="ed-hist-ano" style="width:100%">
+          <option value="all">Todos</option>
+        </select>
+      </div>
+      <div style="min-width:150px">
+        <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Mês</label>
+        <select class="filter-sel" id="ed-hist-mes" style="width:100%">
+          <option value="all">Todos</option>
+          <option value="0">Janeiro</option>
+          <option value="1">Fevereiro</option>
+          <option value="2">Março</option>
+          <option value="3">Abril</option>
+          <option value="4">Maio</option>
+          <option value="5">Junho</option>
+          <option value="6">Julho</option>
+          <option value="7">Agosto</option>
+          <option value="8">Setembro</option>
+          <option value="9">Outubro</option>
+          <option value="10">Novembro</option>
+          <option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div style="min-width:180px">
+        <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Moega</label>
+        <select class="filter-sel" id="ed-hist-moega" style="width:100%">
+          <option value="all">Todos</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn-export" id="ed-hist-limpar" title="Limpar filtros">✕ Limpar Filtros</button>
+      </div>
+    </div>
     <div id="ed-tbl" style="max-height:320px;overflow-y:auto"></div>
   </div>
 </div>
@@ -1922,15 +1967,57 @@ document.addEventListener('DOMContentLoaded',function(){
       if(statusEl){ statusEl.style.color='var(--gray)'; statusEl.textContent='🗑 Lançamento excluído do histórico'; setTimeout(()=>{statusEl.textContent='';},3000); }
     }catch(e){}
   };
+  function edPopulaFiltroAno(){
+    const sel=document.getElementById('ed-hist-ano');
+    if(!sel || sel.options.length>1) return;
+    const anos = (typeof ANOS_DISPONIVEIS!=='undefined') ? ANOS_DISPONIVEIS : [2026];
+    anos.forEach(function(a){
+      const opt=document.createElement('option'); opt.value=String(a); opt.textContent=String(a);
+      sel.appendChild(opt);
+    });
+  }
+  function edPopulaFiltroMoega(entries){
+    const sel=document.getElementById('ed-hist-moega');
+    if(!sel) return;
+    const termFiltro=document.getElementById('ed-hist-terminal') ? document.getElementById('ed-hist-terminal').value : 'all';
+    const valorAtual=sel.value;
+    const nomes=new Set();
+    entries.forEach(function(e){
+      if(termFiltro!=='all' && e.terminal!==termFiltro) return;
+      if(e.moega) nomes.add(e.moega);
+    });
+    sel.innerHTML='<option value="all">Todos</option>';
+    Array.from(nomes).sort().forEach(function(n){
+      const opt=document.createElement('option'); opt.value=n; opt.textContent=n;
+      sel.appendChild(opt);
+    });
+    if(Array.from(sel.options).some(function(o){return o.value===valorAtual;})) sel.value=valorAtual;
+  }
   async function edRenderTable(){
     const entries=await edLoadAll();
     entries.sort((a,b)=>(a.ano+':'+a.terminal+':'+a.mes).localeCompare(b.ano+':'+b.terminal+':'+b.mes));
+    edPopulaFiltroAno();
+    edPopulaFiltroMoega(entries);
+    const fTerm=document.getElementById('ed-hist-terminal') ? document.getElementById('ed-hist-terminal').value : 'all';
+    const fAno=document.getElementById('ed-hist-ano') ? document.getElementById('ed-hist-ano').value : 'all';
+    const fMes=document.getElementById('ed-hist-mes') ? document.getElementById('ed-hist-mes').value : 'all';
+    const fMoega=document.getElementById('ed-hist-moega') ? document.getElementById('ed-hist-moega').value : 'all';
+    const filtradas=entries.filter(function(e){
+      if(fTerm!=='all' && e.terminal!==fTerm) return false;
+      if(fAno!=='all' && String(e.ano)!==fAno) return false;
+      if(fMes!=='all' && String(e.mes)!==fMes) return false;
+      if(fMoega!=='all' && e.moega!==fMoega) return false;
+      return true;
+    });
     const wrap=document.getElementById('ed-tbl');
     if(!wrap) return;
     let html='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr>'+
       ['','','Terminal','Ano','Mês','Moega','Planejado','Real (calc.)','Taxa','Toneladas','Status','Atualizado em'].map(h=>'<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--orange)">'+h+'</th>').join('')+
       '</tr>';
-    entries.forEach(e=>{
+    if(filtradas.length===0){
+      html+='<tr><td colspan="12" style="padding:16px 8px;text-align:center;color:var(--gray)">Nenhum lançamento encontrado para os filtros selecionados.</td></tr>';
+    }
+    filtradas.forEach(e=>{
       const ativo=(typeof ANO_ATIVO!=='undefined' && parseInt(e.ano)===ANO_ATIVO);
       const key=PREFIX+e.terminal+':'+e.ano+':'+e.mes+':'+slug(e.moega||'agregado');
       html+='<tr>'+
@@ -2009,6 +2096,15 @@ document.addEventListener('DOMContentLoaded',function(){
     if(moegaTonsInp) moegaTonsInp.addEventListener('input', atualizarTonsAuto);
     populaMoegas();
     updateScopeNote();
+    const hTerm=document.getElementById('ed-hist-terminal'), hAno=document.getElementById('ed-hist-ano'), hMes=document.getElementById('ed-hist-mes'), hMoega=document.getElementById('ed-hist-moega'), hLimpar=document.getElementById('ed-hist-limpar');
+    if(hTerm) hTerm.addEventListener('change', function(){ if(hMoega) hMoega.value='all'; edRenderTable(); });
+    if(hAno) hAno.addEventListener('change', edRenderTable);
+    if(hMes) hMes.addEventListener('change', edRenderTable);
+    if(hMoega) hMoega.addEventListener('change', edRenderTable);
+    if(hLimpar) hLimpar.addEventListener('click', function(){
+      if(hTerm) hTerm.value='all'; if(hAno) hAno.value='all'; if(hMes) hMes.value='all'; if(hMoega) hMoega.value='all';
+      edRenderTable();
+    });
     edRenderTable();
     document.addEventListener('ed-refresh-request', edRenderTable);
     edLoadAll().then(function(entries){ entries.forEach(edApplyToDB); edRenderTable(); if(typeof refreshAllHeroCards==='function') refreshAllHeroCards(); });
