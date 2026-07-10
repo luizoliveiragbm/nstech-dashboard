@@ -764,8 +764,9 @@ td.r{text-align:right}
     </div>
     <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px">
     <div style="max-width:340px;margin-bottom:16px">
-      <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vol. Movimentado (t) — TONS (soma automática das moegas)</label>
-      <input type="number" step="0.01" id="ed-tons" class="filter-sel" style="width:100%;background:#e9ecef;color:#111;cursor:not-allowed" readonly>
+      <label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vol. Movimentado (t) — Toneladas desta Moega/Linha</label>
+      <input type="number" step="0.01" id="ed-tons" class="filter-sel" style="width:100%">
+      <div style="font-size:11px;color:var(--gray);margin-top:4px">ℹ Informe aqui a tonelagem movimentada nesta moega/linha, neste mês. O total do terminal é a soma automática de todas as moegas.</div>
     </div>
     <div style="display:flex;gap:10px;align-items:center">
       <button class="btn-export" id="ed-save">💾 Salvar e Atualizar Dashboard</button>
@@ -1864,7 +1865,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!sel) return;
     const lista=MOEGAS_POR_TERMINAL[term]||[];
     sel.innerHTML=lista.map(n=>'<option value="'+n+'">'+n+'</option>').join('');
-    atualizarTonsAuto();
+    sugerirTonsExistente();
   }
   async function edLoadAll(){
     try{
@@ -1882,7 +1883,7 @@ document.addEventListener('DOMContentLoaded',function(){
     let alvo=row.moegas.find(x=>x.n===moegaNome);
     if(!alvo){ alvo={n:moegaNome,v:0,taxa:0,op:0,term:0,ferr:0,tons:0}; row.moegas.push(alvo); }
     alvo.v=mv; alvo.taxa=mtaxa;
-    if(mtons){ alvo.tons=mtons; } // só sobrescreve se vier um valor real; preserva o existente enquanto o campo "Toneladas (moega)" não for reimplementado
+    if(mtons!=null && !isNaN(mtons)){ alvo.tons=mtons; }
   }
   function getRowFor(terminal,ano,mes){
     try{
@@ -1892,20 +1893,32 @@ document.addEventListener('DOMContentLoaded',function(){
       return src && src[terminal] ? src[terminal][mes] : null;
     }catch(e){ return null; }
   }
-  function atualizarTonsAuto(){
+  function sugerirTonsExistente(){
     const terminal=document.getElementById('ed-terminal').value;
     const ano=document.getElementById('ed-ano').value;
     const mes=parseInt(document.getElementById('ed-mes').value);
     const moega=document.getElementById('ed-moega').value;
-    const moegaTonsAtual=0; // campo "Toneladas (moega)" removido — aguardando nova fonte de dados
     const row=getRowFor(terminal,ano,mes);
-    let somaTons=moegaTonsAtual, somaVag=parseFloat(document.getElementById('ed-moega-vag').value)||0;
-    if(row && row.moegas){
-      row.moegas.forEach(function(m){ if(m.n!==moega){ somaTons+=(m.tons||0); somaVag+=(m.v||0); } });
-    }
     const tonsEl=document.getElementById('ed-tons');
-    if(tonsEl) tonsEl.value=somaTons.toFixed(2);
-    return {tons:somaTons, vag:somaVag};
+    let tonsExistente=0;
+    if(row && row.moegas){
+      const alvo=row.moegas.find(function(m){ return m.n===moega; });
+      if(alvo) tonsExistente=alvo.tons||0;
+    }
+    if(tonsEl) tonsEl.value=tonsExistente.toFixed(2);
+    return tonsExistente;
+  }
+  function calcularVagTotal(){
+    const terminal=document.getElementById('ed-terminal').value;
+    const ano=document.getElementById('ed-ano').value;
+    const mes=parseInt(document.getElementById('ed-mes').value);
+    const moega=document.getElementById('ed-moega').value;
+    const row=getRowFor(terminal,ano,mes);
+    let somaVag=parseFloat(document.getElementById('ed-moega-vag').value)||0;
+    if(row && row.moegas){
+      row.moegas.forEach(function(m){ if(m.n!==moega){ somaVag+=(m.v||0); } });
+    }
+    return somaVag;
   }
   function edApplyToDB(entry){
     try{
@@ -1946,12 +1959,12 @@ document.addEventListener('DOMContentLoaded',function(){
       document.getElementById('ed-ferr').value=e.ferr;
       document.getElementById('ed-moega-taxa').value=e.moegaTaxa||'';
       document.getElementById('ed-moega-vag').value=e.moegaVag||'';
+      document.getElementById('ed-tons').value=(e.moegaTons!=null?e.moegaTons:e.tons)||0;
       if(e.prodOp){
         document.getElementById('ed-ac-mrs').value=e.prodOp.AÇUCAR.MRS; document.getElementById('ed-ac-rumo').value=e.prodOp.AÇUCAR.RUMO; document.getElementById('ed-ac-vli').value=e.prodOp.AÇUCAR.VLI;
         document.getElementById('ed-so-mrs').value=e.prodOp.SOJA.MRS; document.getElementById('ed-so-rumo').value=e.prodOp.SOJA.RUMO; document.getElementById('ed-so-vli').value=e.prodOp.SOJA.VLI;
         document.getElementById('ed-mi-mrs').value=e.prodOp.MILHO.MRS; document.getElementById('ed-mi-rumo').value=e.prodOp.MILHO.RUMO; document.getElementById('ed-mi-vli').value=e.prodOp.MILHO.VLI;
       }
-      atualizarTonsAuto();
       updateScopeNote();
       const statusEl=document.getElementById('ed-status');
       statusEl.style.color='#4472C4'; statusEl.textContent='✎ Carregado para edição — altere e clique em Salvar';
@@ -2060,14 +2073,14 @@ document.addEventListener('DOMContentLoaded',function(){
     const moega=document.getElementById('ed-moega').value;
     const plan=getNum('ed-plan');
     const op=getNum('ed-op'), term=getNum('ed-term'), ferr=getNum('ed-ferr');
-    const moegaTaxa=getNum('ed-moega-taxa'), moegaTons=getNum('ed-moega-tons'), moegaVag=getNum('ed-moega-vag');
+    const moegaTaxa=getNum('ed-moega-taxa'), moegaVag=getNum('ed-moega-vag');
     const taxa=moegaTaxa;
-    const somas=atualizarTonsAuto();
-    const tons=somas.tons;
+    const tons=getNum('ed-tons');
+    const moegaTons=tons;
     const acMrs=getNum('ed-ac-mrs'), acRumo=getNum('ed-ac-rumo'), acVli=getNum('ed-ac-vli');
     const soMrs=getNum('ed-so-mrs'), soRumo=getNum('ed-so-rumo'), soVli=getNum('ed-so-vli');
     const miMrs=getNum('ed-mi-mrs'), miRumo=getNum('ed-mi-rumo'), miVli=getNum('ed-mi-vli');
-    const real=somas.vag;
+    const real=calcularVagTotal();
     const prodOp={AÇUCAR:{MRS:acMrs,RUMO:acRumo,VLI:acVli},SOJA:{MRS:soMrs,RUMO:soRumo,VLI:soVli},MILHO:{MRS:miMrs,RUMO:miRumo,VLI:miVli}};
     const entry={terminal,ano,mes,moega,moegaVag,moegaTaxa,moegaTons,plan,real,taxa,tons,op,term,ferr,prodOp,ts:Date.now()};
     const key=PREFIX+terminal+':'+ano+':'+mes+':'+slug(moega);
@@ -2088,12 +2101,11 @@ document.addEventListener('DOMContentLoaded',function(){
   document.addEventListener('DOMContentLoaded',function(){
     const btn=document.getElementById('ed-save');
     if(btn) btn.addEventListener('click', edSave);
-    const anoSel=document.getElementById('ed-ano'), mesSel=document.getElementById('ed-mes'), termSel=document.getElementById('ed-terminal'), moegaSel=document.getElementById('ed-moega'), moegaTonsInp=document.getElementById('ed-moega-tons');
-    if(anoSel) anoSel.addEventListener('change', function(){ updateScopeNote(); atualizarTonsAuto(); });
-    if(mesSel) mesSel.addEventListener('change', atualizarTonsAuto);
+    const anoSel=document.getElementById('ed-ano'), mesSel=document.getElementById('ed-mes'), termSel=document.getElementById('ed-terminal'), moegaSel=document.getElementById('ed-moega');
+    if(anoSel) anoSel.addEventListener('change', function(){ updateScopeNote(); sugerirTonsExistente(); });
+    if(mesSel) mesSel.addEventListener('change', sugerirTonsExistente);
     if(termSel) termSel.addEventListener('change', populaMoegas);
-    if(moegaSel) moegaSel.addEventListener('change', atualizarTonsAuto);
-    if(moegaTonsInp) moegaTonsInp.addEventListener('input', atualizarTonsAuto);
+    if(moegaSel) moegaSel.addEventListener('change', sugerirTonsExistente);
     populaMoegas();
     updateScopeNote();
     const hTerm=document.getElementById('ed-hist-terminal'), hAno=document.getElementById('ed-hist-ano'), hMes=document.getElementById('ed-hist-mes'), hMoega=document.getElementById('ed-hist-moega'), hLimpar=document.getElementById('ed-hist-limpar');
