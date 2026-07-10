@@ -1789,7 +1789,7 @@ document.addEventListener('DOMContentLoaded',function(){
           if(existe) continue;
           const entry={
             terminal:terminal, ano:ano, mes:mes, moega:moegaNome,
-            moegaVag:m.v||0, moegaTaxa:m.taxa||0,
+            moegaVag:m.v||0, moegaTaxa:m.taxa||0, moegaTons:m.tons||0,
             plan:row.plan||0, real:m.v||0, taxa:row.taxa||0, tons:m.tons||0,
             op:row.op||0, term:row.term||0, ferr:row.ferr||0,
             prodOp:prodOp, ts:Date.now(), origem:'dados originais do Dashboard'
@@ -1836,7 +1836,8 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!row.moegas) row.moegas=[];
     let alvo=row.moegas.find(x=>x.n===moegaNome);
     if(!alvo){ alvo={n:moegaNome,v:0,taxa:0,op:0,term:0,ferr:0,tons:0}; row.moegas.push(alvo); }
-    alvo.v=mv; alvo.taxa=mtaxa; alvo.tons=mtons;
+    alvo.v=mv; alvo.taxa=mtaxa;
+    if(mtons){ alvo.tons=mtons; } // só sobrescreve se vier um valor real; preserva o existente enquanto o campo "Toneladas (moega)" não for reimplementado
   }
   function getRowFor(terminal,ano,mes){
     try{
@@ -1870,7 +1871,8 @@ document.addEventListener('DOMContentLoaded',function(){
       const targetPO = isActive ? PROD_OP_REAL : PROD_OP_REAL_ANOS[ano];
       if(targetDB[entry.terminal] && targetDB[entry.terminal][entry.mes]){
         const row=targetDB[entry.terminal][entry.mes];
-        if(entry.moega) upsertMoega(row, entry.moega, entry.moegaVag, entry.moegaTaxa, entry.moegaTons);
+        const moegaTonsVal = (entry.moegaTons!=null) ? entry.moegaTons : (entry.tons!=null ? entry.tons : 0);
+        if(entry.moega) upsertMoega(row, entry.moega, entry.moegaVag, entry.moegaTaxa, moegaTonsVal);
         row.plan=entry.plan; row.taxa=entry.taxa;
         row.tons = row.moegas && row.moegas.length ? row.moegas.reduce((s,m)=>s+(m.tons||0),0) : entry.tons;
         row.real = row.moegas && row.moegas.length ? row.moegas.reduce((s,m)=>s+(m.v||0),0) : entry.real;
