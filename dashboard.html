@@ -731,7 +731,7 @@ td.r{text-align:right}
     <div style="font-size:12px;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Dados desta Moega (Indicador selecionado)</div>
     <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:20px">
       <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Planejado</label><input type="number" id="ed-plan" class="filter-sel" style="width:100%"></div>
-      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega)</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%"></div>
+      <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Vagões Finalizados (moega) — soma automática</label><input type="number" id="ed-moega-vag" class="filter-sel" style="width:100%;background:#e9ecef;color:#111;cursor:not-allowed" readonly></div>
       <div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--gray);font-weight:700;text-transform:uppercase;display:block;margin-bottom:4px">Tx. Vgs/Hr (moega)</label><input type="number" step="0.01" id="ed-moega-taxa" class="filter-sel" style="width:100%"></div>
     </div>
     <hr style="border:none;border-top:1px solid var(--border);margin-bottom:20px">
@@ -1893,6 +1893,14 @@ document.addEventListener('DOMContentLoaded',function(){
       return src && src[terminal] ? src[terminal][mes] : null;
     }catch(e){ return null; }
   }
+  function calcularVagMoegaAuto(){
+    const soma = getNum('ed-ac-mrs')+getNum('ed-ac-rumo')+getNum('ed-ac-vli')
+      +getNum('ed-so-mrs')+getNum('ed-so-rumo')+getNum('ed-so-vli')
+      +getNum('ed-mi-mrs')+getNum('ed-mi-rumo')+getNum('ed-mi-vli');
+    const el=document.getElementById('ed-moega-vag');
+    if(el) el.value=soma;
+    return soma;
+  }
   function sugerirTonsExistente(){
     const terminal=document.getElementById('ed-terminal').value;
     const ano=document.getElementById('ed-ano').value;
@@ -1958,13 +1966,13 @@ document.addEventListener('DOMContentLoaded',function(){
       document.getElementById('ed-term').value=e.term;
       document.getElementById('ed-ferr').value=e.ferr;
       document.getElementById('ed-moega-taxa').value=e.moegaTaxa||'';
-      document.getElementById('ed-moega-vag').value=e.moegaVag||'';
       document.getElementById('ed-tons').value=(e.moegaTons!=null?e.moegaTons:e.tons)||0;
       if(e.prodOp){
         document.getElementById('ed-ac-mrs').value=e.prodOp.AÇUCAR.MRS; document.getElementById('ed-ac-rumo').value=e.prodOp.AÇUCAR.RUMO; document.getElementById('ed-ac-vli').value=e.prodOp.AÇUCAR.VLI;
         document.getElementById('ed-so-mrs').value=e.prodOp.SOJA.MRS; document.getElementById('ed-so-rumo').value=e.prodOp.SOJA.RUMO; document.getElementById('ed-so-vli').value=e.prodOp.SOJA.VLI;
         document.getElementById('ed-mi-mrs').value=e.prodOp.MILHO.MRS; document.getElementById('ed-mi-rumo').value=e.prodOp.MILHO.RUMO; document.getElementById('ed-mi-vli').value=e.prodOp.MILHO.VLI;
       }
+      calcularVagMoegaAuto();
       updateScopeNote();
       const statusEl=document.getElementById('ed-status');
       statusEl.style.color='#4472C4'; statusEl.textContent='✎ Carregado para edição — altere e clique em Salvar';
@@ -2073,13 +2081,14 @@ document.addEventListener('DOMContentLoaded',function(){
     const moega=document.getElementById('ed-moega').value;
     const plan=getNum('ed-plan');
     const op=getNum('ed-op'), term=getNum('ed-term'), ferr=getNum('ed-ferr');
-    const moegaTaxa=getNum('ed-moega-taxa'), moegaVag=getNum('ed-moega-vag');
+    const moegaTaxa=getNum('ed-moega-taxa');
     const taxa=moegaTaxa;
     const tons=getNum('ed-tons');
     const moegaTons=tons;
     const acMrs=getNum('ed-ac-mrs'), acRumo=getNum('ed-ac-rumo'), acVli=getNum('ed-ac-vli');
     const soMrs=getNum('ed-so-mrs'), soRumo=getNum('ed-so-rumo'), soVli=getNum('ed-so-vli');
     const miMrs=getNum('ed-mi-mrs'), miRumo=getNum('ed-mi-rumo'), miVli=getNum('ed-mi-vli');
+    const moegaVag=calcularVagMoegaAuto();
     const real=calcularVagTotal();
     const prodOp={AÇUCAR:{MRS:acMrs,RUMO:acRumo,VLI:acVli},SOJA:{MRS:soMrs,RUMO:soRumo,VLI:soVli},MILHO:{MRS:miMrs,RUMO:miRumo,VLI:miVli}};
     const entry={terminal,ano,mes,moega,moegaVag,moegaTaxa,moegaTons,plan,real,taxa,tons,op,term,ferr,prodOp,ts:Date.now()};
@@ -2112,6 +2121,10 @@ document.addEventListener('DOMContentLoaded',function(){
     if(mesSel) mesSel.addEventListener('change', sugerirTonsExistente);
     if(termSel) termSel.addEventListener('change', populaMoegas);
     if(moegaSel) moegaSel.addEventListener('change', sugerirTonsExistente);
+    ['ed-ac-mrs','ed-ac-rumo','ed-ac-vli','ed-so-mrs','ed-so-rumo','ed-so-vli','ed-mi-mrs','ed-mi-rumo','ed-mi-vli'].forEach(function(id){
+      const el=document.getElementById(id);
+      if(el) el.addEventListener('input', calcularVagMoegaAuto);
+    });
     populaMoegas();
     updateScopeNote();
     const hTerm=document.getElementById('ed-hist-terminal'), hAno=document.getElementById('ed-hist-ano'), hMes=document.getElementById('ed-hist-mes'), hMoega=document.getElementById('ed-hist-moega'), hLimpar=document.getElementById('ed-hist-limpar');
