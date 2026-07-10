@@ -2718,11 +2718,23 @@ function buildCLI(){
 }
 
 function buildMoegas(){
+  function agregaTerminal(dbArr, prefixo){
+    const nomes=new Set();
+    dbArr.forEach(function(row){ (row.moegas||[]).forEach(function(m){ nomes.add(m.n); }); });
+    return Array.from(nomes).map(function(nome){
+      let v=0, tons=0, taxaSoma=0, taxaCount=0;
+      dbArr.forEach(function(row){
+        const alvo=(row.moegas||[]).find(function(m){ return m.n===nome; });
+        if(alvo){ v+=(alvo.v||0); tons+=(alvo.tons||0); if((alvo.v||0)+(alvo.taxa||0)>0){ taxaSoma+=(alvo.taxa||0); taxaCount++; } }
+      });
+      return {m:prefixo+' – '+nome, t:prefixo, v:v, taxa: taxaCount?taxaSoma/taxaCount:0, tons:tons};
+    });
+  }
   const allM=[
     {m:'TGRÃO – Moegão Terra',t:'TGRÃO',v:tgraoVag,taxa:5.28,tons:tgraoTons},
-    ...DB.cop[0].moegas.map((m,i)=>({m:'COP – '+m.n,t:'COP',v:DB.cop.reduce((s,r)=>s+r.moegas[i].v,0),taxa:DB.cop.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,tons:DB.cop.reduce((s,r)=>s+r.moegas[i].tons,0)})),
-    ...DB.tec[0].moegas.map((m,i)=>({m:'TEC – '+m.n,t:'TEC',v:DB.tec.reduce((s,r)=>s+r.moegas[i].v,0),taxa:DB.tec.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,tons:DB.tec.reduce((s,r)=>s+r.moegas[i].tons,0)})),
-    ...DB.cli[0].moegas.map((m,i)=>({m:'CLI – '+m.n,t:'CLI',v:DB.cli.reduce((s,r)=>s+r.moegas[i].v,0),taxa:DB.cli.reduce((s,r)=>s+r.moegas[i].taxa,0)/6,tons:DB.cli.reduce((s,r)=>s+r.moegas[i].tons,0)})),
+    ...agregaTerminal(DB.cop,'COP'),
+    ...agregaTerminal(DB.tec,'TEC'),
+    ...agregaTerminal(DB.cli,'CLI'),
   ].sort((a,b)=>b.v-a.v);
   mkC('c-moeg-vag','bar',{labels:allM.map(r=>r.m.replace(' – ','·')),datasets:[{label:'Vagões',data:allM.map(r=>r.v),backgroundColor:allM.map(r=>TC2[r.t]),borderRadius:3}]},{indexAxis:'y',plugins:{legend:{display:false}}});
   mkC('c-moeg-taxa','bar',{labels:allM.map(r=>r.m.replace(' – ','·')),datasets:[{label:'Taxa Média (Vgs/Hr)',data:allM.map(r=>r.taxa.toFixed(2)),backgroundColor:allM.map(r=>TC2[r.t]),borderRadius:3}]},{indexAxis:'y',plugins:{legend:{display:false}}});
